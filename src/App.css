@@ -36,3 +36,16 @@
     transform: rotate(360deg);
   }
 }
+
+.navigationBar {
+  max-width: 90vw;
+  display: flex;
+  list-style: none;
+  background-color: white;
+  position: sticky;
+}
+.navigationBarItem {
+  width: 20vw;
+  display: inline;
+  margin: 5, 10;
+}

@@ -1,6 +1,5 @@
-//moved to plantform.js
-
-import { useState } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { push, ref as databaseRef, set } from "firebase/database";
 import {
   getDownloadURL,
@@ -12,7 +11,9 @@ import { database, storage } from "../DB/firebase";
 const USER_PLANT_PROFILES_FOLDER_NAME = "userPlantProfiles";
 const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantImages";
 
-const AddPlant = () => {
+export default function PlantForm() {
+  // form stuff goes here
+  const navigate = useNavigate();
   const [plantName, setPlantName] = useState("");
   const [plantSpecies, setPlantSpecies] = useState("");
   const [sunRequirement, setSunRequirement] = useState("");
@@ -239,6 +240,4 @@ const AddPlant = () => {
       <img alt="" src={photoPreview} width="25%" />
     </div>
   );
-};
-
-export default AddPlant;
+}
