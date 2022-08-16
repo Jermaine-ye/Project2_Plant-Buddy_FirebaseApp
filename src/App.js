@@ -3,9 +3,6 @@ import "./App.css";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 // for import of components
-<<<<<<< HEAD
-
-=======
 import Dashboard from "./components/Dashboard";
 import PlantInfo from "./components/PlantInfo";
 import PlantForm from "./components/PlantForm";
@@ -14,15 +11,12 @@ import Forums from "./components/Forums";
 import Recommendations from "./components/Recommendations";
 import AddPost from "./components/AddPost";
 import AddForumPost from "./components/AddForumPost";
->>>>>>> main
+
 // for import of styles
 
 function App() {
   return (
     <div className="App">
-<<<<<<< HEAD
-      
-=======
       <header className="App-header">
         <Routes>
           {/* <Route path="/" element={<Registration />}></Route> */}
@@ -36,7 +30,6 @@ function App() {
           <Route path="/recommendations" element={<Recommendations />}></Route>
         </Routes>
       </header>
->>>>>>> main
     </div>
   );
 }
