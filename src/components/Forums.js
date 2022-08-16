@@ -1,6 +1,9 @@
 import { useNavigate, Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../App";
 
 export default function Forums() {
+  const user = useContext(UserContext);
   const navigate = useNavigate();
   const addPost = () => {
     console.log("redirecting to new post page");
@@ -13,6 +16,7 @@ export default function Forums() {
           <li className="navigationBarItem">
             <Link to={"/"}>Dashboard</Link>
           </li>
+          <li>{user ? <p>{user.email}</p> : null}</li>
         </ul>
       </div>
       <h1>Forums</h1>

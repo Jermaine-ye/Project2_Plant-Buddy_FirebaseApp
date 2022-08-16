@@ -43,9 +43,11 @@
   list-style: none;
   background-color: white;
   position: sticky;
+  color: #282c34;
 }
 .navigationBarItem {
   width: 20vw;
   display: inline;
   margin: 5, 10;
+  align-items: center;
 }

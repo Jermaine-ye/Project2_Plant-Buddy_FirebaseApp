@@ -10,6 +10,7 @@ export default function AddForumPost() {
     <div>
       <form>
         <input type="text" placeholder="Title" />
+
         <br />
         <textarea rows="8" cols="50">
           Your message here

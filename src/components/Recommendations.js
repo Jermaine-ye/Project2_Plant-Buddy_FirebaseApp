@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../App";
 export default function Recommendations() {
+  const user = useContext(UserContext);
   return (
     <div>
       <div>
@@ -7,6 +10,7 @@ export default function Recommendations() {
           <li className="navigationBarItem">
             <Link to={"/"}>Dashboard</Link>
           </li>
+          <li>{user ? <p>{user.email}</p> : null}</li>
         </ul>
       </div>
       <h1>Recommendations!</h1>
