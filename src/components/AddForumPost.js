@@ -1,6 +1,15 @@
 import { useNavigate } from "react-router-dom";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../App";
 export default function AddForumPost() {
   const navigate = useNavigate();
+  const user = useContext(UserContext);
+  useEffect(() => {
+    //check if user has logged in, if not, redirect them to login page
+    if (Object.keys(user) == 0) {
+      navigate("/login");
+    }
+  });
   const submitPost = () => {
     console.log("New Post Added");
     navigate("/forums");
