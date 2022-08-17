@@ -13,7 +13,7 @@ import Forums from "./components/Forums";
 import Recommendations from "./components/Recommendations";
 import AddPost from "./components/AddPost";
 import AddForumPost from "./components/AddForumPost";
-import react from "react";
+
 // for import of styles
 
 export const UserContext = createContext();
