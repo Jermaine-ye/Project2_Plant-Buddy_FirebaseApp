@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import { UserContext } from "../App";
 import { useNavigate } from "react-router-dom";
 import { onChildAdded, push, ref as databaseRef, set } from "firebase/database";
 import {
@@ -86,6 +87,13 @@ export default function PlantForm() {
       })
       .catch((err) => console.log(err));
   };
+  const user = useContext(UserContext);
+  useEffect(() => {
+    //check if user has logged in, if not, redirect them to login page
+    if (Object.keys(user) == 0) {
+      navigate("/login");
+    }
+  });
 
   const handleChange = ({ target }) => {
     const { name, value } = target;
