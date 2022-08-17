@@ -23,12 +23,7 @@ export default function Registration(props) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
-<<<<<<< HEAD
-        setUser(user);
-        console.log("successfully signed up");
-=======
         updateProfile(user, { displayName: username });
->>>>>>> origin
         console.log(user);
         setUser(user);
         console.log("successfully signed up");
