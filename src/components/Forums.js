@@ -22,7 +22,7 @@ export default function Forums() {
           <li className="navigationBarItem">
             <Link to={"/"}>Dashboard</Link>
           </li>
-          <li>{user ? <p>{user.email}</p> : null}</li>
+          <li>{user ? <p>{user.displayName}</p> : null}</li>
         </ul>
       </div>
       <h1>Forums</h1>

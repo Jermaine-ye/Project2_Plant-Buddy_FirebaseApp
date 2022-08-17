@@ -20,6 +20,15 @@ export default function Dashboard(props) {
   const [userPlants, setUserPlants] = useState([]);
 
   const navigate = useNavigate();
+  const logout = () => {
+    signOut(auth).then(() => {
+      localStorage.removeItem("user");
+
+      // localStorage.setItem("user", JSON.stringify({}));
+      // console.log(JSON.parse(localStorage.getItem("user")));
+      navigate("/login");
+    });
+  };
 
   // for testing purpose
   const userEmail = "abc@abc.com";
@@ -56,12 +65,6 @@ export default function Dashboard(props) {
     };
   }, []);
 
-  const logout = () => {
-    signOut(auth).then(() => {
-      navigate("/login");
-    });
-  };
-
   // to render user's list of plants
 
   const plantCard = userPlants.map((plant, index) => (
@@ -72,7 +75,7 @@ export default function Dashboard(props) {
     <div>
       {/* DO NOT TOUCH */}
       <div>
-        {user ? <h2>Good morning, {user.email}</h2> : null}
+        {user ? <h2>Good morning, {user.displayName}</h2> : null}
         <button
           onClick={() => {
             logout();

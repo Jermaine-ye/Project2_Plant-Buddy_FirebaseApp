@@ -19,10 +19,26 @@ import AddForumPost from "./components/AddForumPost";
 export const UserContext = createContext();
 
 function App() {
-  const [showAuthForm, setShowAuthForm] = useState(true);
-  const [user, setUser] = useState({});
+  const isLoggedIn = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState(isLoggedIn);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (
+      localStorage.getItem("user") === null ||
+      localStorage.getItem("user") === undefined
+    ) {
+      localStorage.setItem("user", JSON.stringify({}));
+    } else {
+      if (Object.keys(isLoggedIn).length !== 0) {
+        console.log(isLoggedIn);
+      } else {
+        localStorage.setItem("user", JSON.stringify(user));
+        setUser(isLoggedIn);
+        console.log("set user data LS");
+      }
+    }
+  }, []);
   return (
     <div className="App">
       <header className="App-header">
