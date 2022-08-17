@@ -49,7 +49,7 @@ function App() {
               element={<Registration handleLogin={setUser} />}
             ></Route>
             <Route path="/" element={<Dashboard />}></Route>
-            <Route path="/plantprofile/:id" element={<PlantInfo />}></Route>
+            <Route path="/plantprofile" element={<PlantInfo />}></Route>
             <Route path="/addnewplant" element={<PlantForm />}></Route>
             <Route path="/community" element={<Community />}></Route>
             <Route path="/addnewpost" element={<AddPost />}></Route>

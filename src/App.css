@@ -51,3 +51,19 @@
   margin: 5, 10;
   align-items: center;
 }
+
+.plantList {
+  display: flex;
+  background-color: grey;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.plantCard {
+  display: flex;
+  background-color: white;
+  padding: 1rem;
+  flex-direction: column;
+  color: black;
+  margin: 1rem;
+}
