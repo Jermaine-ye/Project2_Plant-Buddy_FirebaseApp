@@ -1,10 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function PlantInfo(props) {
   // const [state, setState] = useState(state)
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // for testing purposes
+  const userName = "abc";
+
+  // plant data
+
+  // get user's plants from realtime database
+
+  useEffect(() => {});
 
   return (
     <div>

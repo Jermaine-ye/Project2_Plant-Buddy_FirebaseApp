@@ -21,7 +21,6 @@ export default function Registration(props) {
       .then((userCredential) => {
         const user = userCredential.user;
         setUser(user);
-        navigate("/");
         console.log("successfully signed up");
         console.log(user);
       })

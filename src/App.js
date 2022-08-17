@@ -30,14 +30,7 @@ function App() {
           <Routes>
             <Route
               path="/login"
-              element={
-                <Registration
-                  handleLogin={(user) => {
-                    setUser(user);
-                    console.log(user);
-                  }}
-                />
-              }
+              element={<Registration handleLogin={setUser} />}
             ></Route>
             <Route path="/" element={<Dashboard />}></Route>
             <Route path="/plantprofile/:id" element={<PlantInfo />}></Route>
