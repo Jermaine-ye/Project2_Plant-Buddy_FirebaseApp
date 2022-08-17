@@ -19,7 +19,7 @@ export default function PlantForm() {
 
   // for testing purposes
   const userEmail = "abc@abc.com";
-  const userName = "def";
+  const userInfo = `${user.displayName + "-" + user.uid}`;
 
   // for conditional rendering of form
   const [showPlantForm, setShowPlantForm] = useState(false);
@@ -43,10 +43,13 @@ export default function PlantForm() {
   const [photoPreview, setPhotoPreview] = useState("");
 
   useEffect(() => {
-    //check if user has logged in, if not, redirect them to login page
-    // if (Object.keys(user) == 0) {
-    //   navigate("/login");
-    // }
+    // to check if user is logged in
+    console.log("user:", user);
+    const isLoggedIn = JSON.parse(localStorage.getItem("user"));
+    console.log("isLoggedIn:", isLoggedIn);
+    if (Object.keys(isLoggedIn) === 0) {
+      navigate("/login");
+    }
 
     // to get list of plants in database
     const plantsRef = databaseRef(database, PLANTS_FOLDER_NAME);
@@ -79,7 +82,7 @@ export default function PlantForm() {
         getDownloadURL(userPlantImagesRef).then((url) => {
           const userPlantRef = databaseRef(
             database,
-            USER_PLANT_FOLDER_NAME + "/" + userName
+            USER_PLANT_FOLDER_NAME + "/" + userInfo
           );
           const newPlantRef = push(userPlantRef);
 
@@ -158,7 +161,7 @@ export default function PlantForm() {
   const selectedPlantForm = (
     <div>
       <h3>
-        {userName}'s {selectedPlant.key}
+        {user.displayName}'s {selectedPlant.key}
       </h3>
       <h5>Recommended Care:</h5>
       <label>
@@ -203,7 +206,7 @@ export default function PlantForm() {
   const newPlantSpeciesForm = (
     <div>
       <h3>
-        {userName}'s {plantSpecies ? plantSpecies : "New Buddy"}
+        {user.displayName}'s {plantSpecies ? plantSpecies : "New Buddy"}
       </h3>
       <label>
         Plant Species:
