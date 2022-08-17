@@ -12,6 +12,10 @@ export default function Dashboard(props) {
   const navigate = useNavigate();
   const logout = () => {
     signOut(auth).then(() => {
+      localStorage.removeItem("user");
+
+      // localStorage.setItem("user", JSON.stringify({}));
+      // console.log(JSON.parse(localStorage.getItem("user")));
       navigate("/login");
     });
   };
@@ -30,7 +34,7 @@ export default function Dashboard(props) {
   return (
     <div>
       <div>
-        {user ? <h2>Good morning, {user.email}</h2> : null}
+        {user ? <h2>Good morning, {user.displayName}</h2> : null}
         <button
           onClick={() => {
             logout();
