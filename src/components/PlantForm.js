@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { push, ref as databaseRef, set } from "firebase/database";
+import { onChildAdded, push, ref as databaseRef, set } from "firebase/database";
 import {
   getDownloadURL,
   ref as storageRef,
@@ -8,23 +8,44 @@ import {
 } from "firebase/storage";
 import { database, storage } from "../DB/firebase";
 
-const USER_PLANT_PROFILES_FOLDER_NAME = "userPlantProfiles";
+const USER_PLANT_PROFILES_FOLDER_NAME = "userPlantProfiles/users";
 const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantImages";
+const PLANTS_FOLDER_NAME = "allPlants";
+const USER_ID = "user1";
 
 export default function PlantForm() {
-  // form stuff goes here
   const navigate = useNavigate();
-  const [plantName, setPlantName] = useState("");
-  const [plantSpecies, setPlantSpecies] = useState("");
-  const [sunRequirement, setSunRequirement] = useState("");
+
+  const [plantList, setPlantList] = useState([]);
+  const [selectedPlant, setSelectedPlant] = useState({});
+  // const [showSelectedPlantForm, setShowSelectedPlantForm] = useState(false);
   const [waterFrequency, setWaterFrequency] = useState("");
+  const [sunlightRequirement, setSunlightRequirement] = useState("");
+  const [acceptRecommended, setAcceptRecommended] = useState(true);
+  const [plantSpecies, setPlantSpecies] = useState("");
   const [plantPhotoFile, setPlantPhotoFile] = useState(null);
   const [plantPhotoValue, setPlantPhotoValue] = useState("");
   const [plantCondition, setPlantCondition] = useState([]);
   const [photoPreview, setPhotoPreview] = useState("");
-  const [notes, setNotes] = useState("");
-
   const [newPlantEntry, setNewPlantEntry] = useState({});
+
+  useEffect(() => {
+    const plantsRef = databaseRef(database, PLANTS_FOLDER_NAME);
+
+    onChildAdded(plantsRef, (data) => {
+      const species = Object.keys(data.val())[0];
+      const speciesInfo = data.val()[species];
+
+      setPlantList((prevState) => [
+        ...prevState,
+        { key: species, val: speciesInfo },
+      ]);
+    });
+
+    return () => {
+      setPlantList([]);
+    };
+  }, []);
 
   const handleSubmitNewPlant = (e) => {
     e.preventDefault();
@@ -46,10 +67,16 @@ export default function PlantForm() {
           const newProfileRef = push(userPlantProfilesRef);
 
           set(newProfileRef, {
-            timestamp: new Date(),
-            ...newPlantEntry,
-            plantCondition: plantCondition,
-            imageURL: url,
+            user: {
+              plant1: {
+                name: "testing",
+                sun: "low",
+              },
+              plant2: {
+                name: "testing",
+                sun: "low",
+              },
+            },
           });
           alert(JSON.stringify(newPlantEntry, "", 2));
 
@@ -79,10 +106,116 @@ export default function PlantForm() {
     }
   };
 
-  return (
+  // list of plant choices for user to select for recommended plant care
+  const plantsDB = plantList.map((plant, index) => (
+    <button
+      key={index}
+      onClick={(e) => {
+        handleClickSelectedPlant(e, plant, index);
+      }}
+    >
+      {plant.key}
+    </button>
+  ));
+
+  // to store user's selected plant for add plant entry
+  const handleClickSelectedPlant = (event, plant, index) => {
+    setSelectedPlant(plant);
+    setWaterFrequency(plant.val.waterFreqDay);
+    setSunlightRequirement(plant.val.sunlightReq);
+  };
+
+  // selectedPlantForm
+  const selectedPlantForm = (
     <div>
-      {/*  */}
-      <p>Add New Plant</p>
+      <h3>User's {selectedPlant.key}</h3>
+      <h5>Recommended Care:</h5>
+      <label>
+        Watering Schedule: Every
+        <input
+          type="number"
+          name="water"
+          value={waterFrequency}
+          onChange={(e) => setWaterFrequency(e.target.value)}
+          disabled={acceptRecommended}
+        />
+        Days
+      </label>
+      <br />
+      <label>
+        Sunlight Required:
+        <select
+          name="sunlight"
+          value={sunlightRequirement}
+          onChange={(e) => setSunlightRequirement(e.target.value)}
+          disabled={acceptRecommended}
+        >
+          <option value="intense">intense</option>
+          <option value="moderate">moderate</option>
+          <option value="low">low</option>
+        </select>
+      </label>
+      <br />
+      <label>
+        Keep Recommendation
+        <input
+          type="checkbox"
+          name="recommendation"
+          checked={acceptRecommended}
+          onChange={(e) => setAcceptRecommended(!acceptRecommended)}
+        />
+      </label>
+    </div>
+  );
+
+  const newPlantSpeciesForm = (
+    <div>
+      <h3>User's New Buddy</h3>
+      <label>
+        Plant Species:
+        <input
+          type="text"
+          name="species"
+          value={plantSpecies}
+          onChange={(e) => setPlantSpecies(e.target.value)}
+          required
+          placeholder="Plant Species"
+          maxLength={24}
+        />
+      </label>
+      <h5>Your Plant Care Recommendation:</h5>
+      <label>
+        Watering Schedule: Every
+        <input
+          type="number"
+          name="water"
+          value={waterFrequency}
+          onChange={(e) => setWaterFrequency(e.target.value)}
+        />
+        Days
+      </label>
+      <br />
+      <label>
+        Sunlight Required:
+        <select
+          name="sunlight"
+          value={sunlightRequirement || "default"}
+          onChange={(e) => setSunlightRequirement(e.target.value)}
+        >
+          <option value="low" hidden>
+            choose intensity
+          </option>
+          <option value="intense">intense</option>
+          <option value="moderate">moderate</option>
+          <option value="low">low</option>
+        </select>
+      </label>
+    </div>
+  );
+
+  const sharedForm = (
+    <div>
+      <h5>Buddy's Attributes:</h5>
       <form onSubmit={handleSubmitNewPlant}>
         <label>
           Plant Name:
@@ -100,92 +233,7 @@ export default function PlantForm() {
 
         {/*  */}
         <label>
-          Plant Type:
-          <select
-            name="plantSpecies"
-            value={newPlantEntry.plantSpecies || "default"}
-            onChange={handleChange}
-            placeholder="Plant Species"
-          >
-            <option value="default" disabled hidden>
-              Choose here
-            </option>
-            <option value="Snake Plant">Snake Plant</option>
-            <option value="Begonia">Begonia</option>
-            <option value="Monstera Deliciosa">Monstera Deliciosa</option>
-            <option value="Spider Plant">Spider Plant</option>
-          </select>
-        </label>
-        <br />
-
-        {/*  */}
-        <label>
-          Watering Schedule:
-          <select
-            name="waterFrequency"
-            placeholder="Water Frequency"
-            value={waterFrequency}
-            onChange={handleChange}
-          >
-            <option value="Select" disabled hidden>
-              Choose here
-            </option>
-            <option value="once">once</option>
-            <option value="twice">twice</option>
-            <option value="thrice">thrice</option>
-          </select>
-          every
-          <select
-            name="waterFrequency"
-            placeholder="Water Frequency"
-            value={waterFrequency}
-            onChange={handleChange}
-          >
-            <option value="Select" disabled hidden>
-              Choose here
-            </option>
-            <option value="day">day</option>
-            <option value="week">week</option>
-            <option value="fortnight">fortnight</option>
-            <option value="month">month</option>
-          </select>
-        </label>
-
-        <br />
-
-        {/*  */}
-        <label>
-          Sunlight Required:
-          <input
-            type="radio"
-            name="sunRequirement"
-            id="intense"
-            value="Intense"
-            onChange={handleChange}
-          />
-          <label htmlFor="intense">Intense</label>
-          <input
-            type="radio"
-            name="sunRequirement"
-            id="moderate"
-            value="Moderate"
-            onChange={handleChange}
-          />
-          <label htmlFor="moderate">Moderate</label>
-          <input
-            type="radio"
-            name="sunRequirement"
-            id="low"
-            value="Low"
-            onChange={handleChange}
-          />
-          <label htmlFor="moderate">Low</label>
-        </label>
-        <br />
-
-        {/*  */}
-        <label>
-          Plant Condition
+          Plant Condition:
           <input
             type="checkbox"
             name="plantCondition"
@@ -210,15 +258,18 @@ export default function PlantForm() {
         <br />
 
         {/*  */}
-        <input
-          type="file"
-          value={plantPhotoValue}
-          onChange={(e) => {
-            setPlantPhotoFile(e.target.files[0]);
-            setPlantPhotoValue(e.target.value);
-            setPhotoPreview(URL.createObjectURL(e.target.files[0]));
-          }}
-        />
+        <label>
+          Upload a photo:
+          <input
+            type="file"
+            value={plantPhotoValue}
+            onChange={(e) => {
+              setPlantPhotoFile(e.target.files[0]);
+              setPlantPhotoValue(e.target.value);
+              setPhotoPreview(URL.createObjectURL(e.target.files[0]));
+            }}
+          />
+        </label>
         <br />
 
         {/*  */}
@@ -236,6 +287,39 @@ export default function PlantForm() {
         {/*  */}
         <button type="submit">Add Plant</button>
       </form>
+    </div>
+  );
+
+  return (
+    <div>
+      {/* FIRST SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
+      <h1>New Plant Buddy</h1>
+
+      <label>
+        Find Plant:
+        <input type="text" placeholder="Enter plant name" />
+      </label>
+      <br />
+      {plantsDB}
+
+      <button
+        onClick={(e) => {
+          setSelectedPlant({});
+          setWaterFrequency("");
+          setSunlightRequirement("");
+        }}
+      >
+        Add New Species
+      </button>
+      <br />
+
+      {/* SECOND SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
+      <hr />
+
+      {!Object.keys(selectedPlant).length
+        ? newPlantSpeciesForm
+        : selectedPlantForm}
+      {sharedForm}
 
       <img alt="" src={photoPreview} width="25%" />
     </div>

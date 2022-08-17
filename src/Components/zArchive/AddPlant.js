@@ -7,7 +7,7 @@ import {
   ref as storageRef,
   uploadBytes,
 } from "firebase/storage";
-import { database, storage } from "../DB/firebase";
+import { database, storage } from "../../DB/firebase";
 
 const USER_PLANT_PROFILES_FOLDER_NAME = "userPlantProfiles";
 const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantImages";
