@@ -5,13 +5,16 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
+  updateProfile,
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
 export default function Registration(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
+  const [signedUp, setSignedUp] = useState(false);
 
   const navigate = useNavigate();
 
@@ -20,10 +23,19 @@ export default function Registration(props) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         const user = userCredential.user;
+<<<<<<< HEAD
         setUser(user);
         console.log("successfully signed up");
+=======
+        updateProfile(user, { displayName: username });
+>>>>>>> origin
         console.log(user);
+        setUser(user);
+        console.log("successfully signed up");
+        props.handleLogin(user);
+        setSignedUp(true);
       })
+
       .catch((error) => {
         console.log(error.code, error.message);
       });
@@ -34,17 +46,15 @@ export default function Registration(props) {
       .then((userCredential) => {
         const user = userCredential.user;
         setUser(user);
+        console.log(user);
         navigate("/");
         props.handleLogin(user);
+        localStorage.setItem("user", JSON.stringify(user));
         console.log("successfully logged in");
       })
       .catch((error) => {
         console.log(error.code, error.message);
       });
-  };
-  const logout = () => {
-    setUser("");
-    navigate("/");
   };
 
   return (
@@ -68,8 +78,16 @@ export default function Registration(props) {
           }}
         />
         <input
+          type="text"
+          placeholder="Username"
+          onChange={(e) => {
+            setUsername(e.target.value);
+          }}
+        />
+        <input
           type="submit"
           value="Signup"
+          disabled={signedUp}
           onClick={(e) => {
             signup(e, email, password);
           }}

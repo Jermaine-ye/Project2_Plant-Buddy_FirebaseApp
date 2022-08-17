@@ -8,7 +8,10 @@ export default function Community() {
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
-    if (Object.keys(user) == 0) {
+    console.log(user);
+    const isLoggedIn = JSON.parse(localStorage.getItem("user"));
+    console.log(isLoggedIn);
+    if (Object.keys(isLoggedIn) === 0) {
       navigate("/login");
     }
   });
@@ -20,7 +23,7 @@ export default function Community() {
           <li className="navigationBarItem">
             <Link to={"/"}>Dashboard</Link>
           </li>
-          <li>{user ? <p>{user.email}</p> : null}</li>
+          <li>{user ? <p>{user.displayName}</p> : null}</li>
         </ul>
       </div>
       <h1>Buddies!</h1>
