@@ -5,10 +5,12 @@ import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 // imports for firebase
+
 import { auth, database } from '../DB/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { ref as databaseRef, onChildAdded } from 'firebase/database';
 import PlantInfo from './PlantInfo';
+import PlantCalendar from './Calendar';
 import WeatherModal from './WeatherModal';
 
 // folders in realtime database
@@ -133,6 +135,7 @@ export default function Dashboard(props) {
       <h1>DASHBOARD</h1>
       <div>
         <h3>Calendar placeholder</h3>
+        <PlantCalendar />
       </div>
       <div>
         <h3>Weather API placeholder</h3>
