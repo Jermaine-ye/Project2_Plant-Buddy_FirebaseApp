@@ -4,15 +4,15 @@ import { useState, useEffect, createContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
 
 // for import of components
-import Registration from "./Components/Registration";
-import Dashboard from "./Components/Dashboard";
-import PlantInfo from "./Components/PlantInfo";
-import PlantForm from "./Components/PlantForm";
-import Community from "./Components/Community";
-import Forums from "./Components/Forums";
-import Recommendations from "./Components/Recommendations";
-import AddPost from "./Components/AddPost";
-import AddForumPost from "./Components/AddForumPost";
+import Registration from "./components/Registration";
+import Dashboard from "./components/Dashboard";
+import PlantInfo from "./components/PlantInfo";
+import PlantForm from "./components/PlantForm";
+import Community from "./components/Community";
+import Forums from "./components/Forums";
+import Recommendations from "./components/Recommendations";
+import AddPost from "./components/AddPost";
+import AddForumPost from "./components/AddForumPost";
 
 // for import of styles
 
@@ -49,7 +49,7 @@ function App() {
               element={<Registration handleLogin={setUser} />}
             ></Route>
             <Route path="/" element={<Dashboard />}></Route>
-            <Route path="/plantprofile/:id" element={<PlantInfo />}></Route>
+            <Route path="/plantprofile" element={<PlantInfo />}></Route>
             <Route path="/addnewplant" element={<PlantForm />}></Route>
             <Route path="/community" element={<Community />}></Route>
             <Route path="/addnewpost" element={<AddPost />}></Route>
