@@ -9,6 +9,7 @@ import { auth, database } from "../DB/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { ref as databaseRef, onChildAdded } from "firebase/database";
 import PlantInfo from "./PlantInfo";
+import PlantCalendar from "./Calendar";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -132,6 +133,7 @@ export default function Dashboard(props) {
       <h1>DASHBOARD</h1>
       <div>
         <h3>Calendar placeholder</h3>
+        <PlantCalendar />
       </div>
       <div>
         <h3>Weather API placeholder</h3>

@@ -67,3 +67,17 @@
   color: black;
   margin: 1rem;
 }
+/* .calendar-row {
+  width: 50vw;
+} */
+.calendar-row-item {
+  display: inline;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.today {
+  color: red;
+}
+.selected-date {
+  color: blue;
+}
