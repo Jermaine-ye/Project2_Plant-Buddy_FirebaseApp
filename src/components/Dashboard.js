@@ -21,28 +21,12 @@ export default function Dashboard(props) {
 
   //user info
   const user = useContext(UserContext);
-  const userName = user.displayName;
-  const userPlantFolder = `${userName + "-" + user.uid}`;
-  const [userPlants, setUserPlants] = useState([]);
-
-  //selected plant info for modal
-  const [selectedPlantProfile, setSelectedPlantProfile] = useState({});
-
-  // reminder
-  const [showReminder, setShowReminder] = useState(false);
-  const [plantWatered, setPlantWatered] = useState(false);
-
-  const logout = () => {
-    signOut(auth).then(() => {
-      localStorage.removeItem("user");
-      navigate("/login");
-    });
-  };
 
   // includes checking of auth status and load user's plants from realtime database
   useEffect(() => {
     // for checking of user logged in status
     onAuthStateChanged(auth, (signedInUser) => {
+      console.log(signedInUser);
       if (signedInUser) {
         const uid = signedInUser.uid;
       } else {
@@ -69,6 +53,24 @@ export default function Dashboard(props) {
       setUserPlants([]);
     };
   }, []);
+
+  const userName = user.displayName;
+  const userPlantFolder = `${userName + "-" + user.uid}`;
+  const [userPlants, setUserPlants] = useState([]);
+
+  //selected plant info for modal
+  const [selectedPlantProfile, setSelectedPlantProfile] = useState({});
+
+  // reminder
+  const [showReminder, setShowReminder] = useState(false);
+  const [plantWatered, setPlantWatered] = useState(false);
+
+  const logout = () => {
+    signOut(auth).then(() => {
+      localStorage.removeItem("user");
+      navigate("/login");
+    });
+  };
 
   // to render user's list of plants in dashboard view
   const plantCard = userPlants.map((plant, index) => (

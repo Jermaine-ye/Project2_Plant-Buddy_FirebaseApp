@@ -10,8 +10,7 @@ export default function Community() {
     //check if user has logged in, if not, redirect them to login page
     console.log(user);
     const isLoggedIn = JSON.parse(localStorage.getItem("user"));
-    console.log(isLoggedIn);
-    if (Object.keys(isLoggedIn) === 0) {
+    if (Object.keys(isLoggedIn).length === 0) {
       navigate("/login");
     }
   });
