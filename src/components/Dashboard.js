@@ -22,6 +22,11 @@ export default function Dashboard(props) {
   //user info
   const user = useContext(UserContext);
 
+  // navigate to login if there's no user data upon npm start/refresh
+  if (!user) {
+    localStorage.setItem("user", JSON.stringify({}));
+  }
+
   // includes checking of auth status and load user's plants from realtime database
   useEffect(() => {
     // for checking of user logged in status
