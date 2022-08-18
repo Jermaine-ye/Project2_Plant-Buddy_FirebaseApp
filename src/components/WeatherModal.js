@@ -14,9 +14,6 @@ export default function WeatherModal() {
     weatherDesc: '',
     highTemp: '',
     lowTemp: '',
-    // noonWeather: '',
-    // nightWeather: '',
-    // ntMornWeather: '',
     PeriodWeatherA: '',
     PeriodWeatherB: '',
     PeriodWeatherC: '',
@@ -25,33 +22,31 @@ export default function WeatherModal() {
     periodTimeC: '',
   });
 
-  const [cityInputValue, setCityInputValue] = useState('Singapore');
-
-  // const setWeatherIcon = () {
+  // const [cityInputValue, setCityInputValue] = useState('Singapore');
 
   const checkWeather = (input) => {
     switch (input) {
       case 'Thundery Showers':
         return <img src={thunder} alt="" width="50" height="50" />;
-        break;
+
       case 'Cloudy':
         return <img src={overcast} alt="" width="50" height="50" />;
-        break;
+
       case 'Partly Cloudy (Day)':
         return <img src={cloudyAM} alt="" width="50" height="50" />;
-        break;
+
       case 'Partly Cloudy (Night)':
         return <img src={cloudyPM} alt="" width="50" height="50" />;
-        break;
+
       case 'Passing Showers':
         return <img src={passingShower} alt="" width="50" height="50" />;
-        break;
+
       case 'Showers':
         return <img src={passingShower} alt="" width="50" height="50" />;
-        break;
+
       case 'Sunny':
         return <img src={sunny} alt="" width="50" height="50" />;
-        break;
+
       default:
         return null;
     }
@@ -63,16 +58,6 @@ export default function WeatherModal() {
     if (hour >= 17 && hour <= 20) return 'Evening';
     if (hour >= 21 || hour <= 3) return 'Night';
   };
-
-  // console.log(`Good ${timeOfDay()}!`);
-
-  // function timeOfDay() {
-  //   let hour = new Date().getHours();
-  //   if (hour >= 4 && hour <= 11) return 'morning';
-  //   if (hour >= 12 && hour <= 16) return 'afternoon';
-  //   if (hour >= 17 && hour <= 20) return 'evening';
-  //   if (hour >= 21 || hour <= 3) return 'night';
-  // }
 
   useEffect(() => {
     console.log('submit success!');
@@ -124,67 +109,52 @@ export default function WeatherModal() {
         const period2Time = response.data.items[0].periods[2].time.start;
         console.log('P2: ' + period2Time);
 
-        // to create function to
-        //get period time now to check against new date to determine m/n/n
-        //extract start time, 3 data point pass into the newDate() (need to process data into timeinfo, not a string) date.parse etc.
-
         setWeatherInfo({
           mainWeather: currWeatherData,
           highTemp: currHighTemp,
           lowTemp: currLowTemp,
           PeriodWeatherA: weatherDataPeriod0,
-          // noonWeather: { weatherDataNoon, period1Time },
           PeriodWeatherB: weatherDataPeriod1,
           PeriodWeatherC: weatherDataPeriod2,
-
           periodTimeA: period0Time,
           periodTimeB: period1Time,
           periodTimeC: period2Time,
-          // mainWeather: response.data.items[0].general.forecast,
-          // weatherDesc: weatherData.weather[0].description,
-          // weatherIcon: weatherData.weather[0].icon,
         });
       });
   }, []);
 
   return (
     <div className="Weather-Modal">
-      {/* <form onSubmit={handleSubmit}> */}
-      {/* <input
-          type="text"
-          value={cityInputValue}
-          onChange={handleChange}
-          placeholder="Please enter a country!"
-        /> */}
-
-      {/* <input type="submit" value="Submit" />
-      </form> */}
       <div className="Weather-Display">
-        <h6>Country: {cityInputValue}</h6>
-        <h6>Current Weather: {weatherInfo.mainWeather}</h6>
-        {checkWeather(weatherInfo.mainWeather)}
+        {/* <h6>Country: {cityInputValue}</h6> */}
 
         {/* {weatherInfo.mainWeather.includes('Showers') ? (
           <img src={thunder} alt="" width="50" height="50" />
         ) : null} */}
+        <h6>Current Weather: {weatherInfo.mainWeather} </h6>
+        <h6> {checkWeather(weatherInfo.mainWeather)}</h6>
 
         <h6>
           Temperature highs: {weatherInfo.highTemp}°C lows:{' '}
-          {weatherInfo.lowTemp}°C
+          {weatherInfo.lowTemp}
+          °C
         </h6>
-        <h4>Forcasts</h4>
+        <h4>Forcasts Every 6 Hours</h4>
+
         <h6>
           {timeOfDay(weatherInfo.periodTimeA)}: {weatherInfo.PeriodWeatherA}
+          {checkWeather(weatherInfo.PeriodWeatherA)}
         </h6>
-        {checkWeather(weatherInfo.PeriodWeatherA)}
+
         <h6>
           {timeOfDay(weatherInfo.periodTimeB)}: {weatherInfo.PeriodWeatherB}
+          {checkWeather(weatherInfo.PeriodWeatherB)}
         </h6>
-        {checkWeather(weatherInfo.PeriodWeatherB)}
+
         <h6>
           {timeOfDay(weatherInfo.periodTimeC)}: {weatherInfo.PeriodWeatherC}
+          {checkWeather(weatherInfo.PeriodWeatherC)}
         </h6>
-        {checkWeather(weatherInfo.PeriodWeatherC)}
 
         {/* {weatherInfo.weatherIcon ? (
           <img

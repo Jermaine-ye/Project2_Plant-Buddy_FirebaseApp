@@ -123,7 +123,7 @@ export default function Dashboard(props) {
     <div>
       {/* DO NOT TOUCH */}
       <div>
-        {user ? <h2>Good morning, {userName}</h2> : null}
+        {user ? <h2>Good morning, {userName}</h2> : null}{' '}
         <button
           onClick={() => {
             logout();
