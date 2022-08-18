@@ -95,6 +95,7 @@ export default function PlantForm() {
                 plantCondition: plantCondition,
                 plantImageUrl: url,
                 plantNotes: plantNotes,
+                dateLastWatered: null,
               },
             });
           } else {
