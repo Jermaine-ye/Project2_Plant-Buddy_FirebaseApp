@@ -1,18 +1,20 @@
-import { UserContext } from "../App";
+import { UserContext } from '../App';
 
 // imports for react
-import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 // imports for firebase
-import { auth, database } from "../DB/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { ref as databaseRef, onChildAdded } from "firebase/database";
-import PlantInfo from "./PlantInfo";
-import PlantCalendar from "./Calendar";
+
+import { auth, database } from '../DB/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { ref as databaseRef, onChildAdded } from 'firebase/database';
+import PlantInfo from './PlantInfo';
+import PlantCalendar from './Calendar';
+import WeatherModal from './WeatherModal';
 
 // folders in realtime database
-const USER_PLANT_FOLDER_NAME = "userPlants";
+const USER_PLANT_FOLDER_NAME = 'userPlants';
 
 export default function Dashboard(props) {
   // const [user, setUser] = useState(null);
@@ -25,7 +27,7 @@ export default function Dashboard(props) {
 
   // navigate to login if there's no user data upon npm start/refresh
   if (!user) {
-    localStorage.setItem("user", JSON.stringify({}));
+    localStorage.setItem('user', JSON.stringify({}));
   }
 
   // includes checking of auth status and load user's plants from realtime database
@@ -36,15 +38,15 @@ export default function Dashboard(props) {
       if (signedInUser) {
         const uid = signedInUser.uid;
       } else {
-        console.log("user not signed in");
-        navigate("/login");
+        console.log('user not signed in');
+        navigate('/login');
       }
     });
 
     // for retrieving user's plants and storing in state
     const userPlantRef = databaseRef(
       database,
-      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
+      USER_PLANT_FOLDER_NAME + '/' + userPlantFolder
     );
     onChildAdded(userPlantRef, (data) => {
       const species = Object.keys(data.val())[0];
@@ -61,7 +63,7 @@ export default function Dashboard(props) {
   }, []);
 
   const userName = user.displayName;
-  const userPlantFolder = `${userName + "-" + user.uid}`;
+  const userPlantFolder = `${userName + '-' + user.uid}`;
   const [userPlants, setUserPlants] = useState([]);
 
   //selected plant info for modal
@@ -73,8 +75,8 @@ export default function Dashboard(props) {
 
   const logout = () => {
     signOut(auth).then(() => {
-      localStorage.removeItem("user");
-      navigate("/login");
+      localStorage.removeItem('user');
+      navigate('/login');
     });
   };
 
@@ -90,7 +92,7 @@ export default function Dashboard(props) {
       <button
         onClick={() => {
           setSelectedPlantProfile(plant);
-          console.log("selected:", selectedPlantProfile);
+          console.log('selected:', selectedPlantProfile);
         }}
       >
         {plant.key}
@@ -121,7 +123,7 @@ export default function Dashboard(props) {
     <div>
       {/* DO NOT TOUCH */}
       <div>
-        {user ? <h2>Good morning, {userName}</h2> : null}
+        {user ? <h2>Good morning, {userName}</h2> : null}{' '}
         <button
           onClick={() => {
             logout();
@@ -137,6 +139,7 @@ export default function Dashboard(props) {
       </div>
       <div>
         <h3>Weather API placeholder</h3>
+        <WeatherModal />
       </div>
 
       {/* TO EDIT: list user's plants */}
@@ -166,13 +169,13 @@ export default function Dashboard(props) {
       <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">
-            <Link to={"/community"}>Community</Link>
+            <Link to={'/community'}>Community</Link>
           </li>
           <li className="navigationBarItem">
-            <Link to={"/forums"}>Forums</Link>
+            <Link to={'/forums'}>Forums</Link>
           </li>
           <li className="navigationBarItem">
-            <Link to={"/recommendations"}>Recommendations</Link>
+            <Link to={'/recommendations'}>Recommendations</Link>
           </li>
         </ul>
       </div>
