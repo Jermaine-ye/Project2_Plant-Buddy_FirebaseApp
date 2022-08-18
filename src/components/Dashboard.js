@@ -78,16 +78,16 @@ export default function Dashboard(props) {
         src={plant.val.plantImageUrl}
         width="50%%"
       />
-      <Link to={`/plantprofile`}>
-        <button
-          onClick={() => {
-            setSelectedPlantProfile(plant);
-            console.log("selected:", selectedPlantProfile);
-          }}
-        >
-          {plant.key}
-        </button>
-      </Link>
+      {/* <Link to={`/plantprofile`}> */}
+      <button
+        onClick={() => {
+          setSelectedPlantProfile(plant);
+          console.log("selected:", selectedPlantProfile);
+        }}
+      >
+        {plant.key}
+      </button>
+      {/* </Link> */}
 
       <p>Watering Schedule: Every {plant.val.waterFreqDay} Days</p>
       <p>Sunlight Intensity: {plant.val.sunlightReq} </p>
@@ -97,6 +97,7 @@ export default function Dashboard(props) {
           <p>Reminder to water today!</p>
           <p> Have you watered {plant.val.plantName}?</p>
           <input
+            id={index}
             type="checkbox"
             checked={plantWatered}
             onChange={(e, index) => {
