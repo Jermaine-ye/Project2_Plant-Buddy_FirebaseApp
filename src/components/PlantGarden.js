@@ -4,12 +4,21 @@ import { UserContext } from "../App";
 import { useContext, useEffect, useState } from "react";
 
 // imports for firebase
-import { database } from "../DB/firebase";
+import { database, storage } from "../DB/firebase";
 import {
   ref as databaseRef,
   onChildAdded,
   onChildChanged,
+  onChildRemoved,
+  remove,
 } from "firebase/database";
+import {
+  getDownloadURL,
+  ref as storageRef,
+  uploadBytes,
+} from "firebase/storage";
+
+// imports for components
 import PlantInfo from "./PlantInfo";
 
 // folders in realtime database
@@ -22,17 +31,13 @@ export default function PlantGarden(props) {
   const userName = user.displayName;
   const userPlantFolder = `${userName + "-" + user.uid}`;
   const [userPlants, setUserPlants] = useState({});
+  const userPlantRef = databaseRef(
+    database,
+    USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
+  );
 
   // load user's plants from realtime database
   useEffect(() => {
-    console.log("plantgarden:", user);
-
-    // for retrieving user's plants and storing in state
-    const userPlantRef = databaseRef(
-      database,
-      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
-    );
-
     onChildAdded(userPlantRef, (data) => {
       const plantEntryKey = data.key;
       const plantDetails = data.val();
@@ -42,28 +47,34 @@ export default function PlantGarden(props) {
       }));
     });
 
-    console.log("user plants info:", userPlants);
-
     return () => {
       setUserPlants({});
     };
   }, []);
 
+  // update plantgarden if any value changes
   useEffect(() => {
-    // for retrieving user's plants and storing in state
-    const userPlantRef = databaseRef(
-      database,
-      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
-    );
     onChildChanged(userPlantRef, (data) => {
-      console.log("Testing:", data);
       const plantEntryKey = data.key;
       const plantDetails = data.val();
-      setUserPlants((prevPostsState) => ({
-        ...prevPostsState,
+      setUserPlants((prevState) => ({
+        ...prevState,
         [plantEntryKey]: plantDetails,
       }));
     });
+  }, []);
+
+  // update plantgarden if plant gets removed
+  useEffect(() => {
+    onChildRemoved(userPlantRef, (data) =>
+      setUserPlants((prevState) => {
+        console.log("data.key:", data.key);
+        console.log("userplants:", userPlants);
+        console.log("prevPlants:", prevState);
+        delete prevState[data.key];
+        return prevState;
+      })
+    );
   }, []);
 
   //selected plant info for modal
@@ -73,6 +84,19 @@ export default function PlantGarden(props) {
   const [showReminder, setShowReminder] = useState(false);
   const [plantWatered, setPlantWatered] = useState(false);
 
+  const handleDeletePlant = (e, id) => {
+    const plantEntry = e.target.id;
+
+    //delete from realtime database
+    const plantEntryRef = databaseRef(
+      database,
+      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder + "/" + plantEntry
+    );
+
+    remove(plantEntryRef);
+    //delete image from storage
+  };
+
   // to render user's list of plants in dashboard view
   const plantCard = Object.entries(userPlants).map(
     ([plantEntryKey, plant], index) => {
@@ -80,7 +104,7 @@ export default function PlantGarden(props) {
       const userPlantInfo = plant[userPlantSpecies];
 
       return (
-        <div className="plantCard" key={index}>
+        <div className="plantCard" key={index} id={plantEntryKey}>
           <img
             alt={userPlantInfo.plantName}
             src={userPlantInfo.plantImageUrl}
@@ -112,6 +136,14 @@ export default function PlantGarden(props) {
               />
             </div>
           ) : null}
+          <button
+            id={plantEntryKey}
+            onClick={(e, id) => {
+              handleDeletePlant(e, id);
+            }}
+          >
+            delete plant
+          </button>
         </div>
       );
     }
