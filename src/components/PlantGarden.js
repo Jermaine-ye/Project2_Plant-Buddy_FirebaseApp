@@ -68,11 +68,10 @@ export default function PlantGarden(props) {
   useEffect(() => {
     onChildRemoved(userPlantRef, (data) =>
       setUserPlants((prevState) => {
-        console.log("data.key:", data.key);
-        console.log("userplants:", userPlants);
-        console.log("prevPlants:", prevState);
-        delete prevState[data.key];
-        return prevState;
+        let newState = { ...prevState };
+        delete newState[data.key];
+
+        return newState;
       })
     );
   }, []);
@@ -98,7 +97,7 @@ export default function PlantGarden(props) {
   };
 
   // to render user's list of plants in dashboard view
-  const plantCard = Object.entries(userPlants).map(
+  const plantCards = Object.entries(userPlants).map(
     ([plantEntryKey, plant], index) => {
       const userPlantSpecies = Object.keys(plant)[0];
       const userPlantInfo = plant[userPlantSpecies];
@@ -152,7 +151,7 @@ export default function PlantGarden(props) {
   return (
     <div>
       <h3>Plant Profiles</h3>
-      <div className="plantList">{plantCard}</div>
+      <div className="plantList">{plantCards}</div>
 
       {Object.keys(selectedPlantProfile).length > 0 ? (
         <PlantInfo selectedPlantProfile={selectedPlantProfile} />
