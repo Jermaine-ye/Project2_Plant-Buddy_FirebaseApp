@@ -1,24 +1,23 @@
-import { UserContext } from '../App';
+import { UserContext } from "../App";
 
 // imports for react
-import { useContext, useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 // imports for firebase
 
-import { auth, database } from '../DB/firebase';
-import { onAuthStateChanged, signOut } from 'firebase/auth';
-import { ref as databaseRef, onChildAdded } from 'firebase/database';
-import PlantInfo from './PlantInfo';
-import PlantCalendar from './Calendar';
-import WeatherModal from './WeatherModal';
+import { auth, database } from "../DB/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { ref as databaseRef, onChildAdded } from "firebase/database";
 
 // imports for components
+import PlantInfo from "./PlantInfo";
+import PlantCalendar from "./Calendar";
+import WeatherModal from "./WeatherModal";
 import PlantGarden from "./PlantGarden";
 
-
 // folders in realtime database
-const USER_PLANT_FOLDER_NAME = 'userPlants';
+const USER_PLANT_FOLDER_NAME = "userPlants";
 
 export default function Dashboard(props) {
   const navigate = useNavigate();
@@ -47,7 +46,7 @@ export default function Dashboard(props) {
     // for retrieving user's plants and storing in state
     const userPlantRef = databaseRef(
       database,
-      USER_PLANT_FOLDER_NAME + '/' + userPlantFolder
+      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
     );
     onChildAdded(userPlantRef, (data) => {
       const species = Object.keys(data.val())[0];
@@ -64,7 +63,7 @@ export default function Dashboard(props) {
   }, []);
 
   const userName = user.displayName;
-  const userPlantFolder = `${userName + '-' + user.uid}`;
+  const userPlantFolder = `${userName + "-" + user.uid}`;
   const [userPlants, setUserPlants] = useState([]);
 
   //selected plant info for modal
@@ -76,8 +75,8 @@ export default function Dashboard(props) {
 
   const logout = () => {
     signOut(auth).then(() => {
-      localStorage.removeItem('user');
-      navigate('/login');
+      localStorage.removeItem("user");
+      navigate("/login");
     });
   };
 
@@ -93,7 +92,7 @@ export default function Dashboard(props) {
       <button
         onClick={() => {
           setSelectedPlantProfile(plant);
-          console.log('selected:', selectedPlantProfile);
+          console.log("selected:", selectedPlantProfile);
         }}
       >
         {plant.key}
