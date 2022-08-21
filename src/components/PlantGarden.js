@@ -20,6 +20,7 @@ import {
 
 // imports for components
 import PlantInfo from "./PlantInfo";
+import PlantCalendar from "./Calendar";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -150,6 +151,7 @@ export default function PlantGarden(props) {
 
   return (
     <div>
+      <PlantCalendar plantData={userPlants} />
       <h3>Plant Profiles</h3>
       <div className="plantList">{plantCards}</div>
 
