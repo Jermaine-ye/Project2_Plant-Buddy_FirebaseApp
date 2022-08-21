@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../App";
 
-import Home from "./Map";
+import Nurseries from "./Map";
 
 export default function Recommendations() {
   const user = useContext(UserContext);
@@ -29,7 +29,7 @@ export default function Recommendations() {
           <div>
             <h3>Popular Nurseries Near You!</h3>
             <p>Google Maps API here</p>
-            <Home />
+            <Nurseries />
           </div>
         </li>
         <li>
