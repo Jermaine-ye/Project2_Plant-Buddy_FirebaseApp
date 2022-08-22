@@ -4,6 +4,8 @@ import { UserContext } from "../App";
 
 import Nurseries from "./Map";
 
+import PlantNurseries from "./PlantNurseries";
+
 export default function Recommendations() {
   const user = useContext(UserContext);
   const navigate = useNavigate();
@@ -29,7 +31,8 @@ export default function Recommendations() {
           <div>
             <h3>Popular Nurseries Near You!</h3>
             <p>Google Maps API here</p>
-            <Nurseries />
+            <PlantNurseries />
+            {/* <Nurseries /> */}
           </div>
         </li>
         <li>
