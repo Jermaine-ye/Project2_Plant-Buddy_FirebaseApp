@@ -16,9 +16,6 @@ const PLANTS_FOLDER_NAME = "allPlants";
 export default function PlantForm() {
   const navigate = useNavigate();
   const user = useContext(UserContext);
-
-  // for testing purposes
-  const userEmail = "abc@abc.com";
   const userInfo = `${user.displayName + "-" + user.uid}`;
 
   // for conditional rendering of form
@@ -42,16 +39,18 @@ export default function PlantForm() {
   const [plantPhotoValue, setPlantPhotoValue] = useState("");
   const [photoPreview, setPhotoPreview] = useState("");
 
+  // to check if user is logged in
   useEffect(() => {
-    // to check if user is logged in
     console.log("user:", user);
     const isLoggedIn = JSON.parse(localStorage.getItem("user"));
     console.log("isLoggedIn:", isLoggedIn);
     if (Object.keys(isLoggedIn) === 0) {
       navigate("/login");
     }
+  }, []);
 
-    // to get list of plants in database
+  // to get list of plants in database
+  useEffect(() => {
     const plantsRef = databaseRef(database, PLANTS_FOLDER_NAME);
     onChildAdded(plantsRef, (data) => {
       const species = Object.keys(data.val())[0];
@@ -95,7 +94,9 @@ export default function PlantForm() {
                 plantCondition: plantCondition,
                 plantImageUrl: url,
                 plantNotes: plantNotes,
-                dateLastWatered: null,
+                dateAdded: new Date().toLocaleString(),
+                dateFirstWatered: "",
+                dateLastWatered: "",
               },
             });
           } else {
@@ -106,6 +107,9 @@ export default function PlantForm() {
                 plantCondition: plantCondition,
                 plantImageUrl: url,
                 plantNotes: plantNotes,
+                dateAdded: new Date().toLocaleDateString(),
+                dateFirstWatered: "",
+                dateLastWatered: "null",
               },
             });
           }
@@ -332,6 +336,14 @@ export default function PlantForm() {
   return (
     <div>
       {/* FIRST SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
+      <button
+        onClick={() => {
+          navigate("/");
+        }}
+      >
+        Back to Dashboard
+      </button>
+
       <h1>New Plant Buddy</h1>
       <input type="text" placeholder="Search for plant" />
       <br />

@@ -8,15 +8,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { auth, database } from "../DB/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { ref as databaseRef, onChildAdded } from "firebase/database";
+
+// imports for components
+// import PlantCalendar from "./Calendar"; // to be shifted to nest under plantgarden
+import WeatherModal from "./WeatherModal";
+import PlantGarden from "./PlantGarden";
 import PlantInfo from "./PlantInfo";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
 
 export default function Dashboard(props) {
-  // const [user, setUser] = useState(null);
-  // KIV TO DELETE - let plantsInfo = [1, 2, 3, 4, 5, 6]; // REPLACE THIS WITH DATABASE PLANT PROFILES
-
   const navigate = useNavigate();
 
   //user info
@@ -120,7 +122,7 @@ export default function Dashboard(props) {
     <div>
       {/* DO NOT TOUCH */}
       <div>
-        {user ? <h2>Good morning, {userName}</h2> : null}
+        {user ? <h2>Good morning, {user.displayName}</h2> : null}
         <button
           onClick={() => {
             logout();
@@ -130,27 +132,18 @@ export default function Dashboard(props) {
         </button>
       </div>
       <h1>DASHBOARD</h1>
-      <div>
+      {/* <div>
         <h3>Calendar placeholder</h3>
-      </div>
+        <PlantCalendar /> // shifted to nest under PlantGarden
+      </div> */}
       <div>
         <h3>Weather API placeholder</h3>
+        <WeatherModal />
       </div>
 
       {/* TO EDIT: list user's plants */}
       <div>
-        <h3>Plant Profiles</h3>
-        <div className="plantList">{plantCard}</div>
-        {/* KIV IF TO REMOVE AFTER IMPLEMENTING PLANT INFO MODAL */}
-        {/* <ul>
-          {plantsInfo.map((id) => {
-            return (
-              <li>
-                <Link to={`/plantprofile/${id}`}>Plant {id}</Link>
-              </li>
-            );
-          })}
-        </ul> */}
+        <PlantGarden />
       </div>
 
       {Object.keys(selectedPlantProfile).length > 0 ? (
