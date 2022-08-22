@@ -2,20 +2,30 @@ import React, { useState, useEffect } from "react";
 import {
   GoogleMap,
   InfoWindow,
-  LoadScript,
   Marker,
+  useJsApiLoader,
 } from "@react-google-maps/api";
 
 import plant from "../images/plant.png";
 
-export default function PlantNurseries(props) {
+// const options = {
+//   zoomControlOptions: {
+//     position: window.google.maps.ControlPosition.RIGHT_CENTER, // 'right-center' ,
+//     // ...otherOptions
+//   },
+// };
+
+function PlantNurseries() {
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  });
+
   const initialMarkers = [
     {
       position: {
         lat: 1.338067,
         lng: 103.8373028,
       },
-      label: { color: "white", text: "P1" },
       name: "Candy Horticulture",
     },
     {
@@ -23,7 +33,6 @@ export default function PlantNurseries(props) {
         lat: 1.3117354,
         lng: 103.9081898,
       },
-      label: { color: "white", text: "P2" },
       name: "Potta Planta",
     },
     {
@@ -31,17 +40,7 @@ export default function PlantNurseries(props) {
         lat: 1.3208208,
         lng: 103.9250571,
       },
-      label: { color: "white", text: "P3" },
       name: "Lai Seng Nursery and Florist",
-    },
-    {
-      position: {
-        lat: 1.287953,
-        lng: 103.851784,
-      },
-      label: { color: "white", text: "YOU" },
-      draggable: true,
-      name: "Current Location",
     },
   ];
 
@@ -57,8 +56,8 @@ export default function PlantNurseries(props) {
   };
 
   const center = {
-    lat: 1.287953,
-    lng: 103.851784,
+    lat: latitude,
+    lng: longitude,
   };
 
   const currLocation = {};
@@ -72,9 +71,9 @@ export default function PlantNurseries(props) {
     console.log(marker, index);
   };
 
-  const markerDragEnd = (event, index) => {
-    console.log(event.latLng.lat());
-    console.log(event.latLng.lng());
+  const markerDragEnd = (event) => {
+    setLatitude(event.latLng.lat());
+    setLongitude(event.latLng.lng());
   };
 
   const handleGetCurrLocation = () => {
@@ -88,50 +87,61 @@ export default function PlantNurseries(props) {
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
       console.log(position);
-
-      let newMarkers = [...markers];
-      newMarkers[3].position.lat = position.coords.latitude;
-      newMarkers[3].position.lng = position.coords.longitude;
-
-      console.log("new markers:", newMarkers);
-      setMarkers(newMarkers);
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
     });
   }, []);
 
-  return (
-    <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
-      <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={center}
-        zoom={12}
-        onClick={mapClicked}
-      >
-        {markers.map((marker, index) => (
+  const renderMap = () => {
+    return (
+      <div>
+        <GoogleMap
+          mapContainerStyle={containerStyle}
+          center={center}
+          zoom={12}
+          onClick={mapClicked}
+        >
+          {markers.map((marker, index) => (
+            <Marker
+              key={index}
+              position={marker.position}
+              onClick={(event) => markerClicked(marker, index)}
+              icon={{
+                url: plant,
+                scaledSize: new window.google.maps.Size(45, 45),
+              }}
+            >
+              {activeInfoWindow === index && (
+                <InfoWindow position={marker.position}>
+                  <b>
+                    {marker.name}
+                    <br />
+                    {marker.position.lat}, {marker.position.lng}
+                  </b>
+                </InfoWindow>
+              )}
+            </Marker>
+          ))}
           <Marker
-            key={index}
-            position={marker.position}
-            label={marker.label}
-            draggable={marker.draggable}
-            onDragEnd={(event) => markerDragEnd(event, index)}
-            onClick={(event) => markerClicked(marker, index)}
-            // icon={{
-            //   url: plant,
-            //   // scaledSize: new window.google.maps.Size(45, 45),
-            // }}
-          >
-            {activeInfoWindow === index && (
-              <InfoWindow position={marker.position}>
-                <b>
-                  {marker.name}
-                  <br />
-                  {marker.position.lat}, {marker.position.lng}
-                </b>
-              </InfoWindow>
-            )}
-          </Marker>
-        ))}
-      </GoogleMap>
-      <button onClick={handleGetCurrLocation}>Current Location</button>
-    </LoadScript>
-  );
+            position={center}
+            draggable={true}
+            onDragEnd={(event) => {
+              markerDragEnd(event);
+            }}
+          />
+        </GoogleMap>
+        <button onClick={handleGetCurrLocation}>
+          Reset to Current Location
+        </button>
+      </div>
+    );
+  };
+
+  if (loadError) {
+    return <div>Map cannot be loaded right now, sorry.</div>;
+  }
+
+  return isLoaded ? renderMap() : <div>loading</div>;
 }
+
+export default PlantNurseries;

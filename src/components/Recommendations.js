@@ -30,7 +30,6 @@ export default function Recommendations() {
         <li>
           <div>
             <h3>Popular Nurseries Near You!</h3>
-            <p>Google Maps API here</p>
             <PlantNurseries />
             {/* <Nurseries /> */}
           </div>
