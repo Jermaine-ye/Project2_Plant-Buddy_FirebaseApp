@@ -12,17 +12,15 @@ import {
   onChildRemoved,
   remove,
 } from "firebase/database";
-import {
-  getDownloadURL,
-  ref as storageRef,
-  uploadBytes,
-} from "firebase/storage";
+import { ref as storageRef, deleteObject } from "firebase/storage";
 
 // imports for components
 import PlantInfo from "./PlantInfo";
+import PlantCalendar from "./Calendar";
 
-// folders in realtime database
+// folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
+const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
 
 export default function PlantGarden(props) {
   const user = useContext(UserContext);
@@ -150,6 +148,7 @@ export default function PlantGarden(props) {
 
   return (
     <div>
+      <PlantCalendar plantData={userPlants} />
       <h3>Plant Profiles</h3>
       <div className="plantList">{plantCards}</div>
 
