@@ -23,7 +23,7 @@ import "react-calendar/dist/Calendar.css";
 //other imports
 import "../App.css";
 
-export default function PlantCalendar() {
+export default function PlantCalendar(props) {
   const [currDate, setCurrDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [currMonth, setCurrMonth] = useState(new Date());
@@ -32,6 +32,11 @@ export default function PlantCalendar() {
     Ficus: 3,
     MoneyPlant: 2,
   });
+
+  // for checking if props.plantData loaded correctly
+  useEffect(() => {
+    console.log("plantdata:", props.plantData);
+  }, []);
 
   const renderHeader = () => {
     const dateFormat = "MMMM yyyy";
@@ -86,6 +91,7 @@ export default function PlantCalendar() {
         day = addDays(day, 1);
       }
     }
+
     const selectedDateInfo = (date) => {
       let plantsToWater = [];
       for (let plant in wateringSchedule) {
@@ -122,6 +128,9 @@ export default function PlantCalendar() {
     } else if (prevOrNext === "next") {
       setCurrMonth(addWeeks(currMonth, 1));
       setCurrWeek(getWeek(addWeeks(currMonth, 1)));
+    } else if (prevOrNext === "curr") {
+      setCurrMonth(new Date());
+      setCurrWeek(getWeek(new Date()));
     }
   };
 
@@ -131,6 +140,7 @@ export default function PlantCalendar() {
       <div className="calendar-row">{renderDays()}</div>
       <div className="calendar-row">{renderCells()}</div>
       <button onClick={() => changeWeek("prev")}>Previous Week</button>
+      <button onClick={() => changeWeek("curr")}>Current Week</button>
       <button onClick={() => changeWeek("next")}>Next Week</button>
     </div>
   );
