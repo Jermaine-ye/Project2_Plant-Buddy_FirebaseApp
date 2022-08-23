@@ -11,18 +11,20 @@ import {
   onChildChanged,
   onChildRemoved,
   remove,
+  update,
 } from "firebase/database";
-import {
-  getDownloadURL,
-  ref as storageRef,
-  uploadBytes,
-} from "firebase/storage";
+import { ref as storageRef, deleteObject } from "firebase/storage";
 
 // imports for components
 import PlantInfo from "./PlantInfo";
+import PlantCalendar from "./Calendar";
 
-// folders in realtime database
+// imports from date-fns
+import { format, parseISO } from "date-fns";
+
+// folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
+const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
 
 export default function PlantGarden(props) {
   const user = useContext(UserContext);
@@ -120,6 +122,7 @@ export default function PlantGarden(props) {
 
           <p>Watering Schedule: Every {userPlantInfo.waterFreqDay} Days</p>
           <p>Sunlight Intensity: {userPlantInfo.sunlightReq} </p>
+          {/* {console.log(plant[userPlantSpecies])} */}
           {/* to show up if calendar prompts to water today */}
           {!plantWatered ? (
             <div>
@@ -128,9 +131,19 @@ export default function PlantGarden(props) {
               <input
                 id={index}
                 type="checkbox"
-                checked={plantWatered}
+                // checked={
+                //   format(new Date(), "dd MMMM yyyy") ===
+                //   format(userPlantInfo.dateLastWatered, "dd MMMM yyyy")
+                // }
                 onChange={(e, index) => {
-                  setPlantWatered(e.target.value);
+                  const updatedData = {
+                    [userPlantSpecies]: {
+                      ...userPlantInfo,
+                      dateLastWatered: new Date(),
+                    },
+                  };
+
+                  update(userPlantRef, { [plantEntryKey]: updatedData });
                 }}
               />
             </div>
@@ -150,6 +163,7 @@ export default function PlantGarden(props) {
 
   return (
     <div>
+      <PlantCalendar plantData={userPlants} />
       <h3>Plant Profiles</h3>
       <div className="plantList">{plantCards}</div>
 

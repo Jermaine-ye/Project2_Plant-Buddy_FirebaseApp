@@ -1,6 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useContext, useEffect } from "react";
 import { UserContext } from "../App";
+
+import Nurseries from "./Map";
+
+import PlantNurseries from "./PlantNurseries";
+
 export default function Recommendations() {
   const user = useContext(UserContext);
   const navigate = useNavigate();
@@ -25,7 +30,8 @@ export default function Recommendations() {
         <li>
           <div>
             <h3>Popular Nurseries Near You!</h3>
-            <p>Google Maps API here</p>
+            <PlantNurseries />
+            <Nurseries />
           </div>
         </li>
         <li>

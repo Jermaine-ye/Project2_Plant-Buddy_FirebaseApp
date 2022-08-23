@@ -5,16 +5,15 @@ import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // imports for firebase
-
 import { auth, database } from "../DB/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { ref as databaseRef, onChildAdded } from "firebase/database";
 
 // imports for components
-import PlantInfo from "./PlantInfo";
-import PlantCalendar from "./Calendar";
+// import PlantCalendar from "./Calendar"; // to be shifted to nest under plantgarden
 import WeatherModal from "./WeatherModal";
 import PlantGarden from "./PlantGarden";
+import PlantInfo from "./PlantInfo";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -133,10 +132,10 @@ export default function Dashboard(props) {
         </button>
       </div>
       <h1>DASHBOARD</h1>
-      <div>
+      {/* <div>
         <h3>Calendar placeholder</h3>
-        <PlantCalendar />
-      </div>
+        <PlantCalendar /> // shifted to nest under PlantGarden
+      </div> */}
       <div>
         <h3>Weather API placeholder</h3>
         <WeatherModal />

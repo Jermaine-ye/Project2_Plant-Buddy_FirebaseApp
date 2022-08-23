@@ -10,6 +10,7 @@ import {
   getWeek,
   isSameDay,
   parse,
+  parseISO,
   parseJSON,
   startOfMonth,
   startOfWeek,
@@ -22,16 +23,40 @@ import "react-calendar/dist/Calendar.css";
 
 //other imports
 import "../App.css";
+import { setLogLevel } from "firebase/app";
 
-export default function PlantCalendar() {
+export default function PlantCalendar(props) {
   const [currDate, setCurrDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [currMonth, setCurrMonth] = useState(new Date());
   const [currWeek, setCurrWeek] = useState(getWeek(currMonth));
-  const [wateringSchedule, setWateringSchedule] = useState({
-    Ficus: 3,
-    MoneyPlant: 2,
-  });
+  const [wateringSchedule, setWateringSchedule] = useState([]);
+  const [dateLastWatered, setDateLastWatered] = useState([]);
+
+  const updateWateringSchedule = () => {
+    let schedule = {};
+    let dateWatered = {};
+    for (let plant in props.plantData) {
+      let plantSpecies = Object.keys(props.plantData[plant]);
+      let plantName = Object.values(props.plantData[plant])[0].plantName;
+      let plantWaterFreq = Number(
+        Object.values(props.plantData[plant])[0].waterFreqDay
+      );
+      schedule[plantName] = plantWaterFreq;
+
+      let dateUserLastWatered = Object.values(props.plantData[plant])[0]
+        .dateLastWatered;
+      dateWatered[plantName] = parseISO(dateUserLastWatered);
+    }
+    setWateringSchedule(schedule);
+    setDateLastWatered(dateWatered);
+  };
+  // for checking if props.plantData loaded correctly
+  useEffect(() => {
+    console.log("plantdata:", props.plantData);
+    // initialise watering schedule
+    updateWateringSchedule();
+  }, [selectedDate]);
 
   const renderHeader = () => {
     const dateFormat = "MMMM yyyy";
@@ -86,12 +111,15 @@ export default function PlantCalendar() {
         day = addDays(day, 1);
       }
     }
+
     const selectedDateInfo = (date) => {
       let plantsToWater = [];
-      for (let plant in wateringSchedule) {
+      for (let plant in dateLastWatered) {
+        console.log(plant);
         const daysCalc = Math.abs(
-          differenceInCalendarDays(currDate, selectedDate)
+          differenceInCalendarDays(dateLastWatered[plant], selectedDate)
         );
+        console.log(daysCalc);
         if (daysCalc % wateringSchedule[plant] == 0) {
           plantsToWater.push(plant);
         }
@@ -101,11 +129,12 @@ export default function PlantCalendar() {
           Selected {format(date, "d MMMM")}
           <br />
           {plantsToWater.length > 0
-            ? `${plantsToWater} require watering`
+            ? `${plantsToWater} requires watering`
             : null}
         </div>
       );
     };
+
     return (
       <div>
         <div>{days}</div>
@@ -122,6 +151,9 @@ export default function PlantCalendar() {
     } else if (prevOrNext === "next") {
       setCurrMonth(addWeeks(currMonth, 1));
       setCurrWeek(getWeek(addWeeks(currMonth, 1)));
+    } else if (prevOrNext === "curr") {
+      setCurrMonth(new Date());
+      setCurrWeek(getWeek(new Date()));
     }
   };
 
@@ -131,6 +163,7 @@ export default function PlantCalendar() {
       <div className="calendar-row">{renderDays()}</div>
       <div className="calendar-row">{renderCells()}</div>
       <button onClick={() => changeWeek("prev")}>Previous Week</button>
+      <button onClick={() => changeWeek("curr")}>Current Week</button>
       <button onClick={() => changeWeek("next")}>Next Week</button>
     </div>
   );
