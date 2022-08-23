@@ -5,10 +5,17 @@ import { useNavigate } from "react-router-dom";
 
 // imports related to realtime database
 import { ref as databaseRef, update } from "firebase/database";
-import { database } from "../DB/firebase";
+import {
+  ref as storageRef,
+  deleteObject,
+  getDownloadURL,
+  uploadBytes,
+} from "firebase/storage";
+import { database, storage } from "../DB/firebase";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
+const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
 
 export default function PlantInfo(props) {
   const navigate = useNavigate();
@@ -89,25 +96,62 @@ export default function PlantInfo(props) {
     </div>
   );
 
+  const userPlantRef = databaseRef(
+    database,
+    USER_PLANT_FOLDER_NAME + "/" + userFolder
+  );
+
   // submit changes to realtime database
-  const handleSubmitChanges = () => {
-    const userPlantRef = databaseRef(
-      database,
-      USER_PLANT_FOLDER_NAME + "/" + userFolder
-    );
+  const handleSubmitChanges = (e) => {
+    e.preventDefault();
 
-    const updatedData = {
-      ...plantInfo,
-      plantImageUrl: plantPhoto,
-      // plantCondition: plantCondition,
-      waterFreqDay: waterFrequency,
-      sunlightReq: sunlightRequirement,
-      plantName: plantName,
-      plantNotes: plantNotes,
-    };
+    // if plantphoto changed, delete image in storage
 
-    update(userPlantRef, { [plantKey]: updatedData });
-    setPlantModal(false);
+    if (plantPhotoFile) {
+      const oldPlantImageRef = storageRef(
+        storage,
+        `${USER_PLANT_IMAGES_FOLDER_NAME}/${plantInfo.plantImageName}`
+      );
+
+      deleteObject(oldPlantImageRef).then(() => {
+        const userPlantImagesRef = storageRef(
+          storage,
+          `${USER_PLANT_IMAGES_FOLDER_NAME}/${plantPhotoFile.name}`
+        );
+
+        uploadBytes(userPlantImagesRef, plantPhotoFile).then(() => {
+          getDownloadURL(userPlantImagesRef).then((url) => {
+            const updatedData = {
+              ...plantInfo,
+              plantImageUrl: url,
+              plantImageName: plantPhotoFile.name,
+              // plantCondition: plantCondition,
+              waterFreqDay: waterFrequency,
+              sunlightReq: sunlightRequirement,
+              plantName: plantName,
+              plantNotes: plantNotes,
+            };
+
+            update(userPlantRef, { [plantKey]: updatedData });
+          });
+        });
+      });
+    } else {
+      const updatedData = {
+        ...plantInfo,
+        // plantCondition: plantCondition,
+        waterFreqDay: waterFrequency,
+        sunlightReq: sunlightRequirement,
+        plantName: plantName,
+        plantNotes: plantNotes,
+      };
+
+      update(userPlantRef, { [plantKey]: updatedData });
+    }
+    setNameDisabled(true);
+    setWaterDisabled(true);
+    setSunlightDisabled(true);
+    setNotesDisabled(true);
   };
 
   // to revert all values to initial state

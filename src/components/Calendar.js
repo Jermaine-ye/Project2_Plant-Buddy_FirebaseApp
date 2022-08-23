@@ -36,15 +36,15 @@ export default function PlantCalendar(props) {
   const updateWateringSchedule = () => {
     let schedule = {};
     let dateWatered = {};
-    for (let plant in props.plantData) {
-      console.log("plant in props:", plant);
-      console.log("plantName:", props.plantData[plant].plantName);
-      let plantFamily = props.plantData[plant].plantFamily;
-      let plantName = props.plantData[plant].plantName;
-      let plantWaterFreq = Number(props.plantData[plant].waterFreqDay);
+    for (let plantKey in props.plantData) {
+      console.log("plant in props:", plantKey);
+      console.log("plantName:", props.plantData[plantKey].plantName);
+      let plantFamily = props.plantData[plantKey].plantFamily;
+      let plantName = props.plantData[plantKey].plantName;
+      let plantWaterFreq = Number(props.plantData[plantKey].waterFreqDay);
       schedule[plantName] = plantWaterFreq;
 
-      let dateUserLastWatered = props.plantData[plant].dateLastWatered;
+      let dateUserLastWatered = props.plantData[plantKey].dateLastWatered;
       dateWatered[plantName] = parseISO(dateUserLastWatered);
     }
     setWateringSchedule(schedule);
@@ -119,6 +119,7 @@ export default function PlantCalendar(props) {
         const daysCalc = Math.abs(
           differenceInCalendarDays(dateLastWatered[plant], selectedDate)
         );
+        console.log("watered plant:", dateLastWatered[plant]);
         console.log(daysCalc);
         if (daysCalc % wateringSchedule[plant] == 0) {
           plantsToWater.push(plant);

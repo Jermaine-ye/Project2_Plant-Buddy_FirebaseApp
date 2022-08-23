@@ -91,7 +91,20 @@ export default function PlantGarden(props) {
     );
 
     remove(plantEntryRef);
-    //delete image from storage
+    // delete image from storage
+
+    const userPlantImagesRef = storageRef(
+      storage,
+      `${USER_PLANT_IMAGES_FOLDER_NAME}/${
+        userPlants[Object.keys(userPlants)[0]].plantImageName
+      }`
+    );
+
+    deleteObject(userPlantImagesRef)
+      .then(() => {
+        console.log("image deleted!");
+      })
+      .catch((error) => console.log(error));
   };
 
   // to render user's list of plants in dashboard view
@@ -124,18 +137,18 @@ export default function PlantGarden(props) {
               <input
                 id={index}
                 type="checkbox"
-                // checked={
-                //   format(new Date(), "dd MMMM yyyy") ===
-                //   format(userPlantInfo.dateLastWatered, "dd MMMM yyyy")
-                // }
+                checked={
+                  new Date().toLocaleDateString() ===
+                  plantData.dateLastWateredCheck
+                }
+                disabled={plantWatered}
                 onChange={(e, index) => {
-                  // const updatedData = {
-                  //   [plantEntryKey]: {
-                  //     ...plant,
-                  //     [dateLastWatered]: new Date(),
-                  //   },
-                  // };
-                  // update(userPlantRef, { [plantEntryKey]: updatedData });
+                  const updatedData = {
+                    ...plantData,
+                    dateLastWatered: new Date(),
+                    dateLastWateredCheck: new Date().toLocaleDateString(),
+                  };
+                  update(userPlantRef, { [plantEntryKey]: updatedData });
                 }}
               />
             </div>
