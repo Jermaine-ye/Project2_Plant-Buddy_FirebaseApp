@@ -11,12 +11,16 @@ import {
   onChildChanged,
   onChildRemoved,
   remove,
+  update,
 } from "firebase/database";
 import { ref as storageRef, deleteObject } from "firebase/storage";
 
 // imports for components
 import PlantInfo from "./PlantInfo";
 import PlantCalendar from "./Calendar";
+
+// imports from date-fns
+import { format, parseISO } from "date-fns";
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -118,6 +122,7 @@ export default function PlantGarden(props) {
 
           <p>Watering Schedule: Every {userPlantInfo.waterFreqDay} Days</p>
           <p>Sunlight Intensity: {userPlantInfo.sunlightReq} </p>
+          {/* {console.log(plant[userPlantSpecies])} */}
           {/* to show up if calendar prompts to water today */}
           {!plantWatered ? (
             <div>
@@ -126,9 +131,19 @@ export default function PlantGarden(props) {
               <input
                 id={index}
                 type="checkbox"
-                checked={plantWatered}
+                // checked={
+                //   format(new Date(), "dd MMMM yyyy") ===
+                //   format(userPlantInfo.dateLastWatered, "dd MMMM yyyy")
+                // }
                 onChange={(e, index) => {
-                  setPlantWatered(e.target.value);
+                  const updatedData = {
+                    [userPlantSpecies]: {
+                      ...userPlantInfo,
+                      dateLastWatered: new Date(),
+                    },
+                  };
+
+                  update(userPlantRef, { [plantEntryKey]: updatedData });
                 }}
               />
             </div>

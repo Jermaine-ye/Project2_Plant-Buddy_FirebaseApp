@@ -98,3 +98,9 @@
   align-content: center;
   justify-content: center;
 }
+
+/* Community */
+.community-post-img {
+  height: 20vh;
+  width: auto;
+}
