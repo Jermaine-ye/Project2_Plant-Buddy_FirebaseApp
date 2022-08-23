@@ -4,20 +4,18 @@ import {
   InfoWindow,
   Marker,
   useJsApiLoader,
+  AutoComplete,
 } from "@react-google-maps/api";
 
-import plant from "../images/plant.png";
+import axios from "axios";
 
-// const options = {
-//   zoomControlOptions: {
-//     position: window.google.maps.ControlPosition.RIGHT_CENTER, // 'right-center' ,
-//     // ...otherOptions
-//   },
-// };
+import plant from "../images/plant.png";
+import rec from "../images/rec.png";
 
 function PlantNurseries() {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    // libraries: ["places"],
   });
 
   const initialMarkers = [
@@ -44,10 +42,13 @@ function PlantNurseries() {
     },
   ];
 
+  const [map, setMap] = useState(/** @type window.google.maps.Map */ (null));
   const [activeInfoWindow, setActiveInfoWindow] = useState("");
   const [markers, setMarkers] = useState(initialMarkers);
   const [latitude, setLatitude] = useState(1.287953);
   const [longitude, setLongitude] = useState(103.851784);
+  const [selectedLocation, setSelectedLocation] = useState();
+  const [newCenter, setNewCenter] = useState();
 
   const containerStyle = {
     width: "100%",
@@ -60,10 +61,29 @@ function PlantNurseries() {
     lng: longitude,
   };
 
-  const currLocation = {};
-
   const mapClicked = (event) => {
     console.log(event.latLng.lat(), event.latLng.lng());
+    setSelectedLocation({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    });
+
+    // axios
+    //   .get(
+    //     `https://maps.googleapis.com/maps/api/place/nearbysearch/json`,
+    //     {
+    //       params: {
+    //         location: `${latitude},${longitude}`,
+    //         radius: 1500,
+    //         type: `florist`,
+    //         keyword: `plants`,
+    //         key: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
+    //       },
+    //     }
+    //     // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude}%2C${longitude}&radius=1500&type=restaurant&keyword=cruise&rankby=key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+    //   )
+    //   .then((response) => console.log(response))
+    //   .catch((error) => console.log(error));
   };
 
   const markerClicked = (marker, index) => {
@@ -72,8 +92,14 @@ function PlantNurseries() {
   };
 
   const markerDragEnd = (event) => {
-    setLatitude(event.latLng.lat());
-    setLongitude(event.latLng.lng());
+    // setLatitude(event.latLng.lat());
+    // setLongitude(event.latLng.lng());
+
+    setNewCenter({
+      lat: event.latLng.lat(),
+      lng: event.latLng.lng(),
+    });
+    map.panTo(newCenter);
   };
 
   const handleGetCurrLocation = () => {
@@ -94,12 +120,14 @@ function PlantNurseries() {
 
   const renderMap = () => {
     return (
-      <div>
+      <div className="map-container">
+        {/* <div position="absolute" left={0} top={0} height="100%" width="100%"> */}
         <GoogleMap
           mapContainerStyle={containerStyle}
           center={center}
           zoom={12}
           onClick={mapClicked}
+          onLoad={(map) => setMap(map)}
         >
           {markers.map((marker, index) => (
             <Marker
@@ -123,14 +151,28 @@ function PlantNurseries() {
             </Marker>
           ))}
           <Marker
+            name="current-location"
             position={center}
             draggable={true}
             onDragEnd={(event) => {
               markerDragEnd(event);
             }}
           />
+          {selectedLocation && (
+            <Marker
+              position={selectedLocation}
+              draggable={true}
+              onClick={() => map.panTo(selectedLocation)}
+              icon={{
+                url: rec,
+                scaledSize: new window.google.maps.Size(20, 20),
+              }}
+            />
+          )}
         </GoogleMap>
-        <button onClick={handleGetCurrLocation}>
+        {/* </div> */}
+
+        <button position="absolute" onClick={() => map.panTo(center)}>
           Reset to Current Location
         </button>
       </div>
