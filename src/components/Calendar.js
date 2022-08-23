@@ -36,16 +36,15 @@ export default function PlantCalendar(props) {
   const updateWateringSchedule = () => {
     let schedule = {};
     let dateWatered = {};
-    for (let plant in props.plantData) {
-      let plantSpecies = Object.keys(props.plantData[plant]);
-      let plantName = Object.values(props.plantData[plant])[0].plantName;
-      let plantWaterFreq = Number(
-        Object.values(props.plantData[plant])[0].waterFreqDay
-      );
+    for (let plantKey in props.plantData) {
+      console.log("plant in props:", plantKey);
+      console.log("plantName:", props.plantData[plantKey].plantName);
+      let plantFamily = props.plantData[plantKey].plantFamily;
+      let plantName = props.plantData[plantKey].plantName;
+      let plantWaterFreq = Number(props.plantData[plantKey].waterFreqDay);
       schedule[plantName] = plantWaterFreq;
 
-      let dateUserLastWatered = Object.values(props.plantData[plant])[0]
-        .dateLastWatered;
+      let dateUserLastWatered = props.plantData[plantKey].dateLastWatered;
       dateWatered[plantName] = parseISO(dateUserLastWatered);
     }
     setWateringSchedule(schedule);
@@ -54,6 +53,7 @@ export default function PlantCalendar(props) {
   // for checking if props.plantData loaded correctly
   useEffect(() => {
     console.log("plantdata:", props.plantData);
+
     // initialise watering schedule
     updateWateringSchedule();
   }, [selectedDate]);
@@ -119,6 +119,7 @@ export default function PlantCalendar(props) {
         const daysCalc = Math.abs(
           differenceInCalendarDays(dateLastWatered[plant], selectedDate)
         );
+        console.log("watered plant:", dateLastWatered[plant]);
         console.log(daysCalc);
         if (daysCalc % wateringSchedule[plant] == 0) {
           plantsToWater.push(plant);
