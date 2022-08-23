@@ -31,7 +31,7 @@ export default function Recommendations() {
           <div>
             <h3>Popular Nurseries Near You!</h3>
             <PlantNurseries />
-            {/* <Nurseries /> */}
+            <Nurseries />
           </div>
         </li>
         <li>
