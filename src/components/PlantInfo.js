@@ -17,27 +17,25 @@ export default function PlantInfo(props) {
   const userFolder = `${user.displayName + "-" + user.uid}`;
 
   // selected plant pointer
-  //object schema: {generatedKey: {plantSpecies : { plantDetails...}}}
+  //data.key = realtime database entry key
+  //data.val() = {plantFamily:"", sunlightReq:"", waterFreqDay:"", ...}
   const plant = props.selectedPlantProfile;
-  // if (!props.selectedPlantProfile) return <p>TESTING</p>;
-  const plantEntry = Object.keys(plant)[0];
-  const userPlantSpecies = Object.keys(plant[plantEntry])[0];
-  const userPlantInfo = plant[plantEntry][userPlantSpecies];
+  const plantKey = Object.keys(plant)[0];
+  const plantInfo = plant[plantKey];
+  const [plantModal, setPlantModal] = useState(false);
 
   // plant info to be updated
-  const [plantPhoto, setPlantPhoto] = useState(userPlantInfo.plantImageUrl);
-  const [waterFrequency, setWaterFrequency] = useState(
-    userPlantInfo.waterFreqDay
-  );
+  const [plantPhoto, setPlantPhoto] = useState(plantInfo.plantImageUrl);
+  const [waterFrequency, setWaterFrequency] = useState(plantInfo.waterFreqDay);
   const [sunlightRequirement, setSunlightRequirement] = useState(
-    userPlantInfo.sunlightReq
+    plantInfo.sunlightReq
   );
-  const [plantSpecies, setPlantSpecies] = useState(userPlantSpecies);
+  const [plantFamily, setPlantFamily] = useState(plantInfo.plantFamily);
   const [plantCondition, setPlantCondition] = useState(
-    userPlantInfo.plantCondition
+    plantInfo.plantCondition
   );
-  const [plantName, setPlantName] = useState(userPlantInfo.plantName);
-  const [plantNotes, setPlantNotes] = useState(userPlantInfo.plantNotes);
+  const [plantName, setPlantName] = useState(plantInfo.plantName);
+  const [plantNotes, setPlantNotes] = useState(plantInfo.plantNotes);
 
   // for new photo upload
   const [uploadNewPhoto, setUploadNewPhoto] = useState(false);
@@ -53,13 +51,14 @@ export default function PlantInfo(props) {
 
   // to render new edited info
   useEffect(() => {
-    setPlantPhoto(userPlantInfo.plantImageUrl);
-    setWaterFrequency(userPlantInfo.waterFreqDay);
-    setSunlightRequirement(userPlantInfo.sunlightReq);
-    setPlantSpecies(userPlantSpecies);
-    setPlantCondition(userPlantInfo.plantCondition);
-    setPlantName(userPlantInfo.plantName);
-    setPlantNotes(userPlantInfo.plantNotes);
+    console.log("plantinfo:", plantInfo);
+    setPlantPhoto(plantInfo.plantImageUrl);
+    setWaterFrequency(plantInfo.waterFreqDay);
+    setSunlightRequirement(plantInfo.sunlightReq);
+    setPlantFamily(plantInfo.plantFamily);
+    setPlantCondition(plantInfo.plantCondition);
+    setPlantName(plantInfo.plantName);
+    setPlantNotes(plantInfo.plantNotes);
   }, [props]);
 
   // for user to custom their plant condition/health
@@ -98,28 +97,28 @@ export default function PlantInfo(props) {
     );
 
     const updatedData = {
-      [plantSpecies]: {
-        ...userPlantInfo,
-        plantImageUrl: plantPhoto,
-        // plantCondition: plantCondition,
-        waterFreqDay: waterFrequency,
-        sunlightReq: sunlightRequirement,
-        plantName: plantName,
-        plantNotes: plantNotes,
-      },
+      ...plantInfo,
+      plantImageUrl: plantPhoto,
+      // plantCondition: plantCondition,
+      waterFreqDay: waterFrequency,
+      sunlightReq: sunlightRequirement,
+      plantName: plantName,
+      plantNotes: plantNotes,
     };
 
-    update(userPlantRef, { [plantEntry]: updatedData });
+    update(userPlantRef, { [plantKey]: updatedData });
+    setPlantModal(false);
   };
 
   // to revert all values to initial state
   const handleResetChanges = () => {
-    setWaterFrequency(userPlantInfo.waterFreqDay);
-    setSunlightRequirement(userPlantInfo.sunlightReq);
-    setPlantSpecies(userPlantSpecies);
-    setPlantCondition(userPlantInfo.plantCondition);
-    setPlantName(userPlantInfo.plantName);
-    setPlantNotes(userPlantInfo.plantNotes);
+    setWaterFrequency(plantInfo.waterFreqDay);
+    setSunlightRequirement(plantInfo.sunlightReq);
+    setPlantFamily(plantInfo.plantFamily);
+    setPlantCondition(plantInfo.plantCondition);
+    setPlantName(plantInfo.plantName);
+    setPlantNotes(plantInfo.plantNotes);
+    setPlantPhoto(plantInfo.plantImageUrl);
   };
 
   // check / uncheck box
@@ -128,7 +127,7 @@ export default function PlantInfo(props) {
     <div>
       <h4>
         {/* plant name */}
-        {userName}'s {plantSpecies} :
+        {userName}'s {plantFamily} :
         <input
           type="text"
           name="plantName"

@@ -25,10 +25,10 @@ export default function PlantForm() {
   const [plantList, setPlantList] = useState([]);
 
   // for data to be added to realtime database upon form submission
-  const [selectedPlant, setSelectedPlant] = useState({});
+  const [selectedPlant, setSelectedPlant] = useState();
   const [waterFrequency, setWaterFrequency] = useState("");
   const [sunlightRequirement, setSunlightRequirement] = useState("");
-  const [plantSpecies, setPlantSpecies] = useState("");
+  const [plantFamily, setPlantFamily] = useState("");
   const [plantCondition, setPlantCondition] = useState([]);
   const [plantName, setPlantName] = useState("");
   const [plantNotes, setPlantNotes] = useState("");
@@ -50,15 +50,14 @@ export default function PlantForm() {
   }, []);
 
   // to get list of plants in database
+  //data.key = realtime database entry key
+  //data.val() = {plantFamily:"", sunlightReq:"", waterFreqDay:""}
   useEffect(() => {
     const plantsRef = databaseRef(database, PLANTS_FOLDER_NAME);
     onChildAdded(plantsRef, (data) => {
-      const species = Object.keys(data.val())[0];
-      const speciesInfo = data.val()[species];
-
       setPlantList((prevState) => [
         ...prevState,
-        { key: species, val: speciesInfo },
+        { key: data.key, val: data.val() },
       ]);
     });
 
@@ -85,39 +84,24 @@ export default function PlantForm() {
           );
           const newPlantRef = push(userPlantRef);
 
-          if (plantSpecies) {
-            set(newPlantRef, {
-              [plantSpecies]: {
-                waterFrequency: waterFrequency,
-                sunlightRequirement: sunlightRequirement,
-                plantName: plantName,
-                plantCondition: plantCondition,
-                plantImageUrl: url,
-                plantNotes: plantNotes,
-                dateAdded: new Date().toLocaleString(),
-                dateFirstWatered: "",
-                dateLastWatered: "",
-              },
-            });
-          } else {
-            set(newPlantRef, {
-              [selectedPlant.key]: {
-                ...selectedPlant.val,
-                plantName: plantName,
-                plantCondition: plantCondition,
-                plantImageUrl: url,
-                plantNotes: plantNotes,
-                dateAdded: new Date().toLocaleDateString(),
-                dateFirstWatered: "",
-                dateLastWatered: "null",
-              },
-            });
-          }
+          set(newPlantRef, {
+            plantFamily: plantFamily,
+            plantName: plantName,
+            plantCondition: plantCondition,
+            plantImageUrl: url,
+            plantNotes: plantNotes,
+            dateAdded: new Date().toLocaleDateString(),
+            dateFirstWatered: "",
+            dateLastWatered: "null",
+            waterFreqDay: waterFrequency,
+            sunlightReq: sunlightRequirement,
+            plantImageName: plantPhotoFile.name,
+          });
 
           setSelectedPlant({});
           setWaterFrequency("");
           setSunlightRequirement("");
-          setPlantSpecies("");
+          setPlantFamily("");
           setPlantCondition([]);
           setPlantName("");
           setPlantNotes("");
@@ -148,6 +132,7 @@ export default function PlantForm() {
     setWaterFrequency(plant.val.waterFreqDay);
     setSunlightRequirement(plant.val.sunlightReq);
     setShowPlantForm(true);
+    setPlantFamily(plant.val.plantFamily);
   };
 
   // list of plant choices for user to select for recommended plant care
@@ -158,7 +143,7 @@ export default function PlantForm() {
         handleClickSelectedPlant(e, plant, index);
       }}
     >
-      {plant.key}
+      {plant.val.plantFamily}
     </button>
   ));
 
@@ -166,7 +151,8 @@ export default function PlantForm() {
   const selectedPlantForm = (
     <div>
       <h3>
-        {user.displayName}'s {selectedPlant.key}
+        {user.displayName}'s{" "}
+        {!selectedPlant ? null : selectedPlant.val.plantFamily}
       </h3>
       <h5>Recommended Care:</h5>
       <label>
@@ -211,17 +197,17 @@ export default function PlantForm() {
   const newPlantSpeciesForm = (
     <div>
       <h3>
-        {user.displayName}'s {plantSpecies ? plantSpecies : "New Buddy"}
+        {user.displayName}'s {plantFamily ? plantFamily : "New Buddy"}
       </h3>
       <label>
-        Plant Species:
+        Plant Family:
         <input
           type="text"
           name="species"
-          value={plantSpecies}
-          onChange={(e) => setPlantSpecies(e.target.value)}
+          value={plantFamily}
+          onChange={(e) => setPlantFamily(e.target.value)}
           required
-          placeholder="Plant Species"
+          placeholder="Plant Family"
           maxLength={24}
         />
       </label>
@@ -310,6 +296,7 @@ export default function PlantForm() {
               setPlantPhotoFile(e.target.files[0]);
               setPlantPhotoValue(e.target.value);
               setPhotoPreview(URL.createObjectURL(e.target.files[0]));
+              console.log(e.target.files[0].name);
             }}
           />
         </label>
@@ -351,21 +338,20 @@ export default function PlantForm() {
       <br />
       <button
         onClick={(e) => {
-          setSelectedPlant({});
+          setSelectedPlant("");
           setWaterFrequency("");
           setSunlightRequirement("");
           setShowPlantForm(true);
         }}
       >
-        Add New Species
+        Add New Plant Family
       </button>
       <br />
 
       {/* SECOND SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
       <hr />
 
-      {!Object.keys(selectedPlant).length &&
-      !showPlantForm ? null : !Object.keys(selectedPlant).length &&
+      {!selectedPlant && !showPlantForm ? null : !selectedPlant &&
         showPlantForm ? (
         <div>
           {newPlantSpeciesForm} {sharedForm}
