@@ -98,3 +98,18 @@
   align-content: center;
   justify-content: center;
 }
+
+.map-container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+  height: 75vh;
+  width: 75vw;
+}
+
+/* Community */
+.community-post-img {
+  height: 20vh;
+  width: auto;
+}

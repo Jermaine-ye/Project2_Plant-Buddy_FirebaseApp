@@ -1,8 +1,13 @@
 import { useNavigate, Link } from "react-router-dom";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 
+//firebase imports
+import { onChildAdded, ref as databaseRef } from "firebase/database";
+import { database } from "../DB/firebase";
+
 export default function Community() {
+  const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
@@ -14,6 +19,37 @@ export default function Community() {
       navigate("/login");
     }
   });
+  const POSTS_FOLDER_NAME = "communityPosts";
+  useEffect(() => {
+    const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
+    let postList = [];
+    onChildAdded(postListRef, (data) => {
+      console.log(data);
+      postList.push({ key: data.key, val: data.val() });
+      // setPosts([...posts, { key: data.key, val: data.val() }]);
+      console.log(postList);
+    });
+    setPosts(postList);
+  }, []);
+
+  const postFeed = posts.map((post, index) => (
+    // console.log(post);
+    <div>
+      <li key={post.key}>
+        Title: {post.val.title} | By: {post.val.author} | Likes:{" "}
+        {post.val.likes}
+        <br />
+        <img
+          className="community-post-img"
+          src={post.val.imageurl}
+          alt={post.val.imageurl}
+        />
+        <br />
+        Comments: TBI
+        <br />
+      </li>
+    </div>
+  ));
 
   return (
     <div>
@@ -26,12 +62,7 @@ export default function Community() {
         </ul>
       </div>
       <h1>Buddies!</h1>
-      <ul>
-        <li>Post 1</li>
-        <li>Post 2</li>
-        <li>Post 3</li>
-        <li>Post 4</li>
-      </ul>
+      {postFeed.length > 0 ? <ul>{postFeed}</ul> : null}
 
       <div>
         <button
