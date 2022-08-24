@@ -41,11 +41,9 @@ export default function PlantGarden(props) {
   // load user's plants from realtime database
   useEffect(() => {
     onChildAdded(userPlantRef, (data) => {
-      const plantEntryKey = data.key;
-      const plantDetails = data.val();
       setUserPlants((prevPostsState) => ({
         ...prevPostsState,
-        [plantEntryKey]: plantDetails,
+        [data.key]: data.val(),
       }));
     });
 
@@ -57,11 +55,9 @@ export default function PlantGarden(props) {
   // update plantgarden if any value changes
   useEffect(() => {
     onChildChanged(userPlantRef, (data) => {
-      const plantEntryKey = data.key;
-      const plantDetails = data.val();
       setUserPlants((prevState) => ({
         ...prevState,
-        [plantEntryKey]: plantDetails,
+        [data.key]: data.val(),
       }));
     });
   }, []);
@@ -95,54 +91,63 @@ export default function PlantGarden(props) {
     );
 
     remove(plantEntryRef);
-    //delete image from storage
+    // delete image from storage
+
+    const userPlantImagesRef = storageRef(
+      storage,
+      `${USER_PLANT_IMAGES_FOLDER_NAME}/${
+        userPlants[Object.keys(userPlants)[0]].plantImageName
+      }`
+    );
+
+    deleteObject(userPlantImagesRef)
+      .then(() => {
+        console.log("image deleted!");
+      })
+      .catch((error) => console.log(error));
   };
 
   // to render user's list of plants in dashboard view
   const plantCards = Object.entries(userPlants).map(
-    ([plantEntryKey, plant], index) => {
-      const userPlantSpecies = Object.keys(plant)[0];
-      const userPlantInfo = plant[userPlantSpecies];
-
+    ([plantEntryKey, plantData], index) => {
       return (
         <div className="plantCard" key={index} id={plantEntryKey}>
           <img
-            alt={userPlantInfo.plantName}
-            src={userPlantInfo.plantImageUrl}
+            alt={plantData.plantName}
+            src={plantData.plantImageUrl}
             width="50%%"
           />
 
           <button
             onClick={() => {
-              setSelectedPlantProfile({ [plantEntryKey]: plant });
+              setSelectedPlantProfile({ [plantEntryKey]: plantData });
             }}
           >
-            {userPlantSpecies}
+            {plantData.plantFamily}
           </button>
 
-          <p>Watering Schedule: Every {userPlantInfo.waterFreqDay} Days</p>
-          <p>Sunlight Intensity: {userPlantInfo.sunlightReq} </p>
-          {/* {console.log(plant[userPlantSpecies])} */}
+          <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
+          <p>Sunlight Intensity: {plantData.sunlightReq} </p>
+          {/* {console.log(plant[userPlantFamily])} */}
           {/* to show up if calendar prompts to water today */}
           {!plantWatered ? (
             <div>
               <p>Reminder to water today!</p>
-              <p> Have you watered {userPlantInfo.plantName}?</p>
+              <p> Have you watered {plantData.plantName}?</p>
               <input
                 id={index}
                 type="checkbox"
-                // checked={
-                //   format(new Date(), "dd MMMM yyyy") ===
-                //   format(userPlantInfo.dateLastWatered, "dd MMMM yyyy")
-                // }
+                checked={
+                  new Date().toLocaleDateString() ===
+                  plantData.dateLastWateredCheck
+                }
+                disabled={plantWatered}
                 onChange={(e, index) => {
                   const updatedData = {
-                    [userPlantSpecies]: {
-                      ...userPlantInfo,
-                      dateLastWatered: new Date(),
-                    },
+                    ...plantData,
+                    dateLastWatered: new Date(),
+                    dateLastWateredCheck: new Date().toLocaleDateString(),
                   };
-
                   update(userPlantRef, { [plantEntryKey]: updatedData });
                 }}
               />

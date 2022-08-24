@@ -72,6 +72,7 @@ function PlantNurseries() {
     //   .get(
     //     `https://maps.googleapis.com/maps/api/place/nearbysearch/json`,
     //     {
+    //       headers: { "Access-Control-Allow-Origin": "*" },
     //       params: {
     //         location: `${latitude},${longitude}`,
     //         radius: 1500,
@@ -80,10 +81,10 @@ function PlantNurseries() {
     //         key: `${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`,
     //       },
     //     }
-    //     // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude}%2C${longitude}&radius=1500&type=restaurant&keyword=cruise&rankby=key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
-    //   )
-    //   .then((response) => console.log(response))
-    //   .catch((error) => console.log(error));
+    // `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude}%2C${longitude}&radius=1500&type=restaurant&keyword=cruise&rankby=key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+    // )
+    // .then((response) => console.log(response))
+    // .catch((error) => console.log(error));
   };
 
   const markerClicked = (marker, index) => {
