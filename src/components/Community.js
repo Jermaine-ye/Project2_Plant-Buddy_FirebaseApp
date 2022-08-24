@@ -3,17 +3,27 @@ import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../App";
 
 //firebase imports
-import { onChildAdded, ref as databaseRef } from "firebase/database";
+import {
+  onChildAdded,
+  onChildChanged,
+  ref as databaseRef,
+} from "firebase/database";
 import { database } from "../DB/firebase";
 
-export default function Community() {
+//child components
+import Likes from "./CommunityLikes";
+import Comments from "./CommunityComments";
+import { parseWithOptions } from "date-fns/fp";
+
+export default function Community(props) {
   const [posts, setPosts] = useState([]);
+  const [search, setSearch] = useState("");
+  const [searchFeed, setSearchFeed] = useState([]);
   const navigate = useNavigate();
   const user = useContext(UserContext);
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
-    console.log(user);
     const isLoggedIn = JSON.parse(localStorage.getItem("user"));
     if (Object.keys(isLoggedIn).length === 0) {
       navigate("/login");
@@ -22,34 +32,111 @@ export default function Community() {
   const POSTS_FOLDER_NAME = "communityPosts";
   useEffect(() => {
     const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
-    let postList = [];
+    // let postList = [];
     onChildAdded(postListRef, (data) => {
-      console.log(data);
-      postList.push({ key: data.key, val: data.val() });
-      // setPosts([...posts, { key: data.key, val: data.val() }]);
-      console.log(postList);
+      setPosts((prevState) => [
+        ...prevState,
+        { key: data.key, val: data.val() },
+      ]);
     });
-    setPosts(postList);
   }, []);
 
-  const postFeed = posts.map((post, index) => (
-    // console.log(post);
-    <div>
-      <li key={post.key}>
-        Title: {post.val.title} | By: {post.val.author} | Likes:{" "}
-        {post.val.likes}
-        <br />
-        <img
-          className="community-post-img"
-          src={post.val.imageurl}
-          alt={post.val.imageurl}
-        />
-        <br />
-        Comments: TBI
-        <br />
-      </li>
-    </div>
-  ));
+  // const handleUpdates = (newData, index) => {
+  //   let postsData = posts;
+  //   postsData[index].val = newData;
+  //   setPosts(postsData);
+  // };
+  // check if this causes long reload times
+  useEffect(() => {
+    const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
+    onChildChanged(postListRef, (data) => {
+      console.log("updated-data: ", data.val());
+      console.log(data.key);
+      setPosts((prevState) => {
+        let newState = [...prevState];
+        for (let post of newState) {
+          if (post.key == data.key) {
+            post.val = data.val();
+          }
+        }
+        return newState;
+      });
+      console.log("oCC");
+    });
+  });
+
+  const postFeed = posts.map((post, index) => {
+    return (
+      <div>
+        <li key={post.key}>
+          Title: {post.val.title} | By: {post.val.author} | Likes:{" "}
+          {post.val.likes}|{" "}
+          <Link to={`posts/${index}`} state={{ post }}>
+            {console.log(post)}
+            Go To Post
+          </Link>
+          <Likes user={user} post={post} index={index} />
+          <br />
+          <img
+            className="community-post-img"
+            src={post.val.imageurl}
+            alt={post.val.imageurl}
+          />
+          <br />
+          Comments:{" "}
+          <Comments
+            user={user}
+            post={post}
+            index={index}
+            // handleUpdates={() => handleUpdates()}
+          />
+          <br />
+        </li>
+      </div>
+    );
+  });
+  const searchTheFeed = (search) => {
+    let list = [];
+    console.log(search);
+    console.log(posts);
+    console.log(posts[0].val.title);
+    if (search.length > 0) {
+      let searchItem = posts.filter((post) => post.val.title.includes(search));
+      console.log(searchItem);
+      setSearchFeed(searchItem);
+    }
+  };
+
+  const searchList = searchFeed.map((post, index) => {
+    return (
+      <div>
+        <li key={post.key}>
+          Title: {post.val.title} | By: {post.val.author} | Likes:{" "}
+          {post.val.likes}|{" "}
+          <Link to={`posts/${index}`} state={{ post }}>
+            {console.log(post)}
+            Go To Post
+          </Link>
+          <Likes user={user} post={post} index={index} />
+          <br />
+          <img
+            className="community-post-img"
+            src={post.val.imageurl}
+            alt={post.val.imageurl}
+          />
+          <br />
+          Comments:{" "}
+          <Comments
+            user={user}
+            post={post}
+            index={index}
+            // handleUpdates={() => handleUpdates()}
+          />
+          <br />
+        </li>
+      </div>
+    );
+  });
 
   return (
     <div>
@@ -62,7 +149,24 @@ export default function Community() {
         </ul>
       </div>
       <h1>Buddies!</h1>
-      {postFeed.length > 0 ? <ul>{postFeed}</ul> : null}
+      <input
+        type="text"
+        placeholder="Search"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          searchTheFeed(e.target.value);
+        }}
+      />
+      {postFeed.length > 0 && search.length == 0 ? (
+        <div>
+          <ul>{postFeed}</ul>
+        </div>
+      ) : (
+        <div>
+          <ul>{searchList}</ul>
+        </div>
+      )}
 
       <div>
         <button

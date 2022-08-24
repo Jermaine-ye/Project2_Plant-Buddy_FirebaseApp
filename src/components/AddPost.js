@@ -34,7 +34,8 @@ export default function AddPost() {
       imageurl: url,
       likes: 0,
       author: user.displayName,
-      comments: [{ text: "", user: "" }],
+      comments: [{ text: "", user: "", timestamp: "" }],
+      userLikes: [""],
     });
 
     setFileInputFile(null);
