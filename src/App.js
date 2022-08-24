@@ -2,6 +2,8 @@ import logo from "./logo.svg";
 import "./App.css";
 import { useState, useEffect, createContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
+import { database } from "./DB/firebase";
+import { onChildChanged, ref as databaseRef } from "firebase/database";
 
 // for import of components
 import Registration from "./components/Registration";
@@ -9,6 +11,7 @@ import Dashboard from "./components/Dashboard";
 import PlantInfo from "./components/PlantInfo";
 import PlantForm from "./components/PlantForm";
 import Community from "./components/Community";
+import Post from "./components/CommunityPost";
 import Forums from "./components/Forums";
 import Recommendations from "./components/Recommendations";
 import AddPost from "./components/AddPost";
@@ -39,6 +42,7 @@ function App() {
       }
     }
   }, []);
+
   return (
     <div className="App">
       <header className="App-header">
@@ -52,6 +56,7 @@ function App() {
             <Route path="/plantprofile" element={<PlantInfo />}></Route>
             <Route path="/addnewplant" element={<PlantForm />}></Route>
             <Route path="/community" element={<Community />}></Route>
+            <Route path="community/posts/:id" element={<Post />}></Route>
             <Route path="/addnewpost" element={<AddPost />}></Route>
             <Route path="/forums" element={<Forums />}></Route>
             <Route path="/addnewforumpost" element={<AddForumPost />}></Route>
