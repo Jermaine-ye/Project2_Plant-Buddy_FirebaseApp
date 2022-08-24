@@ -20,12 +20,15 @@ export default function PlantForm() {
 
   // for conditional rendering of form
   const [showPlantForm, setShowPlantForm] = useState(false);
+  const [chooseDefaultPlant, setChooseDefaultPlant] = useState(false);
 
   // for getting list of plants from realtime database
   const [plantList, setPlantList] = useState([]);
 
   // for data to be added to realtime database upon form submission
-  const [selectedPlant, setSelectedPlant] = useState();
+  const [selectedPlant, setSelectedPlant] = useState({
+    plantInfo: "",
+  });
   const [waterFrequency, setWaterFrequency] = useState("");
   const [sunlightRequirement, setSunlightRequirement] = useState("");
   const [plantFamily, setPlantFamily] = useState("");
@@ -57,7 +60,7 @@ export default function PlantForm() {
     onChildAdded(plantsRef, (data) => {
       setPlantList((prevState) => [
         ...prevState,
-        { key: data.key, val: data.val() },
+        { plantFamily: data.key, plantInfo: data.val() },
       ]);
     });
 
@@ -129,10 +132,11 @@ export default function PlantForm() {
   // to store user's selected plant for add plant entry
   const handleClickSelectedPlant = (event, plant, index) => {
     setSelectedPlant(plant);
-    setWaterFrequency(plant.val.waterFreqDay);
-    setSunlightRequirement(plant.val.sunlightReq);
+    setWaterFrequency(plant.plantInfo.waterFreqDay);
+    setSunlightRequirement(plant.plantInfo.sunlightReq);
     setShowPlantForm(true);
-    setPlantFamily(plant.val.plantFamily);
+    setChooseDefaultPlant(true);
+    setPlantFamily(plant.plantFamily);
   };
 
   // list of plant choices for user to select for recommended plant care
@@ -140,10 +144,11 @@ export default function PlantForm() {
     <button
       key={index}
       onClick={(e) => {
+        console.log(plant);
         handleClickSelectedPlant(e, plant, index);
       }}
     >
-      {plant.val.plantFamily}
+      {plant.plantFamily}
     </button>
   ));
 
@@ -151,10 +156,12 @@ export default function PlantForm() {
   const selectedPlantForm = (
     <div>
       <h3>
-        {user.displayName}'s{" "}
-        {!selectedPlant ? null : selectedPlant.val.plantFamily}
+        {user.displayName}'s {!selectedPlant ? null : selectedPlant.plantFamily}
       </h3>
       <h5>Recommended Care:</h5>
+      <p>{selectedPlant.plantInfo["Possible Issues"]}</p>
+      <img alt={selectedPlant.plantFamily} src={selectedPlant.plantInfo.url} />
+
       <label>
         Watering Schedule: Every
         <input
@@ -338,10 +345,11 @@ export default function PlantForm() {
       <br />
       <button
         onClick={(e) => {
-          setSelectedPlant("");
+          setPlantFamily("");
           setWaterFrequency("");
           setSunlightRequirement("");
           setShowPlantForm(true);
+          setChooseDefaultPlant(false);
         }}
       >
         Add New Plant Family
@@ -351,7 +359,7 @@ export default function PlantForm() {
       {/* SECOND SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
       <hr />
 
-      {!selectedPlant && !showPlantForm ? null : !selectedPlant &&
+      {!chooseDefaultPlant && !showPlantForm ? null : !chooseDefaultPlant &&
         showPlantForm ? (
         <div>
           {newPlantSpeciesForm} {sharedForm}
