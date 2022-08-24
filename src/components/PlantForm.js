@@ -41,6 +41,10 @@ export default function PlantForm() {
   const [plantPhotoFile, setPlantPhotoFile] = useState(null);
   const [plantPhotoValue, setPlantPhotoValue] = useState("");
   const [photoPreview, setPhotoPreview] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState("");
+
+  /////////////// USEEFFECTS HOOKS ///////////////
 
   // to check if user is logged in
   useEffect(() => {
@@ -68,6 +72,8 @@ export default function PlantForm() {
       setPlantList([]);
     };
   }, []);
+
+  /////////////// FUNCTIONS THAT HANDLE EVENTS ///////////////
 
   // submit plant entry to realtime database and navigate back to dashboard
   const handleSubmitNewPlant = (e) => {
@@ -138,6 +144,29 @@ export default function PlantForm() {
     setChooseDefaultPlant(true);
     setPlantFamily(plant.plantFamily);
   };
+
+  // to search list of available plant family
+  const handleSearchPlantFamily = (e) => {
+    let search = e.target.value.toUpperCase();
+    setSearchTerm(search);
+  };
+
+  /////////////// RENDERING CONSTS ///////////////
+
+  // list of plant results based on search term
+  const searchPlantResults = plantList
+    .filter((plant) => plant.plantFamily.includes(searchTerm))
+    .map((plant, index) => (
+      <button
+        key={index}
+        onClick={(e) => {
+          console.log(plant);
+          handleClickSelectedPlant(e, plant, index);
+        }}
+      >
+        {plant.plantFamily}
+      </button>
+    ));
 
   // list of plant choices for user to select for recommended plant care
   const plantsDB = plantList.map((plant, index) => (
@@ -339,9 +368,21 @@ export default function PlantForm() {
       </button>
 
       <h1>New Plant Buddy</h1>
-      <input type="text" placeholder="Search for plant" />
+      <input
+        type="text"
+        placeholder="Search for plant"
+        onChange={(e) => {
+          handleSearchPlantFamily(e);
+        }}
+      />
       <br />
-      {plantsDB}
+      {!searchTerm ? (
+        plantsDB
+      ) : searchPlantResults.length > 0 ? (
+        searchPlantResults
+      ) : (
+        <p>No plants found!</p>
+      )}
       <br />
       <button
         onClick={(e) => {
