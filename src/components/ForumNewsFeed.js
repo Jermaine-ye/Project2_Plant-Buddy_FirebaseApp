@@ -66,27 +66,81 @@ export default function ForumNewsFeed(props) {
     });
   }, []);
 
-  let messageCards = messages.map((element, i) => (
-    <div key={element.key}>
-      {/* <Link to={`/forumpost/${i}`}>
+  let messageCards = messages.map(([key, element], i) => {
+    return (
+      <div clasName="messageFeed" key={i} id={key}>
+        {/* <Link to={`/forumpost/${i}`}>
                 <button
                   onClick={() => props.currentMessage(element, i)}
                 >
                   Go To Post
                 </button>
               </Link> */}
-      <h4>{element.val.title}</h4> <h5>{element.val.message}</h5>
-      <img src={element.val.imageLink} alt={element.val.title} width="400vw" />
-      <h6>
-        {element.val.date}
-        <br />
-        posted by: {element.val.user}
-      </h6>
-      <ForumComments messageItem={element} />
-    </div>
-  ));
+        {console.log('e.val', element.val)}
+        <h4>{element.val.title}</h4> <h5>{element.val.message}</h5>
+        <img
+          src={element.val.imageLink}
+          alt={element.val.title}
+          width="400vw"
+        />
+        <h6>
+          {element.val.date}
+          <br />
+          posted by: {element.val.user}
+        </h6>
+        <ForumComments messageItem={element} />
+      </div>
+    );
+  });
 
   messageCards.reverse();
+
+  // to render user's list of plants in dashboard view
+  const plantCards = Object.entries(userPlants).map(
+    ([plantEntryKey, plantData], index) => {
+      return (
+        <div className="plantCard" key={index} id={plantEntryKey}>
+          <img
+            alt={plantData.plantName}
+            src={plantData.plantImageUrl}
+            width="50%%"
+          />
+
+          <button
+            onClick={() => {
+              setSelectedPlantProfile({ [plantEntryKey]: plantData });
+            }}
+          >
+            {plantData.plantFamily}
+          </button>
+
+          <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
+          <p>Sunlight Intensity: {plantData.sunlightReq} </p>
+          {/* {console.log(plant[userPlantFamily])} */}
+          {/* to show up if calendar prompts to water today */}
+          {!plantWatered ? (
+            <div>
+              <p>Reminder to water today!</p>
+              <p> Have you watered {plantData.plantName}?</p>
+              <input
+                id={index}
+                type="checkbox"
+                checked={
+                  new Date().toLocaleDateString() ===
+                  plantData.dateLastWateredCheck
+                }
+                disabled={plantWatered}
+                onChange={(e, index) => {
+                  const updatedData = {
+                    ...plantData,
+                    dateLastWatered: new Date(),
+                    dateLastWateredCheck: new Date().toLocaleDateString(),
+                  };
+                  update(userPlantRef, { [plantEntryKey]: updatedData });
+                }}
+              />
+            </div>
+          ) : null}
 
   return (
     <div>
