@@ -56,8 +56,7 @@ export default function Forums() {
 
       <button
         onClick={() => {
-          // addPost();
-          navigate('/forumaddnewpost');
+          navigate('/forumnewsfeed');
         }}
       >
         Add Forum Post

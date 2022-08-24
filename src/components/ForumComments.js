@@ -42,7 +42,7 @@ export default function ForumComments(props) {
         title: msg.val.title,
         date: msg.val.date,
         user: msg.val.user,
-
+        imageLink: msg.val.imageLink,
         message: msg.val.message,
         comments: [
           ...msg.val.comments,

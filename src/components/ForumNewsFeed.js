@@ -12,6 +12,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 import ForumComments from './ForumComments';
+import ForumComposer from './ForumComposer';
 
 // top level folder name
 const FORUM_FOLDER_NAME = 'forumTips'; // for ur case should be forumTips or forumTrade
@@ -19,8 +20,8 @@ const FORUM_FOLDER_NAME = 'forumTips'; // for ur case should be forumTips or for
 export default function ForumNewsFeed(props) {
   const navigate = useNavigate();
   const user = useContext(UserContext);
-  const [titleInput, setTitleInput] = useState('');
-  const [inputMessage, setInputMessage] = useState('');
+  // const [titleInput, setTitleInput] = useState('');
+  // const [inputMessage, setInputMessage] = useState('');
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
@@ -39,11 +40,12 @@ export default function ForumNewsFeed(props) {
     onChildAdded(messagesRef, (data) => {
       setMessages((prev) => [...prev, { key: data.key, val: data.val() }]);
     });
-    return () => {
-      setMessages([]);
-    };
+    // return () => {
+    //   setMessages([]);
+    // };
   }, []);
 
+  //for listening to comments
   useEffect(() => {
     const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
 
@@ -64,28 +66,27 @@ export default function ForumNewsFeed(props) {
     });
   }, []);
 
-  const submitPost = (e) => {
-    e.preventDefault();
-    let timeStamp = new Date().toLocaleString();
+  let messageCards = messages.map((element, i) => (
+    <div key={element.key}>
+      {/* <Link to={`/forumpost/${i}`}>
+                <button
+                  onClick={() => props.currentMessage(element, i)}
+                >
+                  Go To Post
+                </button>
+              </Link> */}
+      <h4>{element.val.title}</h4> <h5>{element.val.message}</h5>
+      <img src={element.val.imageLink} alt={element.val.title} width="400vw" />
+      <h6>
+        {element.val.date}
+        <br />
+        posted by: {element.val.user}
+      </h6>
+      <ForumComments messageItem={element} />
+    </div>
+  ));
 
-    // declare folder path
-    const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
-
-    const newMessageRef = push(messageListRef);
-    set(newMessageRef, {
-      title: titleInput,
-      date: timeStamp,
-      user: user.displayName,
-      message: inputMessage,
-      comments: [{ text: '', user: '' }],
-    });
-
-    setInputMessage('');
-    setTitleInput('');
-
-    alert('new post added');
-    console.log('New Post Added');
-  };
+  messageCards.reverse();
 
   return (
     <div>
@@ -96,53 +97,14 @@ export default function ForumNewsFeed(props) {
       >
         Back to Forum
       </button>
-
-      <div className="message-box">
-        {messages && messages.length > 0 ? (
-          messages.map((element, i) => (
-            <div key={element.key}>
-              <h4>{element.val.title}</h4> <h5>{element.val.message}</h5>
-              <h6>
-                {element.val.date}
-                <br />
-                posted by: {element.val.user}
-              </h6>
-              <ForumComments messageItem={element} />
-            </div>
-          ))
-        ) : (
-          <>
-            <p>=no messages to display=</p>
-          </>
-        )}
-      </div>
-
-      <div className="comment-box">
-        <form>
-          <input
-            type="text"
-            placeholder="Title"
-            value={titleInput}
-            onChange={(e) => setTitleInput(e.target.value)}
-          />
-
-          <br />
-          <textarea
-            rows="8"
-            cols="50"
-            placeholder="What are your thoughts?"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-          ></textarea>
-          <br />
-          <input
-            type="submit"
-            value="Add New Post"
-            onClick={(e) => submitPost(e)}
-          />
-        </form>
-      </div>
-
+      <br />
+      <br />
+      {messages && messages.length > 0
+        ? messageCards
+        : '=Welcome to plant tips='}
+      <br />
+      <br />
+      <ForumComposer />
       <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">

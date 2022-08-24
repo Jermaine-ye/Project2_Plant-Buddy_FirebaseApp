@@ -14,7 +14,7 @@ import AddPost from './components/AddPost';
 import Forums from './components/Forums';
 import ForumNewsFeed from './components/ForumNewsFeed';
 import ForumPlantCare from './components/ForumPlantCare';
-import ForumTrading from './components/ForumTrading';
+import ForumPost from './components/ForumPost';
 
 // for import of styles
 
@@ -56,9 +56,9 @@ function App() {
             <Route path="/community" element={<Community />}></Route>
             <Route path="/addnewpost" element={<AddPost />}></Route>
             <Route path="/forums" element={<Forums />}></Route>
-            <Route path="/forumaddnewpost" element={<ForumNewsFeed />}></Route>
+            <Route path="/forumnewsfeed" element={<ForumNewsFeed />}></Route>
             <Route path="/forumplantcare" element={<ForumPlantCare />}></Route>
-            <Route path="/forumtrading" element={<ForumTrading />}></Route>
+            <Route path="/forumpost" element={<ForumPost />}></Route>
             <Route
               path="/recommendations"
               element={<Recommendations />}
