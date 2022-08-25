@@ -37,7 +37,7 @@ export default function Forums() {
         <br />
         <button
           onClick={() => {
-            navigate('/forumplantcare');
+            navigate('/forumnewsfeed');
           }}
         >
           Enter Plant Care
@@ -53,14 +53,15 @@ export default function Forums() {
           Enter Trading Post
         </button>
       </div>
+      <br />
 
-      <button
+      {/* <button
         onClick={() => {
           navigate('/forumnewsfeed');
         }}
       >
         Add Forum Post
-      </button>
+      </button> */}
       <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">

@@ -1,4 +1,4 @@
-//forum comments
+//forum comments prior to linking to post only
 import {
   onChildAdded,
   onChildChanged,
@@ -14,10 +14,20 @@ import { UserContext } from '../App';
 
 export default function ForumComments(props) {
   const navigate = useNavigate();
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
   const [comment, setComment] = useState('');
+
   // const [newData, setNewData] = useState({});
-  const [messages, setMessages] = useState(props);
+  // const [messages, setMessages] = useState({
+  //   val: { title: '', user: '', imageLink: '', messages: '' },
+  // });
+
+  console.log(props.messages);
+  const messages = props.messages;
+  const index = props.index;
+  const user = props.user;
+
+  // const index = props.index;
 
   const FORUM_FOLDER_NAME = 'forumTips';
 
@@ -34,58 +44,67 @@ export default function ForumComments(props) {
 
   const addComment = (comment) => {
     if (comment !== '') {
-      let msg = props.messageItem;
-      console.log(msg.val);
+      // let msg = props.messages;
+
       const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
       const updates = {};
       let newData = {
-        title: msg.val.title,
-        date: msg.val.date,
-        user: msg.val.user,
-        imageLink: msg.val.imageLink,
-        message: msg.val.message,
+        title: messages.val.title,
+        date: messages.val.date,
+        user: messages.val.user,
+        imageLink: messages.val.imageLink,
+        message: messages.val.message,
         comments: [
-          ...msg.val.comments,
-          { text: comment, user: user.displayName },
+          ...messages.val.comments,
+          {
+            text: comment,
+            user: user.displayName,
+            timestamp: new Date().toLocaleString(),
+          },
         ],
       };
-      updates[msg.key] = newData;
+      updates[messages.key] = newData;
       update(messageListRef, updates).then(() => {
         console.log('reply added');
+        setComment('');
       });
     }
   };
 
-  console.log(props.messageItem);
-  let comments = props.messageItem.val.comments.filter(
-    (comment) => comment.text.length > 0
-  );
+  let commentsList = [];
+  let postComments = [];
+  if (messages.val.comments !== undefined) {
+    commentsList = messages.val.comments.filter(
+      (comment) => comment.user !== ''
+    );
+    postComments = commentsList.map((comment) => (
+      <div key={comment.key}>
+        <h6>
+          {comment.user} : {comment.text}
+          <br />
+          {comment.timestamp}
+        </h6>
+      </div>
+    ));
+  }
 
   return (
-    <div className="comments-box">
-      <p>Comments:</p>
-      {comments && comments.length > 0
-        ? comments.map((comment, key) => (
-            <div className="user-comments" key={key}>
-              <h6>
-                {comment.user}: {comment.text}
-              </h6>
-            </div>
-          ))
-        : null}
+    <div>
+      {postComments}
 
-      <input
-        type="text"
+      <textarea
+        rows="8"
+        cols="50"
+        placeholder="Comments here..."
         value={comment}
-        placeholder="Comments"
         onChange={(e) => setComment(e.target.value)}
-      />
+      ></textarea>
+      <br />
       <input
         type="submit"
         value="comment"
         onClick={() => {
           addComment(comment);
-          setComment('');
         }}
       />
     </div>

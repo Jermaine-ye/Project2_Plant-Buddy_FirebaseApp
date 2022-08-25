@@ -1,21 +1,17 @@
-// newsfeed
+// newsfeed working
 import {
   onChildAdded,
   onChildChanged,
-  update,
-  set,
-  push,
   ref as databaseRef,
 } from 'firebase/database';
-import { database, auth } from '../DB/firebase';
+import { database } from '../DB/firebase';
 import { useNavigate, Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
-import ForumComments from './ForumComments';
+
 import ForumComposer from './ForumComposer';
 
-// top level folder name
-const FORUM_FOLDER_NAME = 'forumTips'; // for ur case should be forumTips or forumTrade
+const FORUM_FOLDER_NAME = 'forumTips';
 
 export default function ForumNewsFeed(props) {
   const navigate = useNavigate();
@@ -40,9 +36,6 @@ export default function ForumNewsFeed(props) {
     onChildAdded(messagesRef, (data) => {
       setMessages((prev) => [...prev, { key: data.key, val: data.val() }]);
     });
-    // return () => {
-    //   setMessages([]);
-    // };
   }, []);
 
   //for listening to comments
@@ -66,81 +59,57 @@ export default function ForumNewsFeed(props) {
     });
   }, []);
 
-  let messageCards = messages.map(([key, element], i) => {
+  // let messageCards = messages.map((messages, i) => {
+  //   return (
+  //     <div key={messages.key}>
+  //       {/* <Link to={`forumpost/${i}`} state={{ messages}}>
+  //         {console.log(messages)}
+  //         Go To Post
+  //       </Link> */}
+  //       {console.log('e.val', messages.val)}
+  //       <h4>{messages.val.title}</h4> <h5>{messages.val.message}</h5>
+  //       <img
+  //         src={messages.val.imageLink}
+  //         alt={messages.val.title}
+  //         width="400vw"
+  //       />
+  //       <h6>
+  //         {messages.val.date}
+  //         <br />
+  //         posted by: {messages.val.user}
+  //       </h6>
+  //       <ForumComments messageItem={messages} />
+  //     </div>
+  //   );
+  // });
+
+  let titleOnly = messages.map((messages, index) => {
     return (
-      <div clasName="messageFeed" key={i} id={key}>
-        {/* <Link to={`/forumpost/${i}`}>
-                <button
-                  onClick={() => props.currentMessage(element, i)}
-                >
-                  Go To Post
-                </button>
-              </Link> */}
-        {console.log('e.val', element.val)}
-        <h4>{element.val.title}</h4> <h5>{element.val.message}</h5>
-        <img
-          src={element.val.imageLink}
-          alt={element.val.title}
-          width="400vw"
-        />
+      <div key={messages.key}>
+        <button>
+          <Link to={`forumpost/${index}`} state={{ messages }}>
+            {console.log(messages)}
+            Go To Post
+          </Link>
+        </button>
+        {console.log('e.val', messages.val)}
+        <h5>{messages.val.title}</h5> <h5>{messages.val.message}</h5>
+        {/* <img
+            src={messages.val.imageLink}
+            alt={messages.val.title}
+            width="400vw"
+          /> */}
         <h6>
-          {element.val.date}
+          {messages.val.date}
           <br />
-          posted by: {element.val.user}
+          posted by: {messages.val.user}
         </h6>
-        <ForumComments messageItem={element} />
+        {/* <ForumComments user={user} messages={messages} index={index} /> */}
       </div>
     );
   });
 
-  messageCards.reverse();
-
-  // to render user's list of plants in dashboard view
-  const plantCards = Object.entries(userPlants).map(
-    ([plantEntryKey, plantData], index) => {
-      return (
-        <div className="plantCard" key={index} id={plantEntryKey}>
-          <img
-            alt={plantData.plantName}
-            src={plantData.plantImageUrl}
-            width="50%%"
-          />
-
-          <button
-            onClick={() => {
-              setSelectedPlantProfile({ [plantEntryKey]: plantData });
-            }}
-          >
-            {plantData.plantFamily}
-          </button>
-
-          <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
-          <p>Sunlight Intensity: {plantData.sunlightReq} </p>
-          {/* {console.log(plant[userPlantFamily])} */}
-          {/* to show up if calendar prompts to water today */}
-          {!plantWatered ? (
-            <div>
-              <p>Reminder to water today!</p>
-              <p> Have you watered {plantData.plantName}?</p>
-              <input
-                id={index}
-                type="checkbox"
-                checked={
-                  new Date().toLocaleDateString() ===
-                  plantData.dateLastWateredCheck
-                }
-                disabled={plantWatered}
-                onChange={(e, index) => {
-                  const updatedData = {
-                    ...plantData,
-                    dateLastWatered: new Date(),
-                    dateLastWateredCheck: new Date().toLocaleDateString(),
-                  };
-                  update(userPlantRef, { [plantEntryKey]: updatedData });
-                }}
-              />
-            </div>
-          ) : null}
+  titleOnly.reverse();
 
   return (
     <div>
@@ -149,13 +118,14 @@ export default function ForumNewsFeed(props) {
           navigate('/forums');
         }}
       >
-        Back to Forum
+        Back to Main Forum Site
       </button>
       <br />
-      <br />
-      {messages && messages.length > 0
+
+      {/* {messages && messages.length > 0
         ? messageCards
-        : '=Welcome to plant tips='}
+        : '=Welcome to plant tips='} */}
+      {messages && messages.length > 0 ? titleOnly : '=Welcome to plant tips='}
       <br />
       <br />
       <ForumComposer />

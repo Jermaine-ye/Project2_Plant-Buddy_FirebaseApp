@@ -63,7 +63,10 @@ function App() {
             <Route path="/forums" element={<Forums />}></Route>
             <Route path="/forumnewsfeed" element={<ForumNewsFeed />}></Route>
             <Route path="/forumplantcare" element={<ForumPlantCare />}></Route>
-            <Route path="/forumpost" element={<ForumPost />}></Route>
+            <Route
+              path="/forumnewsfeed/forumpost/:pg"
+              element={<ForumPost />}
+            ></Route>
             <Route
               path="/recommendations"
               element={<Recommendations />}
