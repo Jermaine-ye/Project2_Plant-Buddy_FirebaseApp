@@ -72,7 +72,6 @@ export default function Community(props) {
           Title: {post.val.title} | By: {post.val.author} | Likes:{' '}
           {post.val.likes}|{' '}
           <Link to={`posts/${index}`} state={{ post }}>
-            {console.log(post)}
             Go To Post
           </Link>
           <Likes user={user} post={post} index={index} />
@@ -99,11 +98,19 @@ export default function Community(props) {
     let list = [];
     console.log(search);
     console.log(posts);
-    console.log(posts[0].val.title);
     if (search.length > 0) {
+<<<<<<< HEAD
       let searchItem = posts.filter((post) =>
         post.val.title.toLowerCase().includes(search)
       );
+=======
+      let searchItem = posts.filter((post) => {
+        return (
+          post.val.title.toLowerCase().includes(search.toLowerCase()) ||
+          post.val.author.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+>>>>>>> main
       console.log(searchItem);
       setSearchFeed(searchItem);
     }
