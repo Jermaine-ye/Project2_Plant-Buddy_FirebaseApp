@@ -11,7 +11,7 @@ import Likes from "./CommunityLikes";
 import Comments from "./CommunityComments";
 
 export default function Post(props) {
-  const [posts, setPosts] = useState([]);
+  // const [posts, setPosts] = useState([]);
   const [post, setPost] = useState({});
   const [render, setRender] = useState(false);
   const user = useContext(UserContext);
