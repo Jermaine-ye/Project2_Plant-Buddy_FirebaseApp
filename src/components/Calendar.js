@@ -73,7 +73,7 @@ export default function PlantCalendar(props) {
     let startDate = startOfWeek(currDate);
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div className="calendar-row-item">
+        <div key={i} className="calendar-row-item">
           {format(addDays(startDate, i), dateFormat)}
         </div>
       );
@@ -97,6 +97,7 @@ export default function PlantCalendar(props) {
         const day1 = day;
         days.push(
           <div
+            key={i}
             className={`calendar-row-item ${
               isSameDay(currDate, day) ? "today" : null
             } ${isSameDay(day, selectedDate) ? "selected-date" : null}`}

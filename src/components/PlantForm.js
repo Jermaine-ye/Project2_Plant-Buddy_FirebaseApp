@@ -9,6 +9,8 @@ import {
 } from "firebase/storage";
 import { database, storage } from "../DB/firebase";
 
+import { Button, Title, Autocomplete, ScrollArea } from "@mantine/core";
+
 const USER_PLANT_FOLDER_NAME = "userPlants/";
 const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
 const PLANTS_FOLDER_NAME = "allPlants";
@@ -157,7 +159,8 @@ export default function PlantForm() {
   const searchPlantResults = plantList
     .filter((plant) => plant.plantFamily.includes(searchTerm))
     .map((plant, index) => (
-      <button
+      <Button
+        color="moss"
         key={index}
         onClick={(e) => {
           console.log(plant);
@@ -165,12 +168,13 @@ export default function PlantForm() {
         }}
       >
         {plant.plantFamily}
-      </button>
+      </Button>
     ));
 
   // list of plant choices for user to select for recommended plant care
   const plantsDB = plantList.map((plant, index) => (
-    <button
+    <Button
+      color="seashell"
       key={index}
       onClick={(e) => {
         console.log(plant);
@@ -178,15 +182,15 @@ export default function PlantForm() {
       }}
     >
       {plant.plantFamily}
-    </button>
+    </Button>
   ));
 
   // generate recommended care for selectedPlant in plantform
   const selectedPlantForm = (
     <div>
-      <h3>
+      <Title order={3}>
         {user.displayName}'s {!selectedPlant ? null : selectedPlant.plantFamily}
-      </h3>
+      </Title>
       <h5>Recommended Care:</h5>
       <p>{selectedPlant.plantInfo["Possible Issues"]}</p>
       <img alt={selectedPlant.plantFamily} src={selectedPlant.plantInfo.url} />
@@ -232,9 +236,9 @@ export default function PlantForm() {
   // generate new plant species care routine if plant not in plantsDB
   const newPlantSpeciesForm = (
     <div>
-      <h3>
+      <Title order={3}>
         {user.displayName}'s {plantFamily ? plantFamily : "New Buddy"}
-      </h3>
+      </Title>
       <label>
         Plant Family:
         <input
@@ -351,7 +355,7 @@ export default function PlantForm() {
         <br />
 
         {/*  */}
-        <button type="submit">Add Plant</button>
+        <Button type="submit">Add Plant</Button>
       </form>
     </div>
   );
@@ -359,13 +363,14 @@ export default function PlantForm() {
   return (
     <div>
       {/* FIRST SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
-      <button
+      <Button
+        color="seashell"
         onClick={() => {
           navigate("/");
         }}
       >
         Back to Dashboard
-      </button>
+      </Button>
 
       <h1>New Plant Buddy</h1>
       <input
@@ -375,16 +380,24 @@ export default function PlantForm() {
           handleSearchPlantFamily(e);
         }}
       />
-      <br />
+      <Autocomplete
+        label="Enter plant family"
+        placeholder="Search from our library"
+        data={plantList.map((plant) => plant.plantFamily)}
+        value={searchTerm}
+        limit={plantList.length}
+        onChange={setSearchTerm}
+      />
+      {/* <br />
       {!searchTerm ? (
         plantsDB
       ) : searchPlantResults.length > 0 ? (
         searchPlantResults
       ) : (
         <p>No plants found!</p>
-      )}
+      )} */}
       <br />
-      <button
+      <Button
         onClick={(e) => {
           setPlantFamily("");
           setWaterFrequency("");
@@ -394,7 +407,7 @@ export default function PlantForm() {
         }}
       >
         Add New Plant Family
-      </button>
+      </Button>
       <br />
 
       {/* SECOND SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}

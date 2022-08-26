@@ -2,7 +2,7 @@ import { UserContext } from "../App";
 
 // imports for react
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Outlet } from "react-router-dom";
 
 // imports for firebase
 import { auth, database } from "../DB/firebase";
@@ -10,10 +10,13 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { ref as databaseRef, onChildAdded } from "firebase/database";
 
 // imports for components
-// import PlantCalendar from "./Calendar"; // to be shifted to nest under plantgarden
 import WeatherModal from "./WeatherModal";
 import PlantGarden from "./PlantGarden";
 import PlantInfo from "./PlantInfo";
+
+// imports for styling
+import { Title } from "@mantine/core";
+import { HeaderMiddle } from "../Styles/Header";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -23,13 +26,12 @@ export default function Dashboard(props) {
 
   //user info
   const user = useContext(UserContext);
-
   // navigate to login if there's no user data upon npm start/refresh
   if (!user) {
     localStorage.setItem("user", JSON.stringify({}));
   }
 
-  // includes checking of auth status and load user's plants from realtime database
+  // includes checking of auth status
   useEffect(() => {
     // for checking of user logged in status
     onAuthStateChanged(auth, (signedInUser) => {
@@ -41,8 +43,10 @@ export default function Dashboard(props) {
         navigate("/login");
       }
     });
+  });
 
-    // for retrieving user's plants and storing in state
+  // for retrieving user's plants and storing in state
+  useEffect(() => {
     const userPlantRef = databaseRef(
       database,
       USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
@@ -69,7 +73,6 @@ export default function Dashboard(props) {
   const [selectedPlantProfile, setSelectedPlantProfile] = useState({});
 
   // reminder
-  const [showReminder, setShowReminder] = useState(false);
   const [plantWatered, setPlantWatered] = useState(false);
 
   const logout = () => {
@@ -118,9 +121,11 @@ export default function Dashboard(props) {
     </div>
   ));
 
+  ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
-      {/* DO NOT TOUCH */}
+      {/* <HeaderMiddle /> */}
+
       <div>
         {user ? <h2>Good morning, {user.displayName}</h2> : null}
         <button
@@ -131,17 +136,11 @@ export default function Dashboard(props) {
           Logout
         </button>
       </div>
-      <h1>DASHBOARD</h1>
-      {/* <div>
-        <h3>Calendar placeholder</h3>
-        <PlantCalendar /> // shifted to nest under PlantGarden
-      </div> */}
+      <Title>DASHBOARD</Title>
       <div>
         <h3>Weather API placeholder</h3>
         <WeatherModal />
       </div>
-
-      {/* TO EDIT: list user's plants */}
       <div>
         <PlantGarden />
       </div>
@@ -150,7 +149,6 @@ export default function Dashboard(props) {
         <PlantInfo selectedPlantProfile={selectedPlantProfile} />
       ) : null}
 
-      {/* DO NOT TOUCH - TO COMMENT AFTER DONE WITH PLANT INFO*/}
       <Link to={`/addnewplant`}>
         <button>Add A New Plant!</button>
       </Link>
