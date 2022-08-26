@@ -1,4 +1,4 @@
-// newsfeed
+// composer
 import {
   onChildAdded,
   onChildChanged,
@@ -78,13 +78,24 @@ export default function ForumComposer(props) {
     setFileInputValue(event.target.value);
   };
 
-  const submitPost = (e) => {
-    e.preventDefault();
+  const submitPost = (downloadUrl) => {
     let timeStamp = new Date().toLocaleString();
+    const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
+    const newMessageRef = push(messageListRef);
+    set(newMessageRef, {
+      title: titleInput,
+      date: timeStamp,
+      imageLink: downloadUrl,
+      user: user.displayName,
+      message: inputMessage,
+      comments: [{ text: '', user: '' }],
+    });
+    setInputMessage('');
+    setTitleInput('');
+  };
 
-    // declare folder path
-    //     const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
-    // const newMessageRef = push(messageListRef);
+  const uploadImage = (e) => {
+    e.preventDefault();
     const fileRef = storageRef(
       storage,
       FORUM_IMAGES_FOLDER_NAME + '/' + fileInputFile.name
@@ -92,23 +103,11 @@ export default function ForumComposer(props) {
 
     uploadBytes(fileRef, fileInputFile).then(() => {
       getDownloadURL(fileRef).then((downloadUrl) => {
-        const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
-        const newMessageRef = push(messageListRef);
-        set(newMessageRef, {
-          title: titleInput,
-          date: timeStamp,
-          imageLink: downloadUrl,
-          user: user.displayName,
-          message: inputMessage,
-          comments: [{ text: '', user: '' }],
-        });
-
         alert('new post added');
         console.log('New Post Added');
         setFileInputFile(null);
         setFileInputValue('');
-        setInputMessage('');
-        setTitleInput('');
+        return submitPost(downloadUrl);
       });
     });
   };
@@ -142,7 +141,7 @@ export default function ForumComposer(props) {
           type="submit"
           value="Add New Post"
           onClick={(e) => {
-            fileInputFile ? submitPost(e) : submitPost('');
+            fileInputFile ? uploadImage(e) : submitPost('');
           }}
           disabled={!inputMessage}
         />

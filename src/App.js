@@ -16,7 +16,6 @@ import Forums from './components/Forums';
 import Recommendations from './components/Recommendations';
 import AddPost from './components/AddPost';
 import ForumNewsFeed from './components/ForumNewsFeed';
-import ForumPlantCare from './components/ForumPlantCare';
 import ForumPost from './components/ForumPost';
 
 // for import of styles

@@ -18,10 +18,6 @@ export default function Forums() {
     }
   });
 
-  // const addPost = () => {
-  //   console.log('redirecting to new post page');
-  // };
-
   return (
     <div>
       <div>
@@ -44,8 +40,6 @@ export default function Forums() {
 
             navigate('/forums/forumTips');
             console.log(currForum);
-
-            //set a state navigate to " plantcaretip"
           }}
         >
           Enter Plant Care
@@ -58,8 +52,6 @@ export default function Forums() {
             setCurrForum('/forumTrading');
             navigate('/forums/forumTrading');
             console.log(currForum);
-            //setstate for forum trading
-            //useLocation to pass a prop directly
           }}
         >
           Enter Trading Post
@@ -67,13 +59,6 @@ export default function Forums() {
       </div>
       <br />
 
-      {/* <button
-        onClick={() => {
-          navigate('/forumnewsfeed');
-        }}
-      >
-        Add Forum Post
-      </button> */}
       <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">

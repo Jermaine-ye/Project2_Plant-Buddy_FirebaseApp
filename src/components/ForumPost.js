@@ -78,11 +78,13 @@ export default function ForumPost(props) {
 
         <h6>{messages.val.message}</h6>
         <br />
-        <img
-          src={messages.val.imageLink}
-          alt={messages.val.title}
-          width="400vw"
-        />
+        {messages.val.imageLink !== '' ? (
+          <img
+            src={messages.val.imageLink}
+            alt={messages.val.title}
+            width="400vw"
+          />
+        ) : null}
         <br />
         <h5>Comments:</h5>
         <ForumComments user={user} messages={messages} index={post} />

@@ -79,13 +79,11 @@ export default function ForumComments(props) {
       (comment) => comment.user !== ''
     );
     postComments = commentsList.map((comment) => (
-      <div key={comment.key}>
-        <h6>
-          {comment.user} : {comment.text}
-          <br />
-          {comment.timestamp}
-        </h6>
-      </div>
+      <h6 key={comment.key}>
+        {comment.user} : {comment.text}
+        <br />
+        {comment.timestamp}
+      </h6>
     ));
   }
 

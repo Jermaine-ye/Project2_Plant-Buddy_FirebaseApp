@@ -1,7 +1,7 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../App";
-import communityheader from "../styling/Drawkit Plants/Drawkit_02_Community.png";
+import { useNavigate, Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../App';
+import communityheader from '../styling/Drawkit Plants/Drawkit_02_Community.png';
 
 //styling imports
 import {
@@ -15,12 +15,13 @@ import {
   Badge,
   Modal,
   Input,
-} from "@mantine/core";
+} from '@mantine/core';
 import {
   ChatBubbleIcon,
   MagnifyingGlassIcon,
   PersonIcon,
-} from "@radix-ui/react-icons";
+} from '@radix-ui/react-icons';
+
 //firebase imports
 import {
   onChildAdded,
@@ -29,14 +30,11 @@ import {
 } from 'firebase/database';
 import { database } from '../DB/firebase';
 
-
-
 //child components
+
 import Likes from './CommunityLikes';
 import Comments from './CommunityComments';
-import { parseWithOptions } from 'date-fns/fp';
-import AddPost from "./AddPost";
-
+import AddPost from './AddPost';
 
 export default function Community(props) {
   const [posts, setPosts] = useState([]);
@@ -72,7 +70,7 @@ export default function Community(props) {
     if (comList.includes(index)) {
       let i = comList.indexOf(index);
       comList.splice(i, 1);
-      console.log("splicing");
+      console.log('splicing');
     } else {
       comList.push(index);
     }
@@ -101,37 +99,12 @@ export default function Community(props) {
   const postFeed = posts.map((post, index) => {
     return (
       <div>
-<<<<<<< HEAD
-        <li key={post.key}>
-          Title: {post.val.title} | By: {post.val.author} | Likes:{' '}
-          {post.val.likes}|{' '}
-          <Link to={`posts/${index}`} state={{ post }}>
-            Go To Post
-          </Link>
-          <Likes user={user} post={post} index={index} />
-          <br />
-          <img
-            className="community-post-img"
-            src={post.val.imageurl}
-            alt={post.val.imageurl}
-          />
-          <br />
-          Comments:{' '}
-          <Comments
-            user={user}
-            post={post}
-            index={index}
-            // handleUpdates={() => handleUpdates()}
-          />
-          <br />
-        </li>
-=======
         <Card
           shadow="sm"
           p="lg"
           radius="md"
           withBorder
-          sx={{ width: "85vw", color: "#1f3b2c" }}
+          sx={{ width: '85vw', color: '#1f3b2c' }}
         >
           <li key={post.key} className="community-list-item">
             <CardSection p="xs">
@@ -197,7 +170,6 @@ export default function Community(props) {
           </li>
         </Card>
         <br />
->>>>>>> main
       </div>
     );
   });
@@ -210,11 +182,7 @@ export default function Community(props) {
           post.val.author.toLowerCase().includes(search.toLowerCase())
         );
       });
-<<<<<<< HEAD
 
-      console.log(searchItem);
-=======
->>>>>>> main
       setSearchFeed(searchItem);
     }
   };
@@ -225,38 +193,12 @@ export default function Community(props) {
   const searchList = searchFeed.map((post, index) => {
     return (
       <div>
-<<<<<<< HEAD
-        <li key={post.key}>
-          Title: {post.val.title} | By: {post.val.author} | Likes:{' '}
-          {post.val.likes}|{' '}
-          <Link to={`posts/${index}`} state={{ post }}>
-            {console.log(post)}
-            Go To Post
-          </Link>
-          <Likes user={user} post={post} index={index} />
-          <br />
-          <img
-            className="community-post-img"
-            src={post.val.imageurl}
-            alt={post.val.imageurl}
-          />
-          <br />
-          Comments:{' '}
-          <Comments
-            user={user}
-            post={post}
-            index={index}
-            // handleUpdates={() => handleUpdates()}
-          />
-          <br />
-        </li>
-=======
         <Card
           shadow="sm"
           p="lg"
           radius="md"
           withBorder
-          sx={{ width: "85vw", color: "#1f3b2c" }}
+          sx={{ width: '85vw', color: '#1f3b2c' }}
         >
           <li key={post.key} className="community-list-item">
             <CardSection p="xs">
@@ -321,7 +263,6 @@ export default function Community(props) {
           </li>
         </Card>
         <br />
->>>>>>> main
       </div>
     );
   });
@@ -365,11 +306,7 @@ export default function Community(props) {
           size="xs"
           compact
           onClick={() => {
-<<<<<<< HEAD
-            navigate('/addnewpost');
-=======
             setAddPost(true);
->>>>>>> main
           }}
         >
           Add to Community Feed!
