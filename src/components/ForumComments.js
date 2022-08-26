@@ -1,4 +1,4 @@
-//forum comments prior to linking to post only
+//forum comments working
 import {
   onChildAdded,
   onChildChanged,
@@ -8,7 +8,7 @@ import {
   ref as databaseRef,
 } from 'firebase/database';
 import { database, auth } from '../DB/firebase';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 
@@ -16,6 +16,7 @@ export default function ForumComments(props) {
   const navigate = useNavigate();
   // const user = useContext(UserContext);
   const [comment, setComment] = useState('');
+  const { topic } = useParams();
 
   // const [newData, setNewData] = useState({});
   // const [messages, setMessages] = useState({
@@ -29,7 +30,7 @@ export default function ForumComments(props) {
 
   // const index = props.index;
 
-  const FORUM_FOLDER_NAME = 'forumTips';
+  const FORUM_FOLDER_NAME = topic;
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page

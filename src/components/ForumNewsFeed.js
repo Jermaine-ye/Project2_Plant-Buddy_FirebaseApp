@@ -5,20 +5,22 @@ import {
   ref as databaseRef,
 } from 'firebase/database';
 import { database } from '../DB/firebase';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 
 import ForumComposer from './ForumComposer';
 
-const FORUM_FOLDER_NAME = 'forumTips';
-
 export default function ForumNewsFeed(props) {
   const navigate = useNavigate();
+  const { topic } = useParams();
   const user = useContext(UserContext);
-  // const [titleInput, setTitleInput] = useState('');
-  // const [inputMessage, setInputMessage] = useState('');
+  const [search, setSearch] = useState('');
+  const [searchFeed, setSearchFeed] = useState([]);
   const [messages, setMessages] = useState([]);
+
+  //useParams to point to forumfoldername so it does not show empty state on back
+  const FORUM_FOLDER_NAME = topic;
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -59,30 +61,6 @@ export default function ForumNewsFeed(props) {
     });
   }, []);
 
-  // let messageCards = messages.map((messages, i) => {
-  //   return (
-  //     <div key={messages.key}>
-  //       {/* <Link to={`forumpost/${i}`} state={{ messages}}>
-  //         {console.log(messages)}
-  //         Go To Post
-  //       </Link> */}
-  //       {console.log('e.val', messages.val)}
-  //       <h4>{messages.val.title}</h4> <h5>{messages.val.message}</h5>
-  //       <img
-  //         src={messages.val.imageLink}
-  //         alt={messages.val.title}
-  //         width="400vw"
-  //       />
-  //       <h6>
-  //         {messages.val.date}
-  //         <br />
-  //         posted by: {messages.val.user}
-  //       </h6>
-  //       <ForumComments messageItem={messages} />
-  //     </div>
-  //   );
-  // });
-
   let titleOnly = messages.map((messages, index) => {
     return (
       <div key={messages.key}>
@@ -109,6 +87,42 @@ export default function ForumNewsFeed(props) {
     );
   });
 
+  const searchTheFeed = (search) => {
+    console.log(search);
+    console.log(messages);
+    if (search.length > 0) {
+      let searchItem = messages.filter((messages) => {
+        return (
+          messages.val.title.toLowerCase().includes(search.toLowerCase()) ||
+          messages.val.user.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+
+      console.log(searchItem);
+      setSearchFeed(searchItem);
+    }
+  };
+
+  let searchList = searchFeed.map((messages, index) => {
+    return (
+      <div key={messages.key}>
+        <button>
+          <Link to={`forumpost/${index}`} state={{ messages }}>
+            {console.log(messages)}
+            Go To Post
+          </Link>
+        </button>
+        {console.log('e.val', messages.val)}
+        <h5>{messages.val.title}</h5> <h5>{messages.val.message}</h5>
+        <h6>
+          {messages.val.date}
+          <br />
+          posted by: {messages.val.user}
+        </h6>
+      </div>
+    );
+  });
+
   titleOnly.reverse();
 
   return (
@@ -125,7 +139,28 @@ export default function ForumNewsFeed(props) {
       {/* {messages && messages.length > 0
         ? messageCards
         : '=Welcome to plant tips='} */}
-      {messages && messages.length > 0 ? titleOnly : '=Welcome to plant tips='}
+      {/* {messages && messages.length > 0 ? titleOnly : '=Welcome to plant tips='} */}
+      <br />
+      <input
+        type="text"
+        placeholder="Search"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+          searchTheFeed(e.target.value);
+        }}
+      />
+
+      {titleOnly.length > 0 && search.length == 0 ? (
+        <div>
+          <ul>{titleOnly}</ul>
+        </div>
+      ) : (
+        <div>
+          <ul>{searchList}</ul>
+        </div>
+      )}
+
       <br />
       <br />
       <ForumComposer />

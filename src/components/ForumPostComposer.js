@@ -13,24 +13,25 @@ import {
   uploadBytes,
 } from 'firebase/storage';
 import { database, storage } from '../DB/firebase';
-import { useNavigate, Link, useParams } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 // import ForumComments from './ForumComments';
 
+// top level folder name
+const FORUM_FOLDER_NAME = 'forumTips'; // for ur case should be forumTips or forumTrade
+const FORUM_IMAGES_FOLDER_NAME = 'images';
+
 export default function ForumComposer(props) {
   const navigate = useNavigate();
-  const { topic } = useParams();
   const user = useContext(UserContext);
   const [fileInputFile, setFileInputFile] = useState(null);
   const [fileInputValue, setFileInputValue] = useState('');
   // const [imagesArray, setImagesArray] = useState([]);
   const [titleInput, setTitleInput] = useState('');
   const [inputMessage, setInputMessage] = useState('');
+  const [forumNameInput, setforumNameInput] = useState('');
   // const [messages, setMessages] = useState([]);
-
-  const FORUM_FOLDER_NAME = topic;
-  const FORUM_IMAGES_FOLDER_NAME = 'images';
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -42,42 +43,6 @@ export default function ForumComposer(props) {
     }
   }, []);
 
-  // useEffect(() => {
-  //   const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
-  //   // onChildAdded will return data for every child at the reference and every subsequent new child
-  //   onChildAdded(messagesRef, (data) => {
-  //     setMessages((prev) => [...prev, { key: data.key, val: data.val() }]);
-  //   });
-  //   return () => {
-  //     setMessages([]);
-  //   };
-  // }, []);
-
-  // useEffect(() => {
-  //   const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
-
-  //   // onChildAdded will return data for every child at the reference and every subsequent new child
-  //   onChildChanged(messagesRef, (data) => {
-  //     console.log('useEffectCA: ', messages);
-  //     console.log('useEffectCASnapshot: ', data);
-
-  //     setMessages((prevState) => {
-  //       let newState = [...prevState];
-  //       for (let post of newState) {
-  //         if (post.key == data.key) {
-  //           post.val = data.val();
-  //         }
-  //       }
-  //       return newState;
-  //     });
-  //   });
-  // }, []);
-
-  const handleFileInputChange = (event) => {
-    setFileInputFile(event.target.files[0]);
-    setFileInputValue(event.target.value);
-  };
-
   const submitPost = (e) => {
     e.preventDefault();
     let timeStamp = new Date().toLocaleString();
@@ -87,12 +52,12 @@ export default function ForumComposer(props) {
     // const newMessageRef = push(messageListRef);
     const fileRef = storageRef(
       storage,
-      FORUM_IMAGES_FOLDER_NAME + '/' + fileInputFile.name
+      forumNameInput + '/' + fileInputFile.name
     );
 
     uploadBytes(fileRef, fileInputFile).then(() => {
       getDownloadURL(fileRef).then((downloadUrl) => {
-        const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
+        const messageListRef = databaseRef(database, forumNameInput);
         const newMessageRef = push(messageListRef);
         set(newMessageRef, {
           title: titleInput,
@@ -123,11 +88,7 @@ export default function ForumComposer(props) {
           onChange={(e) => setTitleInput(e.target.value)}
         />
         <br />
-        <input
-          type="file"
-          value={fileInputValue}
-          onChange={handleFileInputChange}
-        />
+
         <br />
         <br />
         <textarea
@@ -141,9 +102,7 @@ export default function ForumComposer(props) {
         <input
           type="submit"
           value="Add New Post"
-          onClick={(e) => {
-            fileInputFile ? submitPost(e) : submitPost('');
-          }}
+          onClick={(e) => submitPost(e)}
           disabled={!inputMessage}
         />
       </form>

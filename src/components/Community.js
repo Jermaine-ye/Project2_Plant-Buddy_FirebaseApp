@@ -99,18 +99,13 @@ export default function Community(props) {
     console.log(search);
     console.log(posts);
     if (search.length > 0) {
-<<<<<<< HEAD
-      let searchItem = posts.filter((post) =>
-        post.val.title.toLowerCase().includes(search)
-      );
-=======
       let searchItem = posts.filter((post) => {
         return (
           post.val.title.toLowerCase().includes(search.toLowerCase()) ||
           post.val.author.toLowerCase().includes(search.toLowerCase())
         );
       });
->>>>>>> main
+
       console.log(searchItem);
       setSearchFeed(searchItem);
     }

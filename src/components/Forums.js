@@ -1,5 +1,5 @@
-import { useNavigate, Link } from 'react-router-dom';
-import { useContext, useEffect } from 'react';
+import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 
 import plantCare from '../images/watering-plants.jpg';
@@ -8,6 +8,9 @@ import plantswap from '../images/plant-swap.jpg';
 export default function Forums() {
   const user = useContext(UserContext);
   const navigate = useNavigate();
+
+  const [currForum, setCurrForum] = useState('');
+
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
     if (Object.keys(user) == 0) {
@@ -37,7 +40,12 @@ export default function Forums() {
         <br />
         <button
           onClick={() => {
-            navigate('/forumnewsfeed');
+            setCurrForum('/forumTips');
+
+            navigate('/forums/forumTips');
+            console.log(currForum);
+
+            //set a state navigate to " plantcaretip"
           }}
         >
           Enter Plant Care
@@ -47,7 +55,11 @@ export default function Forums() {
         <br />
         <button
           onClick={() => {
-            navigate('/forumtrading');
+            setCurrForum('/forumTrading');
+            navigate('/forums/forumTrading');
+            console.log(currForum);
+            //setstate for forum trading
+            //useLocation to pass a prop directly
           }}
         >
           Enter Trading Post

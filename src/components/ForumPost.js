@@ -12,13 +12,13 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 import ForumComments from './ForumComments';
-import ForumComposer from './ForumComposer';
-
-const FORUM_FOLDER_NAME = 'forumTips';
+// import ForumComposer from './ForumComposer';
 
 export default function ForumPost(props) {
   const navigate = useNavigate();
   const user = useContext(UserContext);
+  const { topic } = useParams();
+  const FORUM_FOLDER_NAME = topic;
 
   const [messages, setMessages] = useState({
     key: '',
@@ -26,7 +26,7 @@ export default function ForumPost(props) {
     // val: { title: '', user: '', imageLink: '', messages: '' },
   });
 
-  const { pg } = useParams();
+  const { post } = useParams();
   const location = useLocation();
 
   useEffect(() => {
@@ -61,13 +61,12 @@ export default function ForumPost(props) {
 
   return (
     <div>
-      <button
-        onClick={() => {
-          navigate('/forums');
-        }}
-      >
-        Back to Main Forum Site
-      </button>
+      <input
+        type="submit"
+        value="Back to Feed"
+        onClick={() => navigate(`/forums/${topic}`)}
+      />
+
       <div>
         <h5>
           Title:
@@ -86,15 +85,16 @@ export default function ForumPost(props) {
         />
         <br />
         <h5>Comments:</h5>
-        <ForumComments user={user} messages={messages} index={pg} />
+        <ForumComments user={user} messages={messages} index={post} />
         <br />
       </div>
-
-      <input
-        type="submit"
-        value="Back to Feed"
-        onClick={() => navigate('/forumnewsfeed')}
-      />
+      <button
+        onClick={() => {
+          navigate('/forums');
+        }}
+      >
+        Back to Main Forum Site
+      </button>
     </div>
   );
 }

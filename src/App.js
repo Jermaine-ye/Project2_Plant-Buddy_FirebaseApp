@@ -61,12 +61,15 @@ function App() {
             <Route path="community/posts/:id" element={<Post />}></Route>
             <Route path="/addnewpost" element={<AddPost />}></Route>
             <Route path="/forums" element={<Forums />}></Route>
-            <Route path="/forumnewsfeed" element={<ForumNewsFeed />}></Route>
-            <Route path="/forumplantcare" element={<ForumPlantCare />}></Route>
+            <Route path="/forums/:topic" element={<ForumNewsFeed />}></Route>
             <Route
-              path="/forumnewsfeed/forumpost/:pg"
+              path="/forums/:topic/forumpost/:post"
               element={<ForumPost />}
             ></Route>
+            {/* <Route
+              path="/forums/forumTips/forumpost/:pg"
+              element={<ForumPost />}
+            ></Route> */}
             <Route
               path="/recommendations"
               element={<Recommendations />}
