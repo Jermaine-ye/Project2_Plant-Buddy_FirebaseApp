@@ -1,7 +1,9 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect, useContext, useState } from "react";
+import { useEffect, useContext, useState, useRef } from "react";
 import { UserContext } from "../App";
-
+import { format } from "date-fns";
+//import styling
+import { TextInput, FileInput, useInputProps, Button } from "@mantine/core";
 //import firebase
 import {
   getDownloadURL,
@@ -11,8 +13,9 @@ import {
 } from "firebase/storage";
 import { set, push, ref as databaseRef } from "firebase/database";
 import { storage, database } from "../DB/firebase";
+import { UploadIcon } from "@radix-ui/react-icons";
 
-export default function AddPost() {
+export default function AddPost(props) {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState("");
   const [fileInputFile, setFileInputFile] = useState(null);
@@ -29,6 +32,7 @@ export default function AddPost() {
     const newPostRef = push(postListRef);
     set(newPostRef, {
       date: timeStamp,
+      dateShort: format(new Date(), "dd MMM"),
       title: inputMessage,
       file: fileInputFile,
       imageurl: url,
@@ -72,23 +76,41 @@ export default function AddPost() {
   return (
     <div>
       <form>
-        <input
-          type="text"
+        <TextInput
+          label="Title"
           placeholder={inputMessage}
           onChange={(e) => setInputMessage(e.target.value)}
         />
-        <input
-          type="file"
+        <FileInput
+          label="Upload Image"
+          icon={<UploadIcon />}
           onChange={(e) => {
+            console.log(e);
+            setFileInputValue(e.name);
+            setFileInputFile(e);
+          }}
+        />
+        {/* <input
+          type="file"
+          placeholder="Upload Image"
+          onChange={(e) => {
+            console.log(e.target.files[0]);
             setFileInputValue(e.target.files[0].name);
             setFileInputFile(e.target.files[0]);
           }}
-        />
-        <input
-          type="submit"
-          value="Add New Post"
-          onClick={(e) => (fileInputFile ? uploadImage(e) : submitPost(""))}
-        />
+        /> */}
+        <br />
+        <Button
+          variant="default"
+          size="xs"
+          compact
+          onClick={(e) => {
+            fileInputFile ? uploadImage(e) : submitPost("");
+            props.closeModal();
+          }}
+        >
+          Add To Community
+        </Button>
       </form>
     </div>
   );

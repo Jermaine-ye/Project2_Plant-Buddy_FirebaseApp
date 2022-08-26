@@ -1,7 +1,26 @@
-import { useNavigate, Link } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../App';
+import { useNavigate, Link } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../App";
+import communityheader from "../styling/Drawkit Plants/Drawkit_02_Community.png";
 
+//styling imports
+import {
+  Button,
+  ActionIcon,
+  Card,
+  CardSection,
+  Image,
+  Text,
+  Grid,
+  Badge,
+  Modal,
+  Input,
+} from "@mantine/core";
+import {
+  ChatBubbleIcon,
+  MagnifyingGlassIcon,
+  PersonIcon,
+} from "@radix-ui/react-icons";
 //firebase imports
 import {
   onChildAdded,
@@ -10,10 +29,14 @@ import {
 } from 'firebase/database';
 import { database } from '../DB/firebase';
 
+
+
 //child components
 import Likes from './CommunityLikes';
 import Comments from './CommunityComments';
 import { parseWithOptions } from 'date-fns/fp';
+import AddPost from "./AddPost";
+
 
 export default function Community(props) {
   const [posts, setPosts] = useState([]);
@@ -21,6 +44,8 @@ export default function Community(props) {
   const [searchFeed, setSearchFeed] = useState([]);
   const navigate = useNavigate();
   const user = useContext(UserContext);
+  const [showCommentInput, setShowCommentInput] = useState([]);
+  const [addPost, setAddPost] = useState(false);
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -41,11 +66,19 @@ export default function Community(props) {
     });
   }, []);
 
-  // const handleUpdates = (newData, index) => {
-  //   let postsData = posts;
-  //   postsData[index].val = newData;
-  //   setPosts(postsData);
-  // };
+  const handleShowCommentInput = (index) => {
+    let comList = [...showCommentInput];
+    console.log(comList);
+    if (comList.includes(index)) {
+      let i = comList.indexOf(index);
+      comList.splice(i, 1);
+      console.log("splicing");
+    } else {
+      comList.push(index);
+    }
+    setShowCommentInput(comList);
+  };
+
   // check if this causes long reload times
   useEffect(() => {
     const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
@@ -68,6 +101,7 @@ export default function Community(props) {
   const postFeed = posts.map((post, index) => {
     return (
       <div>
+<<<<<<< HEAD
         <li key={post.key}>
           Title: {post.val.title} | By: {post.val.author} | Likes:{' '}
           {post.val.likes}|{' '}
@@ -91,13 +125,84 @@ export default function Community(props) {
           />
           <br />
         </li>
+=======
+        <Card
+          shadow="sm"
+          p="lg"
+          radius="md"
+          withBorder
+          sx={{ width: "85vw", color: "#1f3b2c" }}
+        >
+          <li key={post.key} className="community-list-item">
+            <CardSection p="xs">
+              <Grid>
+                <Grid.Col span={2}>
+                  <Badge color="teal" size="md" variant="dot">
+                    <Text size="sm">{post.val.author}</Text>
+                  </Badge>
+                </Grid.Col>
+                <Grid.Col span={10}>
+                  <Text size="xs" weight="500" align="right">
+                    {post.val.dateShort}
+                  </Text>
+                </Grid.Col>
+              </Grid>
+              <br />
+
+              <Link to={`posts/${index}`} state={{ post }}>
+                <Image
+                  className="community-post-img"
+                  src={post.val.imageurl}
+                  alt={post.val.imageurl}
+                />
+              </Link>
+            </CardSection>
+            <Grid align="center">
+              <Grid.Col span={9}>
+                <Text size="sm" weight={500} align="left">
+                  {post.val.title}
+                </Text>
+              </Grid.Col>
+              <Grid.Col span={1}>
+                <Text size="sm" align="right">
+                  {post.val.likes}
+                </Text>
+              </Grid.Col>
+              <Grid.Col span={1}>
+                <Likes user={user} post={post} index={index} />
+              </Grid.Col>
+              <Grid.Col span={1}>
+                <button
+                  type="submit"
+                  className="remove-button"
+                  onClick={() => {
+                    handleShowCommentInput(index);
+                  }}
+                >
+                  <ChatBubbleIcon />
+                </button>
+              </Grid.Col>
+            </Grid>
+            <br />
+
+            <Comments
+              showCommentInput={showCommentInput}
+              handleShowCommentInput={handleShowCommentInput}
+              user={user}
+              post={post}
+              index={index}
+              // handleUpdates={() => handleUpdates()}
+            />
+            <br />
+          </li>
+        </Card>
+        <br />
+>>>>>>> main
       </div>
     );
   });
   const searchTheFeed = (search) => {
     let list = [];
-    console.log(search);
-    console.log(posts);
     if (search.length > 0) {
       let searchItem = posts.filter((post) => {
         return (
@@ -105,15 +210,22 @@ export default function Community(props) {
           post.val.author.toLowerCase().includes(search.toLowerCase())
         );
       });
+<<<<<<< HEAD
 
       console.log(searchItem);
+=======
+>>>>>>> main
       setSearchFeed(searchItem);
     }
+  };
+  const closeModal = () => {
+    setAddPost(false);
   };
 
   const searchList = searchFeed.map((post, index) => {
     return (
       <div>
+<<<<<<< HEAD
         <li key={post.key}>
           Title: {post.val.title} | By: {post.val.author} | Likes:{' '}
           {post.val.likes}|{' '}
@@ -138,6 +250,78 @@ export default function Community(props) {
           />
           <br />
         </li>
+=======
+        <Card
+          shadow="sm"
+          p="lg"
+          radius="md"
+          withBorder
+          sx={{ width: "85vw", color: "#1f3b2c" }}
+        >
+          <li key={post.key} className="community-list-item">
+            <CardSection p="xs">
+              <Grid>
+                <Grid.Col span={2}>
+                  <Badge color="teal" size="md" variant="dot">
+                    <Text size="sm">{post.val.author}</Text>
+                  </Badge>
+                </Grid.Col>
+                <Grid.Col span={10}>
+                  <Text size="xs" weight="500" align="right">
+                    {post.val.dateShort}
+                  </Text>
+                </Grid.Col>
+              </Grid>
+
+              <Link to={`posts/${index}`} state={{ post }}>
+                <Image
+                  className="community-post-img"
+                  src={post.val.imageurl}
+                  alt={post.val.imageurl}
+                />
+              </Link>
+            </CardSection>
+            <Grid align="center">
+              <Grid.Col span={9}>
+                <Text size="sm" weight={500} align="left">
+                  {post.val.title}
+                </Text>
+              </Grid.Col>
+              <Grid.Col span={1}>
+                <Text size="sm" align="right">
+                  {post.val.likes}
+                </Text>
+              </Grid.Col>
+              <Grid.Col span={1}>
+                <Likes user={user} post={post} index={index} />
+              </Grid.Col>
+              <Grid.Col span={1}>
+                <button
+                  type="submit"
+                  className="remove-button"
+                  onClick={() => {
+                    handleShowCommentInput(index);
+                  }}
+                >
+                  <ChatBubbleIcon />
+                </button>
+              </Grid.Col>
+            </Grid>
+            <br />
+
+            <Comments
+              showCommentInput={showCommentInput}
+              handleShowCommentInput={handleShowCommentInput}
+              user={user}
+              post={post}
+              index={index}
+              // handleUpdates={() => handleUpdates()}
+            />
+            <br />
+          </li>
+        </Card>
+        <br />
+>>>>>>> main
       </div>
     );
   });
@@ -153,33 +337,52 @@ export default function Community(props) {
         </ul>
       </div>
       <h1>Buddies!</h1>
-      <input
-        type="text"
-        placeholder="Search"
+      <img
+        className="community-header-img"
+        src={communityheader}
+        alt={communityheader}
+      />
+      <br />
+      <Input
+        icon={<MagnifyingGlassIcon />}
+        placeholder="Search Community"
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
           searchTheFeed(e.target.value);
         }}
       />
+      <h2>Latest Community Posts</h2>
       {postFeed.length > 0 && search.length == 0 ? (
-        <div>
-          <ul>{postFeed}</ul>
-        </div>
+        <div>{postFeed}</div>
       ) : (
-        <div>
-          <ul>{searchList}</ul>
-        </div>
+        <div>{searchList}</div>
       )}
 
       <div>
-        <button
+        <Button
+          variant="default"
+          size="xs"
+          compact
           onClick={() => {
+<<<<<<< HEAD
             navigate('/addnewpost');
+=======
+            setAddPost(true);
+>>>>>>> main
           }}
         >
           Add to Community Feed!
-        </button>
+        </Button>
+        <Modal
+          opened={addPost}
+          onClose={() => {
+            setAddPost(false);
+          }}
+          title="Add New Community Post"
+        >
+          <AddPost closeModal={closeModal} />
+        </Modal>
       </div>
       <div>
         <ul className="navigationBar">

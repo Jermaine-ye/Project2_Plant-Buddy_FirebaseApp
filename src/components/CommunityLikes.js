@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { ref as databaseRef, update } from "firebase/database";
 import { database } from "../DB/firebase";
 
+//styling imports
+import { ActionIcon } from "@mantine/core";
+import { HeartIcon, HeartFilledIcon } from "@radix-ui/react-icons";
+
 export default function Likes(props) {
   const [like, setLike] = useState(props.likes);
   // state to check if user has liked the post already
@@ -25,11 +29,11 @@ export default function Likes(props) {
 
   const updateLikes = (post) => {
     const updates = {};
-    console.log(props.index);
     console.log(post);
     const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
     let updatedData = {
       date: post.val.date,
+      dateShort: post.val.dateShort,
       title: post.val.title,
       imageurl: post.val.imageurl,
       likes: post.val.userLikes.includes(user.displayName)
@@ -51,12 +55,16 @@ export default function Likes(props) {
     });
   };
   return (
-    <div>
-      <input
-        type="submit"
-        value="Like"
-        onClick={() => updateLikes(props.post)}
-      />
-    </div>
+    <button
+      type="submit"
+      className="remove-button"
+      onClick={() => updateLikes(props.post)}
+    >
+      {post.val.userLikes.includes(user.displayName) ? (
+        <HeartFilledIcon color="#1f3b2c" />
+      ) : (
+        <HeartIcon color="#1f3b2c" />
+      )}
+    </button>
   );
 }
