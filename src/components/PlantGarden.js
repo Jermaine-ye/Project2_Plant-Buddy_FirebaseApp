@@ -179,7 +179,7 @@ export default function PlantGarden(props) {
 
   return (
     <div>
-      <PlantCalendar plantData={userPlants} />
+      <PlantCalendar plantData={userPlants} user={user} />
 
       {/* <img className="community-header-img" src={dashboard} alt={dashboard} /> */}
       <Stack spacing="xs">{plantCards}</Stack>

@@ -52,6 +52,7 @@ export default function Dashboard(props) {
         navigate("/login");
       }
     });
+  });
 
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
