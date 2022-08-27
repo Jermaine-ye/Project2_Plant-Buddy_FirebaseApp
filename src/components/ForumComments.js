@@ -14,23 +14,18 @@ import { UserContext } from '../App';
 
 export default function ForumComments(props) {
   const navigate = useNavigate();
-  // const user = useContext(UserContext);
+
   const [comment, setComment] = useState('');
   const { topic } = useParams();
 
-  // const [newData, setNewData] = useState({});
-  // const [messages, setMessages] = useState({
-  //   val: { title: '', user: '', imageLink: '', messages: '' },
-  // });
-
   console.log(props.messages);
   const messages = props.messages;
-  const index = props.index;
+
   const user = props.user;
 
-  // const index = props.index;
-
   const FORUM_FOLDER_NAME = topic;
+  const userName = user.displayName;
+  const userMessagesFolder = `${userName + '-' + user.uid}`;
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -47,7 +42,10 @@ export default function ForumComments(props) {
     if (comment !== '') {
       // let msg = props.messages;
 
-      const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
+      const messageListRef = databaseRef(
+        database,
+        FORUM_FOLDER_NAME + '/' + userMessagesFolder
+      );
       const updates = {};
       let newData = {
         title: messages.val.title,
@@ -78,8 +76,8 @@ export default function ForumComments(props) {
     commentsList = messages.val.comments.filter(
       (comment) => comment.user !== ''
     );
-    postComments = commentsList.map((comment) => (
-      <h6 key={comment.key}>
+    postComments = commentsList.map((comment, index) => (
+      <h6 className="forumComments" key={index} id={comment.key}>
         {comment.user} : {comment.text}
         <br />
         {comment.timestamp}

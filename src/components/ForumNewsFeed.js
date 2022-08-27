@@ -2,10 +2,31 @@
 import {
   onChildAdded,
   onChildChanged,
+  onChildRemoved,
+  update,
+  remove,
   ref as databaseRef,
 } from 'firebase/database';
-import { database } from '../DB/firebase';
-import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
+import {
+  Input,
+  Badge,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  Paper,
+  Text,
+  useMantineTheme,
+} from '@mantine/core';
+import {
+  ChatBubbleIcon,
+  MagnifyingGlassIcon,
+  PersonIcon,
+} from '@radix-ui/react-icons';
+import { ref as storageRef, deleteObject } from 'firebase/storage';
+import { database, storage } from '../DB/firebase';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 
@@ -20,7 +41,11 @@ export default function ForumNewsFeed(props) {
   const [messages, setMessages] = useState([]);
 
   //useParams to point to forumfoldername so it does not show empty state on back
+
   const FORUM_FOLDER_NAME = topic;
+  const FORUM_IMAGES_FOLDER_NAME = 'forumImages';
+  const userName = user.displayName;
+  const userMessagesFolder = `${userName + '-' + user.uid}`;
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -33,19 +58,25 @@ export default function ForumNewsFeed(props) {
   }, []);
 
   useEffect(() => {
-    const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
+    const messageListRef = databaseRef(
+      database,
+      FORUM_FOLDER_NAME + '/' + userMessagesFolder
+    );
     // onChildAdded will return data for every child at the reference and every subsequent new child
-    onChildAdded(messagesRef, (data) => {
+    onChildAdded(messageListRef, (data) => {
       setMessages((prev) => [...prev, { key: data.key, val: data.val() }]);
     });
   }, []);
 
   //for listening to comments
   useEffect(() => {
-    const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
+    const messageListRef = databaseRef(
+      database,
+      FORUM_FOLDER_NAME + '/' + userMessagesFolder
+    );
 
     // onChildAdded will return data for every child at the reference and every subsequent new child
-    onChildChanged(messagesRef, (data) => {
+    onChildChanged(messageListRef, (data) => {
       console.log('useEffectCA: ', messages);
       console.log('useEffectCASnapshot: ', data);
 
@@ -61,9 +92,24 @@ export default function ForumNewsFeed(props) {
     });
   }, []);
 
+  // useEffect(() => {
+  //   const messageListRef = databaseRef(
+  //     database,
+  //     FORUM_FOLDER_NAME + '/' + userMessagesFolder
+  //   );
+  //   onChildRemoved(messageListRef, (data) =>
+  //     setMessages((prevState) => {
+  //       let newState = { ...prevState };
+  //       delete newState[data.key];
+
+  //       return newState;
+  //     })
+  //   );
+  // }, []);
+
   let titleOnly = messages.map((messages, index) => {
     return (
-      <div key={messages.key}>
+      <div className="forumMessages" key={index} id={messages.key}>
         <button>
           <Link to={`forumpost/${index}`} state={{ messages }}>
             {console.log(messages)}
@@ -72,17 +118,19 @@ export default function ForumNewsFeed(props) {
         </button>
         {console.log('e.val', messages.val)}
         <h5>{messages.val.title}</h5> <h5>{messages.val.message}</h5>
-        {/* <img
-            src={messages.val.imageLink}
-            alt={messages.val.title}
-            width="400vw"
-          /> */}
         <h6>
           {messages.val.date}
           <br />
           posted by: {messages.val.user}
         </h6>
-        {/* <ForumComments user={user} messages={messages} index={index} /> */}
+        {/* <button
+          id={messages.key}
+          onClick={(e, id) => {
+            props.handleDeleteMessage(e, index, id);
+          }}
+        >
+          delete Post
+        </button> */}
       </div>
     );
   });
@@ -105,7 +153,7 @@ export default function ForumNewsFeed(props) {
 
   let searchList = searchFeed.map((messages, index) => {
     return (
-      <div key={messages.key}>
+      <div className="forumMessages" key={index} id={messages.key}>
         <button>
           <Link to={`forumpost/${index}`} state={{ messages }}>
             {console.log(messages)}
@@ -119,29 +167,69 @@ export default function ForumNewsFeed(props) {
           <br />
           posted by: {messages.val.user}
         </h6>
+        {/* <button
+          id={messages.key}
+          onClick={(e, id) => {
+            props.handleDeleteMessage(e, index, id);
+          }}
+        >
+          delete Post
+        </button> */}
       </div>
     );
   });
+
+  // const handleDeleteMessage = (e, index, id) => {
+  //   // //delete from realtime database
+  //   // const plantEntryRef = databaseRef(
+  //   //   database,
+  //   //   USER_PLANT_FOLDER_NAME + '/' + userPlantFolder + '/' + plantEntry
+  //   // );
+  //   const messageEntry = e.target.id;
+  //   const messageListRef = databaseRef(
+  //     database,
+  //     FORUM_FOLDER_NAME + '/' + userMessagesFolder + '/' + messageEntry
+  //   );
+
+  //   remove(messageListRef);
+  //   // delete image from storage
+
+  //   const fileRef = storageRef(
+  //     storage,
+  //     FORUM_IMAGES_FOLDER_NAME +
+  //       '/' +
+  //       userMessagesFolder +
+  //       '/' +
+  //       props.imageName
+  //   );
+
+  //   deleteObject(fileRef)
+  //     .then(() => {
+  //       console.log(props.fileInputFile);
+  //       console.log('image deleted!');
+  //     })
+  //     .catch((error) => console.log(error));
+  // };
 
   titleOnly.reverse();
 
   return (
     <div>
-      <button
+      <Button
+        color="pink"
+        // variant="light"
         onClick={() => {
           navigate('/forums');
         }}
       >
         Back to Main Forum Site
-      </button>
+      </Button>
       <br />
 
-      {/* {messages && messages.length > 0
-        ? messageCards
-        : '=Welcome to plant tips='} */}
-      {/* {messages && messages.length > 0 ? titleOnly : '=Welcome to plant tips='} */}
       <br />
-      <input
+
+      <Input
+        icon={<MagnifyingGlassIcon />}
         type="text"
         placeholder="Search"
         value={search}

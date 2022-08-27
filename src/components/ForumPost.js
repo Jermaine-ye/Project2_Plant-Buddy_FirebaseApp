@@ -20,10 +20,12 @@ export default function ForumPost(props) {
   const { topic } = useParams();
   const FORUM_FOLDER_NAME = topic;
 
+  const userName = user.displayName;
+  const userMessagesFolder = `${userName + '-' + user.uid}`;
+
   const [messages, setMessages] = useState({
     key: '',
     val: {},
-    // val: { title: '', user: '', imageLink: '', messages: '' },
   });
 
   const { post } = useParams();
@@ -45,10 +47,13 @@ export default function ForumPost(props) {
   }, []);
 
   useEffect(() => {
-    const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
+    const messageListRef = databaseRef(
+      database,
+      FORUM_FOLDER_NAME + '/' + userMessagesFolder
+    );
 
     // onChildAdded will return data for every child at the reference and every subsequent new child
-    onChildChanged(messagesRef, (data) => {
+    onChildChanged(messageListRef, (data) => {
       setMessages((prevState) => {
         let newState = { ...prevState };
         newState.val = data.val();
