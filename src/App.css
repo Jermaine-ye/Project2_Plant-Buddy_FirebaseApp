@@ -229,3 +229,6 @@ body {
 .signup-form {
   width: 75vw;
 }
+.signup-button {
+  margin-top: 5px;
+}
