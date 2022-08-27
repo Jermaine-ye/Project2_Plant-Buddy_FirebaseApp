@@ -9,6 +9,7 @@ import {
   format,
   getWeek,
   isSameDay,
+  isSameWeek,
   parse,
   parseISO,
   parseJSON,
@@ -25,13 +26,26 @@ import "react-calendar/dist/Calendar.css";
 import "../App.css";
 import { setLogLevel } from "firebase/app";
 
+//styling imports
+import { Badge, Card, Container, Grid, Group, Text } from "@mantine/core";
+import {
+  ArrowBarToDown,
+  ArrowLeft,
+  ArrowRight,
+  User,
+} from "tabler-icons-react";
+
 export default function PlantCalendar(props) {
   const [currDate, setCurrDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
+  const [dayOfWeekRender, setDayOfWeekRender] = useState(true);
+  const [selectedDateRender, setSelectedDateRender] = useState(false);
   const [currMonth, setCurrMonth] = useState(new Date());
   const [currWeek, setCurrWeek] = useState(getWeek(currMonth));
   const [wateringSchedule, setWateringSchedule] = useState([]);
   const [dateLastWatered, setDateLastWatered] = useState([]);
+
+  const user = props.user;
 
   const updateWateringSchedule = () => {
     let schedule = {};
@@ -58,11 +72,37 @@ export default function PlantCalendar(props) {
     updateWateringSchedule();
   }, [selectedDate]);
 
+  useEffect(() => {
+    setSelectedDate(new Date());
+  }, []);
+
+  useEffect(() => {
+    if (currWeek == getWeek(new Date())) {
+      setDayOfWeekRender(true);
+    } else {
+      setDayOfWeekRender(false);
+    }
+  });
+
+  useEffect(() => {
+    if (currWeek == getWeek(selectedDate)) {
+      setSelectedDateRender(true);
+    } else {
+      setSelectedDateRender(false);
+    }
+  });
+
   const renderHeader = () => {
-    const dateFormat = "MMMM yyyy";
+    const dateFormat = "MMM yyyy";
     return (
       <div>
-        <span>{format(currMonth, dateFormat)}</span>
+        <Text size="xl">
+          <span>
+            <Text size="xs" underline>
+              {format(currMonth, dateFormat)}
+            </Text>
+          </span>
+        </Text>
       </div>
     );
   };
@@ -70,15 +110,38 @@ export default function PlantCalendar(props) {
   const renderDays = () => {
     const dateFormat = "eee";
     const days = [];
+    let today = currDate.getDay();
     let startDate = startOfWeek(currDate);
+
     for (let i = 0; i < 7; i++) {
-      days.push(
-        <div className="calendar-row-item">
-          {format(addDays(startDate, i), dateFormat)}
-        </div>
+      let day = (
+        <Text size="xs" weight="200">
+          <div
+            className={`${i == today && dayOfWeekRender ? "today-day" : null} ${
+              selectedDate && selectedDateRender
+                ? i == selectedDate.getDay()
+                  ? "selected-day"
+                  : null
+                : null
+            }`}
+          >
+            {format(addDays(startDate, i), dateFormat)}
+          </div>
+        </Text>
       );
+      days.push(day);
     }
-    return <div>{days}</div>;
+    return (
+      // <Group position="center" spacing="xs" sx={{ width: "auto" }}>
+      <Container sx={{ padding: "0px" }}>
+        <div className={`calendar-row-day`}>
+          {/* <Grid grow gutter="lg" sx={{ display: "inline-flex" }}> */}
+          {days}
+          {/* </Grid> */}
+        </div>
+      </Container>
+      // </Group>
+    );
   };
 
   const renderCells = () => {
@@ -94,10 +157,13 @@ export default function PlantCalendar(props) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
-        const day1 = day;
+        if (isSameDay(currDate, day)) {
+          console.log("it is today");
+          //setDayOfWeekRender(true);
+        }
         days.push(
           <div
-            className={`calendar-row-item ${
+            className={`calendar-date-item ${
               isSameDay(currDate, day) ? "today" : null
             } ${isSameDay(day, selectedDate) ? "selected-date" : null}`}
             onClick={() => {
@@ -122,30 +188,57 @@ export default function PlantCalendar(props) {
         console.log("watered plant:", dateLastWatered[plant]);
         console.log(daysCalc);
         if (daysCalc % wateringSchedule[plant] == 0) {
+          console.log(plant);
           plantsToWater.push(plant);
         }
       }
+      let wateringList = plantsToWater.map((plant) => {
+        return (
+          <div className="calendar-reminder-row">
+            <Badge
+              size="md"
+              variant="dot"
+              className="calendar-reminder-row-plant-badge"
+            >
+              {plant}
+            </Badge>
+          </div>
+        );
+      });
       return (
-        <div>
-          Selected {format(date, "d MMMM")}
-          <br />
-          {plantsToWater.length > 0
-            ? `${plantsToWater} requires watering`
-            : null}
+        <div className="calendar-date">
+          <Text
+            size="xs"
+            align="left"
+            underline
+            sx={{ marginLeft: "2vw", marginTop: "5px", marginBottom: "5px" }}
+          >
+            {format(date, "d MMMM")}
+          </Text>
+
+          {wateringList.length > 0 ? wateringList : null}
         </div>
       );
     };
 
     return (
       <div>
-        <div>{days}</div>
-        <br />
+        <div>
+          <Container sx={{ padding: "0px" }}>
+            {/* <Grid grow gutter="lg" sx={{ display: "inline-flex" }}> */}
+            <div className="calendar-row-date">{days}</div>
+            {/* </Grid> */}
+          </Container>
+        </div>
+
         {selectedDate ? <div>{selectedDateInfo(selectedDate)}</div> : null}
       </div>
     );
   };
 
   const changeWeek = (prevOrNext) => {
+    //setSelectedDate(null);
+    setDayOfWeekRender(false);
     if (prevOrNext === "prev") {
       setCurrMonth(subWeeks(currMonth, 1));
       setCurrWeek(getWeek(subWeeks(currMonth, 1)));
@@ -160,12 +253,42 @@ export default function PlantCalendar(props) {
 
   return (
     <div>
-      <div className="calendar-row">{renderHeader()}</div>
-      <div className="calendar-row">{renderDays()}</div>
-      <div className="calendar-row">{renderCells()}</div>
-      <button onClick={() => changeWeek("prev")}>Previous Week</button>
-      <button onClick={() => changeWeek("curr")}>Current Week</button>
-      <button onClick={() => changeWeek("next")}>Next Week</button>
+      <Card
+        shadow="sm"
+        radius="md"
+        p="xs"
+        sx={{
+          width: "90vw",
+          color: "#1f3b2c",
+          margin: "auto",
+        }}
+      >
+        <Text size="xs">
+          Hello, {user.displayName}! These plants need watering.
+        </Text>
+        <div className="calendar-row">{renderHeader()}</div>
+        <div className="calendar-row">{renderDays()}</div>
+        <div className="calendar-row-info">{renderCells()}</div>
+        <div className="calendar-row-buttons">
+          <button
+            className="remove-button button-left"
+            onClick={() => changeWeek("prev")}
+          >
+            <ArrowLeft size="26" strokeWidth="0.5" color="black" />
+          </button>
+          <button className="remove-button" onClick={() => changeWeek("curr")}>
+            <Text size="xs" underline>
+              Current Week
+            </Text>
+          </button>
+          <button
+            className="remove-button button-right"
+            onClick={() => changeWeek("next")}
+          >
+            <ArrowRight size="26" strokeWidth="0.5" color="black" />
+          </button>
+        </div>
+      </Card>
     </div>
   );
 }

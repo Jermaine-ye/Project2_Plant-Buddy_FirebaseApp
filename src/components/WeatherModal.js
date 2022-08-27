@@ -63,6 +63,27 @@ export default function WeatherModal() {
       .get(`https://api.data.gov.sg/v1/environment/24-hour-weather-forecast`)
 
       .then((response) => {
+        console.log(response);
+        console.log('curr: ' + response.data.items[0].general.forecast);
+        console.log(
+          'curr low temp : ' + response.data.items[0].general.temperature.low
+        );
+        console.log(
+          'curr high temp : ' + response.data.items[0].general.temperature.high
+        );
+
+        console.log(response.data.items[0]);
+
+        console.log(
+          '6 hours: ' + response.data.items[0].periods[0].regions.central
+        );
+        console.log(
+          '12 hours: ' + response.data.items[0].periods[1].regions.central
+        );
+        console.log(
+          '18 hours: ' + response.data.items[0].periods[2].regions.central
+        );
+
         const currWeatherData = response.data.items[0].general.forecast;
         const currHighTemp = response.data.items[0].general.temperature.high;
         const currLowTemp = response.data.items[0].general.temperature.low;
@@ -75,11 +96,11 @@ export default function WeatherModal() {
           response.data.items[0].periods[2].regions.central;
 
         const period0Time = response.data.items[0].periods[0].time.start;
-        // console.log("P0: " + period0Time);
+        console.log('P0: ' + period0Time);
         const period1Time = response.data.items[0].periods[1].time.start;
-        // console.log("P1: " + period1Time);
+        console.log('P1: ' + period1Time);
         const period2Time = response.data.items[0].periods[2].time.start;
-        // console.log("P2: " + period2Time);
+        console.log('P2: ' + period2Time);
 
         setWeatherInfo({
           mainWeather: currWeatherData,

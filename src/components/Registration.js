@@ -9,11 +9,16 @@ import {
 } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 
+//import styling
+import registrationHeaderImg from "../styling/Drawkit Plants/Drawkit_06_World.png";
+import { Button, Group, Input, Text } from "@mantine/core";
+
 export default function Registration(props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
+  const [showSignUpLogin, setShowSignUpLogin] = useState(false);
   const [signedUp, setSignedUp] = useState(false);
 
   const navigate = useNavigate();
@@ -54,47 +59,86 @@ export default function Registration(props) {
 
   return (
     <div>
+      <img
+        className="community-header-img"
+        src={registrationHeaderImg}
+        alt={registrationHeaderImg}
+      />
       <div>
-        <h1>Signup / Login</h1>
+        <Text size="xl" weight="bold">
+          Bud-dy!
+        </Text>
+        <Text>Houseplant Community</Text>
       </div>
-      <form>
-        <input
-          type="text"
-          placeholder="Email"
-          onChange={(e) => {
-            setEmail(e.target.value);
-          }}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
-        />
-        <input
-          type="text"
-          placeholder="Username"
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
-        />
-        <input
-          type="submit"
-          value="Signup"
-          disabled={signedUp}
-          onClick={(e) => {
-            signup(e, email, password);
-          }}
-        />
-        <input
-          type="submit"
-          value="Login"
-          onClick={(e) => {
-            login(e, email, password);
-          }}
-        />
-      </form>
+      <br />
+      {!showSignUpLogin ? (
+        <div>
+          <Group position="center" spacing="xs" grow>
+            <Button
+              onClick={() => {
+                setShowSignUpLogin(true);
+              }}
+            >
+              Signup
+            </Button>
+            <Button
+              onClick={() => {
+                setShowSignUpLogin(true);
+                setSignedUp(true);
+              }}
+            >
+              Login
+            </Button>
+          </Group>
+        </div>
+      ) : null}
+
+      {showSignUpLogin ? (
+        <div>
+          <form className="signup-form">
+            <Input
+              type="email"
+              placeholder="Email"
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
+            />
+            <Input
+              type="password"
+              placeholder="Password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
+            />
+            {!signedUp ? (
+              <Input
+                type="text"
+                placeholder="Username"
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+              />
+            ) : null}
+            {!signedUp ? (
+              <Button
+                onClick={(e) => {
+                  signup(e, email, password);
+                }}
+              >
+                Sign Up
+              </Button>
+            ) : (
+              <Button
+                onClick={(e) => {
+                  login(e, email, password);
+                }}
+              >
+                Login
+              </Button>
+            )}
+          </form>
+        </div>
+      ) : null}
     </div>
   );
 }
