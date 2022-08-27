@@ -168,7 +168,7 @@ export default function PlantGarden(props) {
 
   return (
     <div>
-      <PlantCalendar plantData={userPlants} />
+      <PlantCalendar plantData={userPlants} user={user} />
       <h3>Plant Profiles</h3>
       <div className="plantList">{plantCards}</div>
 

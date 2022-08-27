@@ -122,7 +122,7 @@ export default function Dashboard(props) {
     <div>
       {/* DO NOT TOUCH */}
       <div>
-        {user ? <h2>Good morning, {user.displayName}</h2> : null}
+        {user ? <h2>Welcome back, {user.displayName}</h2> : null}
         <button
           onClick={() => {
             logout();
@@ -131,13 +131,11 @@ export default function Dashboard(props) {
           Logout
         </button>
       </div>
-      <h1>DASHBOARD</h1>
       {/* <div>
         <h3>Calendar placeholder</h3>
         <PlantCalendar /> // shifted to nest under PlantGarden
       </div> */}
       <div>
-        <h3>Weather API placeholder</h3>
         <WeatherModal />
       </div>
 
