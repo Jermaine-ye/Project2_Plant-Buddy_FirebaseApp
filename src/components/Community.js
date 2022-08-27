@@ -1,7 +1,7 @@
-import { useNavigate, Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../App";
-import communityheader from "../styling/Drawkit Plants/Drawkit_02_Community.png";
+import { useNavigate, Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { UserContext } from '../App';
+import communityheader from '../styling/Drawkit Plants/Drawkit_02_Community.png';
 
 //styling imports
 import {
@@ -15,29 +15,30 @@ import {
   Badge,
   Modal,
   Input,
-} from "@mantine/core";
+} from '@mantine/core';
 import {
   ChatBubbleIcon,
   MagnifyingGlassIcon,
   PersonIcon,
-} from "@radix-ui/react-icons";
+} from '@radix-ui/react-icons';
 
 //firebase imports
 import {
   onChildAdded,
   onChildChanged,
   ref as databaseRef,
-} from "firebase/database";
-import { database } from "../DB/firebase";
+} from 'firebase/database';
+import { database } from '../DB/firebase';
 
 //child components
-import Likes from "./CommunityLikes";
-import Comments from "./CommunityComments";
-import AddPost from "./AddPost";
+
+import Likes from './CommunityLikes';
+import Comments from './CommunityComments';
+import AddPost from './AddPost';
 
 export default function Community(props) {
   const [posts, setPosts] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState('');
   const [searchFeed, setSearchFeed] = useState([]);
   const navigate = useNavigate();
   const user = useContext(UserContext);
@@ -46,12 +47,12 @@ export default function Community(props) {
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
-    const isLoggedIn = JSON.parse(localStorage.getItem("user"));
+    const isLoggedIn = JSON.parse(localStorage.getItem('user'));
     if (Object.keys(isLoggedIn).length === 0) {
-      navigate("/login");
+      navigate('/login');
     }
   });
-  const POSTS_FOLDER_NAME = "communityPosts";
+  const POSTS_FOLDER_NAME = 'communityPosts';
   useEffect(() => {
     const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
     // let postList = [];
@@ -69,7 +70,7 @@ export default function Community(props) {
     if (comList.includes(index)) {
       let i = comList.indexOf(index);
       comList.splice(i, 1);
-      console.log("splicing");
+      console.log('splicing');
     } else {
       comList.push(index);
     }
@@ -80,7 +81,7 @@ export default function Community(props) {
   useEffect(() => {
     const postListRef = databaseRef(database, POSTS_FOLDER_NAME);
     onChildChanged(postListRef, (data) => {
-      console.log("updated-data: ", data.val());
+      console.log('updated-data: ', data.val());
       console.log(data.key);
       setPosts((prevState) => {
         let newState = [...prevState];
@@ -91,11 +92,10 @@ export default function Community(props) {
         }
         return newState;
       });
-      console.log("oCC");
+      console.log('oCC');
     });
   });
-
-  const postFeed = posts.map((post, index) => {
+  const postFeed = posts.reverse().map((post, index) => {
     return (
       <div>
         <Card
@@ -103,7 +103,7 @@ export default function Community(props) {
           p="lg"
           radius="md"
           withBorder
-          sx={{ width: "85vw", color: "#1f3b2c" }}
+          sx={{ width: '85vw', color: '#1f3b2c' }}
         >
           <li key={post.key} className="community-list-item">
             <CardSection p="xs">
@@ -181,6 +181,7 @@ export default function Community(props) {
           post.val.author.toLowerCase().includes(search.toLowerCase())
         );
       });
+
       setSearchFeed(searchItem);
     }
   };
@@ -196,7 +197,7 @@ export default function Community(props) {
           p="lg"
           radius="md"
           withBorder
-          sx={{ width: "85vw", color: "#1f3b2c" }}
+          sx={{ width: '85vw', color: '#1f3b2c' }}
         >
           <li key={post.key} className="community-list-item">
             <CardSection p="xs">
@@ -270,7 +271,7 @@ export default function Community(props) {
       <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">
-            <Link to={"/"}>Dashboard</Link>
+            <Link to={'/'}>Dashboard</Link>
           </li>
           <li>{user ? <p>{user.displayName}</p> : null}</li>
         </ul>
@@ -322,13 +323,13 @@ export default function Community(props) {
       <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">
-            <Link to={"/community"}>Community</Link>
+            <Link to={'/community'}>Community</Link>
           </li>
           <li className="navigationBarItem">
-            <Link to={"/forums"}>Forums</Link>
+            <Link to={'/forums'}>Forums</Link>
           </li>
           <li className="navigationBarItem">
-            <Link to={"/recommendations"}>Recommendations</Link>
+            <Link to={'/recommendations'}>Recommendations</Link>
           </li>
         </ul>
       </div>

@@ -2,7 +2,7 @@ import { UserContext } from "../App";
 
 // imports for react
 import { useContext, useEffect, useState } from "react";
-import { Link, useNavigate, Outlet } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // imports for firebase
 import { auth, database } from "../DB/firebase";
@@ -10,6 +10,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { ref as databaseRef, onChildAdded } from "firebase/database";
 
 // imports for components
+// import PlantCalendar from "./Calendar"; // to be shifted to nest under plantgarden
 import WeatherModal from "./WeatherModal";
 import PlantGarden from "./PlantGarden";
 import PlantInfo from "./PlantInfo";
@@ -33,6 +34,7 @@ export default function Dashboard(props) {
 
   //user info
   const user = useContext(UserContext);
+
   // navigate to login if there's no user data upon npm start/refresh
   if (!user) {
     localStorage.setItem("user", JSON.stringify({}));
@@ -50,7 +52,6 @@ export default function Dashboard(props) {
         navigate("/login");
       }
     });
-  });
 
   ////// ----START OF RENDERING DISPLAY---- /////
   return (

@@ -2,6 +2,11 @@
   text-align: center;
 }
 
+body {
+  width: 100vw;
+}
+
+
 .App-header {
   background-color: #f5f3f5;
   min-height: 100vh;
@@ -56,20 +61,120 @@
   color: black;
   margin: 1rem;
 }
+
+/* Calendar  */
 /* .calendar-row {
   width: 50vw;
 } */
-.calendar-row-item {
+/* .calendar-row-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-left: 5px;
+  margin-right: 5px;
+} */
+.calendar-row-day {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 3vh;
+}
+.calendar-row-date {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* .calendar-row-date {
+  display: flex;
+  flex-direction: row;
+
+  flex-grow: 0;
+  flex-basis: calc(100% / 7);
   display: inline;
-  margin-left: 10px;
-  margin-right: 10px;
+  align-items: center;
+  margin-left: 8px;
+  margin-right: 8px;
+} */
+.calendar-date-item {
+  border: 1px;
+  cursor: pointer;
+  position: relative;
+  width: auto;
+  margin: auto;
+  padding-left: -10px;
 }
 .today {
-  color: red;
+  background: #d4e09b;
+  color: black;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  width: 70%;
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+.today-day {
+  background: #d4e09b;
+  color: black;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  width: 70%;
+  margin: auto;
+  height: 3vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.selected-day {
+  background: #588068;
+  color: black;
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  width: 70%;
+  height: 3vh;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .selected-date {
-  color: blue;
+  background: #588068;
+  color: black;
+  border-bottom-left-radius: 50%;
+  border-bottom-right-radius: 50%;
+  width: 70%;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
+.calendar-reminder-row {
+  display: table;
+}
+.calendar-reminder-row-plant-badge {
+  margin-left: 2vw;
+}
+.calendar-row-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.button-left {
+  margin-left: 0;
+}
+
+.button-right {
+  margin-right: 0;
+}
+.calendar-row-info {
+  padding-bottom: 1vw;
+}
+/* Weather App */
 
 .Weather-Display {
   display: flex;
@@ -106,6 +211,7 @@
   border: 0;
   background: none;
   margin: auto;
+  cursor: pointer;
 }
 .community-list-item {
   list-style: none;
@@ -116,6 +222,10 @@
   margin: 0, 5px;
 }
 .community-header-img {
-  width: 80vw;
+  width: 75vw;
   height: auto;
+}
+/* Registration */
+.signup-form {
+  width: 75vw;
 }
