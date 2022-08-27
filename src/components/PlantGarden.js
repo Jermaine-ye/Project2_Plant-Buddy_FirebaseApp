@@ -19,8 +19,10 @@ import { ref as storageRef, deleteObject } from "firebase/storage";
 import PlantInfo from "./PlantInfo";
 import PlantCalendar from "./Calendar";
 
-// imports from date-fns
-import { format, parseISO } from "date-fns";
+//imports for styling
+import dashboard from "../styling/Drawkit Plants/Drawkit_04_Dashboard.png";
+import { ArticleCardVertical } from "../Styles/PlantCard";
+import { Stack, Divider, Title } from "@mantine/core";
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -111,66 +113,76 @@ export default function PlantGarden(props) {
   const plantCards = Object.entries(userPlants).map(
     ([plantEntryKey, plantData], index) => {
       return (
-        <div className="plantCard" key={index} id={plantEntryKey}>
-          <img
-            alt={plantData.plantName}
-            src={plantData.plantImageUrl}
-            width="50%%"
-          />
+        <ArticleCardVertical
+          image={plantData.plantImageUrl}
+          plantFamily={plantData.plantFamily}
+          plantName={plantData.plantName}
+          dateAdded={plantData.dateAdded}
+          dateLastWatered={plantData.dateLastWateredCheck}
+          onClick={() => {
+            setSelectedPlantProfile({ [plantEntryKey]: plantData });
+          }}
+        />
 
-          <button
-            onClick={() => {
-              setSelectedPlantProfile({ [plantEntryKey]: plantData });
-            }}
-          >
-            {plantData.plantFamily}
-          </button>
+        /* <div className="plantCard" key={index} id={plantEntryKey}>
+            <img
+              alt={plantData.plantName}
+              src={plantData.plantImageUrl}
+              width="50%%"
+            />
 
-          <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
-          <p>Sunlight Intensity: {plantData.sunlightReq} </p>
-          {/* {console.log(plant[userPlantFamily])} */}
-          {/* to show up if calendar prompts to water today */}
-          {!plantWatered ? (
-            <div>
-              <p>Reminder to water today!</p>
-              <p> Have you watered {plantData.plantName}?</p>
-              <input
-                id={index}
-                type="checkbox"
-                checked={
-                  new Date().toLocaleDateString() ===
-                  plantData.dateLastWateredCheck
-                }
-                disabled={plantWatered}
-                onChange={(e, index) => {
-                  const updatedData = {
-                    ...plantData,
-                    dateLastWatered: new Date(),
-                    dateLastWateredCheck: new Date().toLocaleDateString(),
-                  };
-                  update(userPlantRef, { [plantEntryKey]: updatedData });
-                }}
-              />
-            </div>
-          ) : null}
-          <button
-            id={plantEntryKey}
-            onClick={(e, id) => {
-              handleDeletePlant(e, id);
-            }}
-          >
-            delete plant
-          </button>
-        </div>
+            <button
+              onClick={() => {
+                setSelectedPlantProfile({ [plantEntryKey]: plantData });
+              }}
+            >
+              {plantData.plantFamily}
+            </button>
+
+            <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
+            <p>Sunlight Intensity: {plantData.sunlightReq} </p>
+            {!plantWatered ? (
+              <div>
+                <p>Reminder to water today!</p>
+                <p> Have you watered {plantData.plantName}?</p>
+                <input
+                  id={index}
+                  type="checkbox"
+                  checked={
+                    new Date().toLocaleDateString() ===
+                    plantData.dateLastWateredCheck
+                  }
+                  disabled={plantWatered}
+                  onChange={(e, index) => {
+                    const updatedData = {
+                      ...plantData,
+                      dateLastWatered: new Date(),
+                      dateLastWateredCheck: new Date().toLocaleDateString(),
+                    };
+                    update(userPlantRef, { [plantEntryKey]: updatedData });
+                  }}
+                />
+              </div>
+            ) : null}
+            <button
+              id={plantEntryKey}
+              onClick={(e, id) => {
+                handleDeletePlant(e, id);
+              }}
+            >
+              delete plant
+            </button>
+          </div> */
       );
     }
   );
 
   return (
     <div>
-      <PlantCalendar plantData={userPlants} user={user} />
-      <h3>Plant Profiles</h3>
-      <div className="plantList">{plantCards}</div>
+      <PlantCalendar plantData={userPlants} />
+
+      {/* <img className="community-header-img" src={dashboard} alt={dashboard} /> */}
+      <Stack spacing="xs">{plantCards}</Stack>
 
       {Object.keys(selectedPlantProfile).length > 0 ? (
         <PlantInfo selectedPlantProfile={selectedPlantProfile} />

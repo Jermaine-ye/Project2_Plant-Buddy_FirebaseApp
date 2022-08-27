@@ -1,9 +1,10 @@
-import logo from './logo.svg';
-import './App.css';
-import { useState, useEffect, createContext } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { database } from './DB/firebase';
-import { onChildChanged, ref as databaseRef } from 'firebase/database';
+import logo from "./logo.svg";
+import "./App.css";
+import { useState, useEffect, createContext } from "react";
+import { Routes, Route, useNavigate } from "react-router-dom";
+import { database, auth } from "./DB/firebase";
+import { onChildChanged, ref as databaseRef } from "firebase/database";
+import { signOut } from "firebase/auth";
 
 // for import of components
 import Registration from './components/Registration';
@@ -19,6 +20,19 @@ import ForumNewsFeed from './components/ForumNewsFeed';
 import ForumPost from './components/ForumPost';
 
 // for import of styles
+import { MantineProvider } from "@mantine/core";
+import { buddyTheme } from "./Styles/Theme";
+import {
+  AppShell,
+  Navbar,
+  Header,
+  Text,
+  MediaQuery,
+  Burger,
+  Avatar,
+} from "@mantine/core";
+
+import { HeaderMiddle } from "./Styles/Header";
 
 export const UserContext = createContext();
 
@@ -26,6 +40,8 @@ function App() {
   const isLoggedIn = JSON.parse(localStorage.getItem('user'));
   const [user, setUser] = useState(isLoggedIn);
   const navigate = useNavigate();
+
+  const [opened, setOpened] = useState(false);
 
   useEffect(() => {
     if (
@@ -46,7 +62,15 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
+      <MantineProvider withGlobalStyles withNormalizeCSS theme={buddyTheme}>
+        <AppShell
+          styles={{
+            main: {
+              background: buddyTheme.colors["cream"][0],
+            },
+          }}
+          header={<HeaderMiddle handleLogout={logout} />}
+        >
         <UserContext.Provider value={user}>
           <Routes>
             <Route
@@ -75,7 +99,8 @@ function App() {
             ></Route>
           </Routes>
         </UserContext.Provider>
-      </header>
+	</AppShell>
+      </MantineProvider>
     </div>
   );
 }
