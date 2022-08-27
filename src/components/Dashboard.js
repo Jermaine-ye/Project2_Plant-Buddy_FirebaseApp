@@ -15,11 +15,18 @@ import PlantGarden from "./PlantGarden";
 import PlantInfo from "./PlantInfo";
 
 // imports for styling
-import { Title } from "@mantine/core";
-import { HeaderMiddle } from "../Styles/Header";
 
-// folders in realtime database
-const USER_PLANT_FOLDER_NAME = "userPlants";
+import {
+  Container,
+  Title,
+  Card,
+  Paper,
+  Button,
+  Footer,
+  Divider,
+  Box,
+} from "@mantine/core";
+import { HeaderMiddle } from "../Styles/Header";
 
 export default function Dashboard(props) {
   const navigate = useNavigate();
@@ -45,114 +52,29 @@ export default function Dashboard(props) {
     });
   });
 
-  // for retrieving user's plants and storing in state
-  useEffect(() => {
-    const userPlantRef = databaseRef(
-      database,
-      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
-    );
-    onChildAdded(userPlantRef, (data) => {
-      const species = Object.keys(data.val())[0];
-      const speciesInfo = data.val()[species];
-      setUserPlants((prevPostsState) => [
-        ...prevPostsState,
-        { key: species, val: speciesInfo },
-      ]);
-    });
-
-    return () => {
-      setUserPlants([]);
-    };
-  }, []);
-
-  const userName = user.displayName;
-  const userPlantFolder = `${userName + "-" + user.uid}`;
-  const [userPlants, setUserPlants] = useState([]);
-
-  //selected plant info for modal
-  const [selectedPlantProfile, setSelectedPlantProfile] = useState({});
-
-  // reminder
-  const [plantWatered, setPlantWatered] = useState(false);
-
-  const logout = () => {
-    signOut(auth).then(() => {
-      localStorage.removeItem("user");
-      navigate("/login");
-    });
-  };
-
-  // to render user's list of plants in dashboard view
-  const plantCard = userPlants.map((plant, index) => (
-    <div className="plantCard" key={index}>
-      <img
-        alt={plant.val.plantName}
-        src={plant.val.plantImageUrl}
-        width="50%%"
-      />
-      {/* <Link to={`/plantprofile`}> */}
-      <button
-        onClick={() => {
-          setSelectedPlantProfile(plant);
-          console.log("selected:", selectedPlantProfile);
-        }}
-      >
-        {plant.key}
-      </button>
-      {/* </Link> */}
-
-      <p>Watering Schedule: Every {plant.val.waterFreqDay} Days</p>
-      <p>Sunlight Intensity: {plant.val.sunlightReq} </p>
-      {/* to show up if calendar prompts to water today */}
-      {!plantWatered ? (
-        <div>
-          <p>Reminder to water today!</p>
-          <p> Have you watered {plant.val.plantName}?</p>
-          <input
-            id={index}
-            type="checkbox"
-            checked={plantWatered}
-            onChange={(e, index) => {
-              setPlantWatered(e.target.value);
-            }}
-          />
-        </div>
-      ) : null}
-    </div>
-  ));
-
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
-      {/* <HeaderMiddle /> */}
+      {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null}
 
-      <div>
-        {user ? <h2>Good morning, {user.displayName}</h2> : null}
-        <button
+      {/* <button
           onClick={() => {
             logout();
           }}
         >
           Logout
-        </button>
-      </div>
-      <Title>DASHBOARD</Title>
-      <div>
-        <h3>Weather API placeholder</h3>
-        <WeatherModal />
-      </div>
-      <div>
-        <PlantGarden />
-      </div>
+        </button> */}
 
-      {Object.keys(selectedPlantProfile).length > 0 ? (
-        <PlantInfo selectedPlantProfile={selectedPlantProfile} />
-      ) : null}
+      {/* <WeatherModal /> */}
 
-      <Link to={`/addnewplant`}>
-        <button>Add A New Plant!</button>
-      </Link>
-      <div>
+      <PlantGarden />
+
+      <Footer height={60} p="md">
+        <Link to={`/addnewplant`}>
+          <Button>Add Plant to Garden!</Button>
+        </Link>
+      </Footer>
+      {/* <div>
         <ul className="navigationBar">
           <li className="navigationBarItem">
             <Link to={"/community"}>Community</Link>
@@ -164,7 +86,7 @@ export default function Dashboard(props) {
             <Link to={"/recommendations"}>Recommendations</Link>
           </li>
         </ul>
-      </div>
+      </div> */}
     </div>
   );
 }

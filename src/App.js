@@ -2,8 +2,9 @@ import logo from "./logo.svg";
 import "./App.css";
 import { useState, useEffect, createContext } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-import { database } from "./DB/firebase";
+import { database, auth } from "./DB/firebase";
 import { onChildChanged, ref as databaseRef } from "firebase/database";
+import { signOut } from "firebase/auth";
 
 // for import of components
 import Registration from "./components/Registration";
@@ -24,13 +25,13 @@ import {
   AppShell,
   Navbar,
   Header,
-  Footer,
-  Aside,
   Text,
   MediaQuery,
   Burger,
-  useMantineTheme,
+  Avatar,
 } from "@mantine/core";
+
+import { HeaderMiddle } from "./Styles/Header";
 
 export const UserContext = createContext();
 
@@ -58,63 +59,23 @@ function App() {
     }
   }, []);
 
+  const logout = () => {
+    signOut(auth).then(() => {
+      localStorage.removeItem("user");
+      navigate("/login");
+    });
+  };
+
   return (
     <div className="App">
       <MantineProvider withGlobalStyles withNormalizeCSS theme={buddyTheme}>
         <AppShell
           styles={{
             main: {
-              background: buddyTheme.colors.seashell[3],
+              background: buddyTheme.colors["cream"][0],
             },
           }}
-          navbarOffsetBreakpoint="sm"
-          // asideOffsetBreakpoint="sm"
-          navbar={
-            <Navbar
-              p="md"
-              hiddenBreakpoint="sm"
-              hidden={!opened}
-              width={{ sm: 200, lg: 300 }}
-            >
-              <Text>Application navbar</Text>
-            </Navbar>
-          }
-          // aside={
-          //   <MediaQuery smallerThan="sm" styles={{ display: "none" }}>
-          //     <Aside p="md" hiddenBreakpoint="sm" width={{ sm: 200, lg: 300 }}>
-          //       <Text>Application sidebar</Text>
-          //     </Aside>
-          //   </MediaQuery>
-          // }
-          // footer={
-          //   <Footer height={60} p="md">
-          //     Application footer
-          //   </Footer>
-          // }
-          header={
-            <Header height={70} p="md">
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  height: "100%",
-                  backgroundColor: buddyTheme.colors.moss[4],
-                }}
-              >
-                <MediaQuery largerThan="sm" styles={{ display: "none" }}>
-                  <Burger
-                    opened={opened}
-                    onClick={() => setOpened((o) => !o)}
-                    size="sm"
-                    color={buddyTheme.colors.moss}
-                    mr="xl"
-                  />
-                </MediaQuery>
-
-                <Text>Application header</Text>
-              </div>
-            </Header>
-          }
+          header={<HeaderMiddle handleLogout={logout} />}
         >
           <UserContext.Provider value={user}>
             <Routes>

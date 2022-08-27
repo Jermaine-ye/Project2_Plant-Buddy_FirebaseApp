@@ -1,27 +1,28 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   createStyles,
   Header,
   Group,
   ActionIcon,
   Container,
-  Burger,
+  Menu,
+  Text,
+  Button,
+  Popover,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import {
-  IconBrandTwitter,
-  IconBrandYoutube,
-  IconBrandInstagram,
-} from "@tabler/icons";
-
 import { MantineProvider } from "@mantine/core";
-import { buddyTheme as theme } from "./Theme";
+import { buddyTheme } from "./Theme";
+import { Home } from "tabler-icons-react";
+
+import WeatherModal from "../components/WeatherModal";
 
 const useStyles = createStyles((theme) => ({
   header: {
     backgroundColor: theme.fn.variant({
       variant: "filled",
-      color: theme.primaryColor,
+      color: theme.colors.moss,
     }).background,
     borderBottom: 0,
   },
@@ -45,7 +46,7 @@ const useStyles = createStyles((theme) => ({
     },
   },
 
-  social: {
+  icons: {
     width: 260,
 
     [theme.fn.smallerThan("sm")]: {
@@ -99,7 +100,7 @@ const useStyles = createStyles((theme) => ({
 //   links: { link: string, label: string }[];
 // }
 
-export function HeaderMiddle() {
+export function HeaderMiddle(props) {
   const links = [
     { link: "www.example.com", label: "example" },
     { link: "www.youtube.com", label: "youtube" },
@@ -126,29 +127,76 @@ export function HeaderMiddle() {
   ));
 
   return (
-    <MantineProvider theme={theme}>
-      <Header height={56} mb={120}>
+    <MantineProvider theme={buddyTheme}>
+      <Header height={56} mb={120} className={classes.header}>
         <Container className={classes.inner}>
-          <Burger
-            opened={opened}
-            onClick={toggle}
-            size="sm"
-            className={classes.burger}
-          />
+          <Menu
+            shadow="md"
+            width={200}
+            position="bottom-start"
+            offset={2}
+            withArrow
+          >
+            <Menu.Target>
+              <ActionIcon variant="transparent" size="lg">
+                <Home strokeWidth={1} color={"#fff"} />
+              </ActionIcon>
+            </Menu.Target>
+
+            <Menu.Dropdown>
+              <Menu.Label></Menu.Label>
+              <Menu.Item component={Link} to="/">
+                Plant Garden
+              </Menu.Item>
+              <Menu.Item component={Link} to="/community">
+                Community
+              </Menu.Item>
+              <Menu.Item component={Link} to="/forums">
+                Forum
+              </Menu.Item>
+              <Menu.Item component={Link} to="/recommendations">
+                Recommendations
+              </Menu.Item>
+              <Menu.Divider />
+              <Menu.Item color="red" onClick={props.handleLogout}>
+                Log Out
+              </Menu.Item>
+            </Menu.Dropdown>
+          </Menu>
+
           <Group className={classes.links} spacing={5}>
             {items}
           </Group>
 
-          <Group spacing={0} className={classes.social} position="right" noWrap>
-            <ActionIcon size="lg">
-              <IconBrandTwitter size={18} stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon size="lg">
-              <IconBrandYoutube size={18} stroke={1.5} />
-            </ActionIcon>
-            <ActionIcon size="lg">
-              <IconBrandInstagram size={18} stroke={1.5} />
-            </ActionIcon>
+          <Group spacing={0} className={classes.icons} position="right" noWrap>
+            <Popover width={340} position="bottom-end" withArrow shadow="md">
+              <Popover.Target>
+                <Button>Weather Now</Button>
+              </Popover.Target>
+              <Popover.Dropdown>
+                <Text size="sm">
+                  <WeatherModal />
+                </Text>
+              </Popover.Dropdown>
+            </Popover>
+            {/* <Menu
+              shadow="md"
+              width={200}
+              position="bottom-end"
+              offset={2}
+              withArrow
+            >
+              <Menu.Target>
+                <Button> Weather Now: </Button>
+              </Menu.Target>
+
+              <Menu.Dropdown>
+                <Menu.Label>Weather Forecast</Menu.Label>
+                <Menu.Label>
+                  <WeatherModal />
+                </Menu.Label>
+              </Menu.Dropdown>
+            </Menu> */}
           </Group>
         </Container>
       </Header>

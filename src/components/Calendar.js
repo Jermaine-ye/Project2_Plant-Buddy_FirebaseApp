@@ -10,7 +10,6 @@ import {
   getWeek,
   isSameDay,
   parse,
-  parseISO,
   parseJSON,
   startOfMonth,
   startOfWeek,
@@ -23,40 +22,16 @@ import "react-calendar/dist/Calendar.css";
 
 //other imports
 import "../App.css";
-import { setLogLevel } from "firebase/app";
 
-export default function PlantCalendar(props) {
+export default function PlantCalendar() {
   const [currDate, setCurrDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(null);
   const [currMonth, setCurrMonth] = useState(new Date());
   const [currWeek, setCurrWeek] = useState(getWeek(currMonth));
-  const [wateringSchedule, setWateringSchedule] = useState([]);
-  const [dateLastWatered, setDateLastWatered] = useState([]);
-
-  const updateWateringSchedule = () => {
-    let schedule = {};
-    let dateWatered = {};
-    for (let plantKey in props.plantData) {
-      console.log("plant in props:", plantKey);
-      console.log("plantName:", props.plantData[plantKey].plantName);
-      let plantFamily = props.plantData[plantKey].plantFamily;
-      let plantName = props.plantData[plantKey].plantName;
-      let plantWaterFreq = Number(props.plantData[plantKey].waterFreqDay);
-      schedule[plantName] = plantWaterFreq;
-
-      let dateUserLastWatered = props.plantData[plantKey].dateLastWatered;
-      dateWatered[plantName] = parseISO(dateUserLastWatered);
-    }
-    setWateringSchedule(schedule);
-    setDateLastWatered(dateWatered);
-  };
-  // for checking if props.plantData loaded correctly
-  useEffect(() => {
-    console.log("plantdata:", props.plantData);
-
-    // initialise watering schedule
-    updateWateringSchedule();
-  }, [selectedDate]);
+  const [wateringSchedule, setWateringSchedule] = useState({
+    Ficus: 3,
+    MoneyPlant: 2,
+  });
 
   const renderHeader = () => {
     const dateFormat = "MMMM yyyy";
@@ -73,7 +48,7 @@ export default function PlantCalendar(props) {
     let startDate = startOfWeek(currDate);
     for (let i = 0; i < 7; i++) {
       days.push(
-        <div key={i} className="calendar-row-item">
+        <div className="calendar-row-item">
           {format(addDays(startDate, i), dateFormat)}
         </div>
       );
@@ -97,7 +72,6 @@ export default function PlantCalendar(props) {
         const day1 = day;
         days.push(
           <div
-            key={i}
             className={`calendar-row-item ${
               isSameDay(currDate, day) ? "today" : null
             } ${isSameDay(day, selectedDate) ? "selected-date" : null}`}
@@ -112,16 +86,12 @@ export default function PlantCalendar(props) {
         day = addDays(day, 1);
       }
     }
-
     const selectedDateInfo = (date) => {
       let plantsToWater = [];
-      for (let plant in dateLastWatered) {
-        console.log(plant);
+      for (let plant in wateringSchedule) {
         const daysCalc = Math.abs(
-          differenceInCalendarDays(dateLastWatered[plant], selectedDate)
+          differenceInCalendarDays(currDate, selectedDate)
         );
-        console.log("watered plant:", dateLastWatered[plant]);
-        console.log(daysCalc);
         if (daysCalc % wateringSchedule[plant] == 0) {
           plantsToWater.push(plant);
         }
@@ -131,12 +101,11 @@ export default function PlantCalendar(props) {
           Selected {format(date, "d MMMM")}
           <br />
           {plantsToWater.length > 0
-            ? `${plantsToWater} requires watering`
+            ? `${plantsToWater} require watering`
             : null}
         </div>
       );
     };
-
     return (
       <div>
         <div>{days}</div>
@@ -153,9 +122,6 @@ export default function PlantCalendar(props) {
     } else if (prevOrNext === "next") {
       setCurrMonth(addWeeks(currMonth, 1));
       setCurrWeek(getWeek(addWeeks(currMonth, 1)));
-    } else if (prevOrNext === "curr") {
-      setCurrMonth(new Date());
-      setCurrWeek(getWeek(new Date()));
     }
   };
 
@@ -165,7 +131,6 @@ export default function PlantCalendar(props) {
       <div className="calendar-row">{renderDays()}</div>
       <div className="calendar-row">{renderCells()}</div>
       <button onClick={() => changeWeek("prev")}>Previous Week</button>
-      <button onClick={() => changeWeek("curr")}>Current Week</button>
       <button onClick={() => changeWeek("next")}>Next Week</button>
     </div>
   );

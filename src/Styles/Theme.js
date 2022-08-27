@@ -2,8 +2,6 @@ export const buddyTheme = {
   // Override any other properties from default theme
   colorScheme: "light",
   colors: {
-    brand: ["#1F3B2C", "#588068", "#F5F3F5", "#E5B0A4", "#9D8A76"],
-    // Add your color
     "deep-green": [
       "#46514B",
       "#3F4B45",
@@ -16,7 +14,6 @@ export const buddyTheme = {
       "#1D2722",
       "#1B221F",
     ],
-    // or replace default theme color
     moss: [
       "#A1ABA5",
       "#919F97",
@@ -42,16 +39,17 @@ export const buddyTheme = {
       "#E9E7E9",
     ],
     seashell: [
-      "#FFFEFE",
-      "#F1E5E2",
-      "#E8CBC4",
+      "#D6CAC7",
+      "#D7C6C2",
+      "#D8C2BD",
+      "#DBBDB6",
+      "#DFB7AE",
       "#E5B0A4",
-      "#D49E92",
-      "#C28F84",
-      "#B08278",
-      "#9F776E",
-      "#8E6E67",
-      "#7E6762",
+      "#DDB2A8",
+      "#D6B3AB",
+      "#D0B4AE",
+      "#CAB4AF",
+      "#C6B4B0",
     ],
     tan: [
       "#D6D4D1",
@@ -67,6 +65,9 @@ export const buddyTheme = {
     ],
   },
 
+  primaryColor: "deep-green",
+  primaryShade: 5,
+
   fontFamily: "Didact Gothic, sans-serif",
 
   headings: {
@@ -77,4 +78,12 @@ export const buddyTheme = {
   },
 
   spacing: { xs: 15, sm: 20, md: 25, lg: 30, xl: 40 },
+
+  breakpoints: {
+    xs: 390,
+    sm: 800,
+    md: 1000,
+    lg: 1200,
+    xl: 1400,
+  },
 };

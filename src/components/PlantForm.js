@@ -172,18 +172,18 @@ export default function PlantForm() {
     ));
 
   // list of plant choices for user to select for recommended plant care
-  const plantsDB = plantList.map((plant, index) => (
-    <Button
-      color="seashell"
-      key={index}
-      onClick={(e) => {
-        console.log(plant);
-        handleClickSelectedPlant(e, plant, index);
-      }}
-    >
-      {plant.plantFamily}
-    </Button>
-  ));
+  // const plantsDB = plantList.map((plant, index) => (
+  //   <Button
+  //     color="seashell"
+  //     key={index}
+  //     onClick={(e) => {
+  //       console.log(plant);
+  //       handleClickSelectedPlant(e, plant, index);
+  //     }}
+  //   >
+  //     {plant.plantFamily}
+  //   </Button>
+  // ));
 
   // generate recommended care for selectedPlant in plantform
   const selectedPlantForm = (
