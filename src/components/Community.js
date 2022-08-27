@@ -94,8 +94,7 @@ export default function Community(props) {
       console.log("oCC");
     });
   });
-
-  const postFeed = posts.map((post, index) => {
+  const postFeed = posts.reverse().map((post, index) => {
     return (
       <div>
         <Card

@@ -232,6 +232,10 @@ body {
   margin: 0, 5px;
 }
 .community-header-img {
-  width: 80vw;
+  width: 75vw;
   height: auto;
+}
+/* Registration */
+.signup-form {
+  width: 75vw;
 }
