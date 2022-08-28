@@ -1,6 +1,4 @@
 import { createStyles, Card, Image, Avatar, Text, Group } from "@mantine/core";
-import { Trash } from "tabler-icons-react";
-import { ActionIcon } from "@mantine/core";
 
 const useStyles = createStyles((theme) => {
   return {
@@ -75,9 +73,6 @@ export function ArticleCardVertical({
             Date Added: {dateAdded}
           </Text>
         </div>
-        <ActionIcon>
-          <Trash size={20} strokeWidth={2} color={"grey"} />
-        </ActionIcon>
       </Group>
     </Card>
   );

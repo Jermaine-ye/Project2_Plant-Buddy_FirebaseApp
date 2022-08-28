@@ -13,6 +13,31 @@ import {
 } from "firebase/storage";
 import { database, storage } from "../DB/firebase";
 
+// imports for styling
+import {
+  Card,
+  Image,
+  ScrollArea,
+  Title,
+  Stack,
+  Divider,
+  Blockquote,
+  Select,
+  Grid,
+  NumberInput,
+  Space,
+  Badge,
+  Text,
+  TextInput,
+  Group,
+  ActionIcon,
+  Button,
+  FileInput,
+  MultiSelect,
+  Textarea,
+} from "@mantine/core";
+import { EditCircle, Trash, DropletFilled2, Upload } from "tabler-icons-react";
+
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
 const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
@@ -29,7 +54,6 @@ export default function PlantInfo(props) {
   const plant = props.selectedPlantProfile;
   const plantKey = Object.keys(plant)[0];
   const plantInfo = plant[plantKey];
-  const [plantModal, setPlantModal] = useState(false);
 
   // plant info to be updated
   const [plantPhoto, setPlantPhoto] = useState(plantInfo.plantImageUrl);
@@ -50,15 +74,32 @@ export default function PlantInfo(props) {
   const [plantPhotoValue, setPlantPhotoValue] = useState("");
   const [photoPreview, setPhotoPreview] = useState("");
 
-  // set edit state for respective input fields
-  const [nameDisabled, setNameDisabled] = useState(true);
-  const [waterDisabled, setWaterDisabled] = useState(true);
-  const [sunlightDisabled, setSunlightDisabled] = useState(true);
-  const [notesDisabled, setNotesDisabled] = useState(true);
-
+  const [editMode, setEditMode] = useState(false);
+  // MULTIESELECT
+  const [plantConditionData, setPlantConditionData] = useState([
+    { value: "glowing", label: "Glowing", group: "Healthy Traits" },
+    { value: "new sprout", label: "New Sprout", group: "Healthy Traits" },
+    { value: "wilting", label: "Wilting", group: "Unhealthy Traits" },
+    {
+      value: "infested by insects",
+      label: "Infested By Insects",
+      group: "Unhealthy Traits",
+    },
+    {
+      value: "needs more sunlight",
+      label: "Needs More Sunlight",
+      group: "Healthy Traits",
+    },
+    { value: "white spots", label: "White Spots", group: "Unhealthy Traits" },
+    { value: "need to repot", label: "Pending Repot", group: "Others" },
+    {
+      value: "require fertiliser",
+      label: "Require Fertiliser",
+      group: "Others",
+    },
+  ]);
   // to render new edited info
   useEffect(() => {
-    console.log("plantinfo:", plantInfo);
     setPlantPhoto(plantInfo.plantImageUrl);
     setWaterFrequency(plantInfo.waterFreqDay);
     setSunlightRequirement(plantInfo.sunlightReq);
@@ -68,32 +109,23 @@ export default function PlantInfo(props) {
     setPlantNotes(plantInfo.plantNotes);
   }, [props]);
 
-  // for user to custom their plant condition/health
-  const handleAddPlantCondition = (e) => {
-    if (e.target.checked) {
-      setPlantCondition((prev) => [...prev, e.target.id]);
-    } else {
-      setPlantCondition((prev) =>
-        prev.filter((condition) => condition !== e.target.id)
-      );
-    }
-  };
-
   const newPhotoUpload = (
-    <div>
-      <label>
-        Upload New photo:
-        <input
-          type="file"
-          value={plantPhotoValue}
-          onChange={(e) => {
-            setPlantPhotoFile(e.target.files[0]);
-            setPlantPhotoValue(e.target.value);
-            setPhotoPreview(URL.createObjectURL(e.target.files[0]));
-          }}
-        />
-      </label>
-    </div>
+    <>
+      <FileInput
+        variant="filled"
+        required
+        type="file"
+        label="Upload Plant Photo"
+        placeholder="Choose photo"
+        icon={<Upload size={14} />}
+        value={plantPhotoValue}
+        onChange={(e) => {
+          setPlantPhotoFile(e);
+          setPlantPhotoValue(e.name);
+          setPhotoPreview(URL.createObjectURL(e));
+        }}
+      />
+    </>
   );
 
   const userPlantRef = databaseRef(
@@ -125,7 +157,7 @@ export default function PlantInfo(props) {
               ...plantInfo,
               plantImageUrl: url,
               plantImageName: plantPhotoFile.name,
-              // plantCondition: plantCondition,
+              plantCondition: plantCondition,
               waterFreqDay: waterFrequency,
               sunlightReq: sunlightRequirement,
               plantName: plantName,
@@ -139,7 +171,7 @@ export default function PlantInfo(props) {
     } else {
       const updatedData = {
         ...plantInfo,
-        // plantCondition: plantCondition,
+        plantCondition: plantCondition,
         waterFreqDay: waterFrequency,
         sunlightReq: sunlightRequirement,
         plantName: plantName,
@@ -148,10 +180,8 @@ export default function PlantInfo(props) {
 
       update(userPlantRef, { [plantKey]: updatedData });
     }
-    setNameDisabled(true);
-    setWaterDisabled(true);
-    setSunlightDisabled(true);
-    setNotesDisabled(true);
+
+    setEditMode(false);
   };
 
   // to revert all values to initial state
@@ -165,31 +195,19 @@ export default function PlantInfo(props) {
     setPlantPhoto(plantInfo.plantImageUrl);
   };
 
-  // check / uncheck box
-
-  return (
-    <div>
-      <h4>
-        {/* plant name */}
-        {userName}'s {plantFamily} :
-        <input
-          type="text"
-          name="plantName"
-          id="plantName1"
-          value={plantName}
-          onChange={(e) => setPlantName(e.target.value)}
-          required
-          placeholder="Plant Name"
-          maxLength={24}
-          disabled={nameDisabled}
-        />
-        <button onClick={() => setNameDisabled(!nameDisabled)}>Edit</button>
-      </h4>
-      {/* PLANT PHOTO */}
-      <img
-        alt={plantName}
-        src={!photoPreview ? plantPhoto : photoPreview}
-        width="30%"
+  // editable page
+  const editProfile = (
+    <>
+      <TextInput
+        variant="filled"
+        name="plantName"
+        label="Plant Name"
+        id="plantName1"
+        value={plantName}
+        onChange={(e) => setPlantName(e.target.value)}
+        required
+        placeholder="Plant Name"
+        maxLength={24}
       />
       <button
         onClick={() => {
@@ -204,82 +222,172 @@ export default function PlantInfo(props) {
       {uploadNewPhoto ? newPhotoUpload : null}
       <br />
       {/*  */}
-      <label>
-        Watering Schedule: Every
-        <input
-          type="number"
-          name="water"
-          value={waterFrequency}
-          onChange={(e) => setWaterFrequency(e.target.value)}
-          disabled={waterDisabled}
-        />
-        Days
-      </label>
-      <button onClick={() => setWaterDisabled(!waterDisabled)}>Edit</button>
-      <br />
+      <Grid>
+        <Grid.Col span={6}>
+          <NumberInput
+            variant="filled"
+            label="Watering Schedule"
+            name="water"
+            description="Frequency in Days"
+            value={Number(waterFrequency)}
+            onChange={(e) => {
+              setWaterFrequency(e);
+            }}
+            required
+            min={0}
+            icon={
+              <img
+                alt="watering-can"
+                src="https://img.icons8.com/carbon-copy/30/000000/watering-can.png"
+              />
+            }
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            variant="filled"
+            label="Sunlight Requirement"
+            name="sunlight"
+            value={sunlightRequirement}
+            data={["intense", "moderate", "low"]}
+            onChange={(e) => setSunlightRequirement(e)}
+            required
+          />
+        </Grid.Col>
+      </Grid>
+      <MultiSelect
+        label="Plant Condition"
+        placeholder="Pick all that applies"
+        data={plantConditionData}
+        value={plantCondition}
+        onChange={(e) => {
+          setPlantCondition(e);
+        }}
+        searchable
+        creatable
+        getCreateLabel={(query) => `+ Create ${query}`}
+        onCreate={(query) => {
+          const item = { value: query, label: query, group: "Custom" };
+          setPlantConditionData((current) => [...current, item]);
+          return item;
+        }}
+      />
       {/*  */}
-      <label>
-        Sunlight Required:
-        <select
-          name="sunlight"
-          value={sunlightRequirement}
-          onChange={(e) => setSunlightRequirement(e.target.value)}
-          disabled={sunlightDisabled}
-        >
-          <option value="intense">intense</option>
-          <option value="moderate">moderate</option>
-          <option value="low">low</option>
-        </select>
-      </label>
-      <button onClick={() => setSunlightDisabled(!sunlightDisabled)}>
-        Edit
-      </button>
-      <br />
-      {/*  */}
-      Plant Condition: {plantCondition} <button>Edit</button>
-      <br />
-      <label>
-        Plant Condition:
-        <input
-          type="checkbox"
-          name="plantCondition"
-          id="healthy"
-          value="healthy"
-          onChange={(e) => {
-            handleAddPlantCondition(e);
-          }}
-        />
-        <label htmlFor="plantCondition">Healthy</label>
-        <input
-          type="checkbox"
-          name="plantCondition"
-          id="white-spots"
-          value="white spots"
-          onChange={(e) => {
-            handleAddPlantCondition(e);
-          }}
-        />
-        <label htmlFor="plantCondition">White Spots</label>
-      </label>
-      <br />
-      {/*  */}
-      <label>
-        Notes:
-        <textarea
-          name="notes"
-          value={plantNotes}
-          onChange={(e) => setPlantNotes(e.target.value)}
-          maxLength={256}
-          disabled={notesDisabled}
-        />
-      </label>
-      <button onClick={() => setNotesDisabled(!notesDisabled)}>Edit</button>
-      <br />
-      {/*  */}
-      <button onClick={handleSubmitChanges}>Update Changes</button>
-      <br />
-      <button onClick={handleResetChanges}>Reset Changes</button>
-      <hr />
-    </div>
+      <Space h="xs" />
+      <Textarea
+        name="notes"
+        label="Notes"
+        description="Max 256 characters"
+        value={plantNotes}
+        onChange={(e) => setPlantNotes(e.target.value)}
+        maxLength={256}
+      />
+      <Space h="sm" />
+      <Group grow>
+        <Button onClick={handleSubmitChanges}>Update Changes</Button>
+        <Button onClick={handleResetChanges}>Reset Changes</Button>
+      </Group>
+    </>
+  );
+
+  // read-only page
+  const readOnlyProfile = (
+    <>
+      <Title order={3} align="center">
+        {plantName}
+      </Title>
+      <Space h="xs" />
+      <Grid>
+        <Grid.Col span={6}>
+          <NumberInput
+            variant="unstyled"
+            label="Watering Schedule"
+            name="water"
+            description="Frequency in Days"
+            value={Number(waterFrequency)}
+            onChange={(e) => {
+              setWaterFrequency(e);
+            }}
+            required
+            min={0}
+            icon={
+              <img
+                alt="watering-can"
+                src="https://img.icons8.com/carbon-copy/30/000000/watering-can.png"
+              />
+            }
+            disabled
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            variant="unstyled"
+            label="Sunlight Requirement"
+            name="sunlight"
+            value={sunlightRequirement}
+            data={["intense", "moderate", "low"]}
+            onChange={(e) => setSunlightRequirement(e)}
+            required
+            disabled
+          />
+        </Grid.Col>
+      </Grid>
+      <Space h="xs" />
+      <Divider label="Plant Condition" labelPosition="center" />
+      <Space h="xs" />
+      <Stack spacing="xs">
+        {plantCondition ? (
+          plantCondition.map((condition, index) => (
+            <Badge key={index} variant="outline" color="seashell" size="md">
+              {condition}
+            </Badge>
+          ))
+        ) : (
+          <Text align="center">No condition reported!</Text>
+        )}
+      </Stack>
+      <Space h="xs" />
+      <Divider label="Plant Notes" labelPosition="center" />
+      <Space h="xs" />
+      <Blockquote>
+        {plantNotes ? plantNotes : <Text>Nothing here!</Text>}
+      </Blockquote>
+    </>
+  );
+
+  return (
+    <>
+      <Card>
+        <Card.Section></Card.Section>
+        <Card.Section>
+          <Image
+            src={!photoPreview ? plantPhoto : photoPreview}
+            alt={plantName}
+            height={200}
+          />
+          <Space h="xs" />
+        </Card.Section>
+        <ScrollArea style={{ height: "500" }}>
+          <Group position="right" spacing="xs">
+            <ActionIcon onClick={() => setEditMode(!editMode)}>
+              <EditCircle />
+            </ActionIcon>
+            <ActionIcon
+              id={plantKey}
+              onClick={(e) => {
+                props.deletePlant(e, plantKey);
+              }}
+            >
+              <Trash />
+            </ActionIcon>
+          </Group>
+
+          <Text align="center" order={3}>
+            {plantFamily.toLowerCase()}
+          </Text>
+          {editMode ? editProfile : readOnlyProfile}
+        </ScrollArea>
+      </Card>
+    </>
   );
 }

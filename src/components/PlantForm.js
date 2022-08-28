@@ -33,6 +33,8 @@ import {
   Switch,
   MultiSelect,
   Textarea,
+  Badge,
+  Blockquote,
 } from "@mantine/core";
 
 import { Plus, Upload } from "tabler-icons-react";
@@ -234,6 +236,34 @@ export default function PlantForm() {
 
   /////////////// RENDERING CONSTS ///////////////
 
+  // generate some info on selected plant
+  const plantSnippet = (
+    <>
+      <Card withBorder radius="md">
+        <Card.Section>
+          <Image
+            src={
+              allPlantFamily.includes(searchTerm)
+                ? plantList[searchTerm].url
+                : ""
+            }
+            height={180}
+          />
+        </Card.Section>
+
+        <Title order={5}>
+          {allPlantFamily.includes(searchTerm) ? searchTerm : ""}
+        </Title>
+
+        <Text size="sm" color="dimmed">
+          {allPlantFamily.includes(searchTerm)
+            ? plantList[searchTerm].description
+            : ""}
+        </Text>
+      </Card>
+    </>
+  );
+
   // generate recommended care for selectedPlant in plantform
   const selectedPlantForm = (
     <>
@@ -279,66 +309,56 @@ export default function PlantForm() {
       <Space h="xs" />
       <Switch
         checked={acceptRecommended}
-        onChange={(e) => setAcceptRecommended(!acceptRecommended)}
+        onChange={(e) => {
+          setAcceptRecommended(!acceptRecommended);
+          setWaterFrequency(plantList[searchTerm].waterFreqDay);
+          setSunlightRequirement(plantList[searchTerm].sunlightReq);
+        }}
         label="Use Recommendation"
       />
-      {/* <label>
-        Keep Recommendation
-        <input
-          type="checkbox"
-          name="recommendation"
-          onChange={(e) => setAcceptRecommended(!acceptRecommended)}
-        />
-      </label> */}
     </>
   );
 
   // generate new plant species care routine if plant not in plantsDB
   const newPlantSpeciesForm = (
-    <div>
-      <Title order={3}>
-        {user.displayName}'s {plantFamily ? plantFamily : "New Buddy"}
-      </Title>
-      <label>
-        Plant Family:
-        <input
-          type="text"
-          name="species"
-          value={plantFamily}
-          onChange={(e) => setPlantFamily(e.target.value)}
-          required
-          placeholder="Plant Family"
-          maxLength={24}
-        />
-      </label>
-      <h5>Plant Care Routine:</h5>
-      <label>
-        Watering Schedule: Every
-        <input
-          type="number"
-          name="water"
-          value={waterFrequency}
-          onChange={(e) => setWaterFrequency(e.target.value)}
-        />
-        Days
-      </label>
-      <br />
-      <label>
-        Sunlight Required:
-        <select
-          name="sunlight"
-          value={sunlightRequirement || "default"}
-          onChange={(e) => setSunlightRequirement(e.target.value)}
-        >
-          <option value="low" hidden>
-            choose intensity
-          </option>
-          <option value="intense">intense</option>
-          <option value="moderate">moderate</option>
-          <option value="low">low</option>
-        </select>
-      </label>
-    </div>
+    <>
+      <Text size="lg" color="tan" weight={700}>
+        Your Plant Care Routine
+      </Text>
+      <Space h="xs" />
+      <Grid>
+        <Grid.Col span={6}>
+          <NumberInput
+            label="Watering Schedule"
+            name="water"
+            description="Frequency in Days"
+            value={Number(waterFrequency)}
+            onChange={(e) => {
+              setWaterFrequency(e);
+            }}
+            required
+            min={0}
+            icon={
+              <img
+                alt="watering-can"
+                src="https://img.icons8.com/carbon-copy/30/000000/watering-can.png"
+              />
+            }
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            label="Sunlight Requirement"
+            name="sunlight"
+            value={sunlightRequirement}
+            data={["intense", "moderate", "low"]}
+            onChange={(e) => setSunlightRequirement(e)}
+            required
+          />
+        </Grid.Col>
+      </Grid>
+      <Space h="xs" />
+    </>
   );
 
   // generate shared portion of the form regardless of new plant species or selectedPlant
@@ -355,8 +375,8 @@ export default function PlantForm() {
         label="Plant Condition"
         placeholder="Pick all that applies"
         data={plantConditionData}
+        value={plantCondition}
         onChange={(e) => {
-          // handleAddPlantCondition(e);
           setPlantCondition(e);
         }}
         searchable
@@ -377,33 +397,6 @@ export default function PlantForm() {
         onChange={(e) => setPlantNotes(e.target.value)}
         maxLength={256}
       />
-    </>
-  );
-
-  const plantSnippet = (
-    <>
-      <Card withBorder radius="md">
-        <Card.Section>
-          <Image
-            src={
-              allPlantFamily.includes(searchTerm)
-                ? plantList[searchTerm].url
-                : ""
-            }
-            height={180}
-          />
-        </Card.Section>
-
-        <Title order={5}>
-          {allPlantFamily.includes(searchTerm) ? searchTerm : ""}
-        </Title>
-
-        <Text size="sm" color="dimmed">
-          {allPlantFamily.includes(searchTerm)
-            ? plantList[searchTerm].description
-            : ""}
-        </Text>
-      </Card>
     </>
   );
 
@@ -440,14 +433,60 @@ export default function PlantForm() {
 
   const plantProfile = (
     <>
-      <Title order={3}>{plantName}</Title>
+      <Title order={3} align="center">
+        {plantName}
+      </Title>
       <img alt="" src={photoPreview} width="100%" />
-      Watering Schedule: Every {waterFrequency} Days
-      <br></br>
-      Sunlight Requirement: {sunlightRequirement}
-      <br></br>
-      Plant Condition: {plantCondition}
-      <br></br>
+      <Space h="xs" />
+      <Grid>
+        <Grid.Col span={6}>
+          <NumberInput
+            variant="unstyled"
+            label="Watering Schedule"
+            name="water"
+            description="Frequency in Days"
+            value={Number(waterFrequency)}
+            onChange={(e) => {
+              setWaterFrequency(e);
+            }}
+            disabled={acceptRecommended}
+            required
+            min={0}
+            icon={
+              <img
+                alt="watering-can"
+                src="https://img.icons8.com/carbon-copy/30/000000/watering-can.png"
+              />
+            }
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            variant="unstyled"
+            label="Sunlight Requirement"
+            name="sunlight"
+            value={sunlightRequirement}
+            data={["intense", "moderate", "low"]}
+            onChange={(e) => setSunlightRequirement(e)}
+            disabled={acceptRecommended}
+            required
+          />
+        </Grid.Col>
+      </Grid>
+      <Space h="xs" />
+      <Divider label="Plant Condition" labelPosition="center" />
+      <Space h="xs" />
+      <Stack spacing="xs">
+        {plantCondition.map((condition, index) => (
+          <Badge key={index} variant="outline" color="seashell" size="md">
+            {condition}
+          </Badge>
+        ))}
+      </Stack>
+      <Space h="xs" />
+      <Divider label="Plant Notes" labelPosition="center" />
+      <Space h="xs" />
+      <Blockquote>{plantNotes}</Blockquote>
     </>
   );
 

@@ -22,15 +22,7 @@ import PlantCalendar from "./Calendar";
 //imports for styling
 import dashboard from "../styling/Drawkit Plants/Drawkit_04_Dashboard.png";
 import { ArticleCardVertical } from "../Styles/PlantCard";
-import {
-  Stack,
-  Divider,
-  Title,
-  Box,
-  Drawer,
-  Group,
-  Button,
-} from "@mantine/core";
+import { Stack, Box, Drawer, ScrollArea } from "@mantine/core";
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -90,9 +82,11 @@ export default function PlantGarden(props) {
   // reminder
   const [showReminder, setShowReminder] = useState(false);
   const [plantWatered, setPlantWatered] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDeletePlant = (e, id) => {
-    const plantEntry = e.target.id;
+    const plantEntry = id;
+    console.log("delete entry:", id);
 
     //delete from realtime database
     const plantEntryRef = databaseRef(
@@ -115,9 +109,9 @@ export default function PlantGarden(props) {
         console.log("image deleted!");
       })
       .catch((error) => console.log(error));
-  };
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
+    setDrawerOpen(false);
+  };
 
   // to render user's list of plants in dashboard view
   const plantCards = Object.entries(userPlants).map(
@@ -138,62 +132,12 @@ export default function PlantGarden(props) {
             dateLastWatered={plantData.dateLastWateredCheck}
           />
         </Box>
-
-        /* <div className="plantCard" key={index} id={plantEntryKey}>
-            <img
-              alt={plantData.plantName}
-              src={plantData.plantImageUrl}
-              width="50%%"
-            />
-
-            <button
-              onClick={() => {
-                setSelectedPlantProfile({ [plantEntryKey]: plantData });
-              }}
-            >
-              {plantData.plantFamily}
-            </button>
-
-            <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
-            <p>Sunlight Intensity: {plantData.sunlightReq} </p>
-            {!plantWatered ? (
-              <div>
-                <p>Reminder to water today!</p>
-                <p> Have you watered {plantData.plantName}?</p>
-                <input
-                  id={index}
-                  type="checkbox"
-                  checked={
-                    new Date().toLocaleDateString() ===
-                    plantData.dateLastWateredCheck
-                  }
-                  disabled={plantWatered}
-                  onChange={(e, index) => {
-                    const updatedData = {
-                      ...plantData,
-                      dateLastWatered: new Date(),
-                      dateLastWateredCheck: new Date().toLocaleDateString(),
-                    };
-                    update(userPlantRef, { [plantEntryKey]: updatedData });
-                  }}
-                />
-              </div>
-            ) : null}
-            <button
-              id={plantEntryKey}
-              onClick={(e, id) => {
-                handleDeletePlant(e, id);
-              }}
-            >
-              delete plant
-            </button>
-          </div> */
       );
     }
   );
 
   return (
-    <div>
+    <>
       <PlantCalendar plantData={userPlants} user={user} />
 
       {/* <img className="community-header-img" src={dashboard} alt={dashboard} /> */}
@@ -203,12 +147,17 @@ export default function PlantGarden(props) {
         opened={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         title={selectedPlantProfile.plantName}
-        padding="xl"
-        size="75%"
+        padding="0"
+        size="90%"
         position="bottom"
+        withCloseButton={false}
+        trapFocus={false}
       >
-        <PlantInfo selectedPlantProfile={selectedPlantProfile} />
+        <PlantInfo
+          selectedPlantProfile={selectedPlantProfile}
+          deletePlant={handleDeletePlant}
+        />
       </Drawer>
-    </div>
+    </>
   );
 }
