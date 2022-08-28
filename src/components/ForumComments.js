@@ -7,6 +7,21 @@ import {
   push,
   ref as databaseRef,
 } from 'firebase/database';
+import {
+  TextInput,
+  Badge,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  Paper,
+  Text,
+  FileInput,
+  Center,
+  useMantineTheme,
+  Textarea,
+} from '@mantine/core';
 import { database, auth } from '../DB/firebase';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
@@ -14,18 +29,23 @@ import { UserContext } from '../App';
 
 export default function ForumComments(props) {
   const navigate = useNavigate();
-
+  // const user = useContext(UserContext);
   const [comment, setComment] = useState('');
   const { topic } = useParams();
 
+  // const [newData, setNewData] = useState({});
+  // const [messages, setMessages] = useState({
+  //   val: { title: '', user: '', imageLink: '', messages: '' },
+  // });
+
   console.log(props.messages);
   const messages = props.messages;
-
+  const index = props.index;
   const user = props.user;
 
+  // const index = props.index;
+
   const FORUM_FOLDER_NAME = topic;
-  const userName = user.displayName;
-  const userMessagesFolder = `${userName + '-' + user.uid}`;
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -42,10 +62,7 @@ export default function ForumComments(props) {
     if (comment !== '') {
       // let msg = props.messages;
 
-      const messageListRef = databaseRef(
-        database,
-        FORUM_FOLDER_NAME + '/' + userMessagesFolder
-      );
+      const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
       const updates = {};
       let newData = {
         title: messages.val.title,
@@ -76,12 +93,18 @@ export default function ForumComments(props) {
     commentsList = messages.val.comments.filter(
       (comment) => comment.user !== ''
     );
-    postComments = commentsList.map((comment, index) => (
-      <h6 className="forumComments" key={index} id={comment.key}>
-        {comment.user} : {comment.text}
+    postComments = commentsList.map((comment) => (
+      <Text size="sm" color="dimmed">
         <br />
-        {comment.timestamp}
-      </h6>
+        <div className="forum-comments" key={comment.key}>
+          {comment.user} : {comment.text}
+          <br />
+          <Text size="xs" color="dimmed">
+            {comment.timestamp}
+          </Text>
+        </div>
+        <br />
+      </Text>
     ));
   }
 
@@ -89,7 +112,29 @@ export default function ForumComments(props) {
     <div>
       {postComments}
 
-      <textarea
+      <Textarea
+        placeholder="What are your thoughts?"
+        variant="filled"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        autosize
+        minRows={2}
+      />
+
+      <Button
+        variant="filled"
+        color="seashell"
+        size="xs"
+        mt="md"
+        radius="md"
+        onClick={(e) => {
+          addComment(comment);
+        }}
+      >
+        Submit
+      </Button>
+
+      {/* <textarea
         rows="8"
         cols="50"
         placeholder="Comments here..."
@@ -103,7 +148,7 @@ export default function ForumComments(props) {
         onClick={() => {
           addComment(comment);
         }}
-      />
+      /> */}
     </div>
   );
 }

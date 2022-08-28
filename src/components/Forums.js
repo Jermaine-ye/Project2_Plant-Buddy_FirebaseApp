@@ -12,6 +12,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { UserContext } from '../App';
+import { IconPlant, IconPlant2 } from '@tabler/icons';
 
 import tipspic from '../images/TipsForum.png';
 import tradingpic from '../images/TradingForum.png';
@@ -30,13 +31,19 @@ export default function Forums() {
   });
 
   let forumTipsCard = (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
+    <Card
+      shadow="sm"
+      p="lg"
+      radius="md"
+      withBorder
+      // sx={{ width: '85vw', color: '#1f3b2c' }}
+    >
       <Card.Section>
-        <Image src={tipspic} height={600} alt="forumtipsicon" />
+        <Image src={tipspic} alt="forumtipsicon" />
       </Card.Section>
 
       <Group position="apart" mt="md" mb="xs">
-        <Text weight={300}>Plant Care Tips</Text>
+        <Text weight={600}>Plant Care Tips</Text>
       </Group>
 
       <Text size="sm" color="dimmed">
@@ -44,8 +51,9 @@ export default function Forums() {
         and reach out when they need help!
       </Text>
       <Button
-        variant="light"
-        color="blue"
+        leftIcon={<IconPlant />}
+        variant="filled"
+        color="seashell"
         size="md"
         fullWidth
         mt="md"
@@ -62,13 +70,19 @@ export default function Forums() {
   );
 
   let forumTradingCard = (
-    <Card shadow="sm" p="lg" radius="md" withBorder>
+    <Card
+      shadow="sm"
+      p="lg"
+      radius="md"
+      withBorder
+      // sx={{ width: '85vw', color: '#1f3b2c' }}
+    >
       <Card.Section>
-        <Image src={tradingpic} height={600} alt="forumtradesicon" />
+        <Image src={tradingpic} alt="forumtradesicon" />
       </Card.Section>
 
       <Group position="apart" mt="md" mb="xs">
-        <Text weight={300}>Let's Trade Plants!</Text>
+        <Text weight={600}>Let's Trade Plants!</Text>
       </Group>
 
       <Text size="sm" color="dimmed">
@@ -76,8 +90,9 @@ export default function Forums() {
         plants and seedlings, share the joy!!
       </Text>
       <Button
-        variant="light"
-        color="blue"
+        leftIcon={<IconPlant2 />}
+        variant="filled"
+        color="seashell"
         size="md"
         fullWidth
         mt="md"
@@ -95,13 +110,8 @@ export default function Forums() {
 
   return (
     <div>
-      <ul className="navigationBar">
-        <li className="navigationBarItem">
-          <Link to={'/'}>Dashboard</Link>
-        </li>
-        <li>{user ? <p>{user.displayName}</p> : null}</li>
-      </ul>
       <h1>Forums</h1>
+
       <Grid>
         <Grid.Col md={6} lg={6}>
           {forumTipsCard}
@@ -110,17 +120,6 @@ export default function Forums() {
           {forumTradingCard}
         </Grid.Col>
       </Grid>
-      <ul className="navigationBar">
-        <li className="navigationBarItem">
-          <Link to={'/community'}>Community</Link>
-        </li>
-        <li className="navigationBarItem">
-          <Link to={'/forums'}>Forums</Link>
-        </li>
-        <li className="navigationBarItem">
-          <Link to={'/recommendations'}>Recommendations</Link>
-        </li>
-      </ul>
     </div>
   );
 }

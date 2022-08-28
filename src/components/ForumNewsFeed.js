@@ -17,6 +17,7 @@ import {
   Image,
   Paper,
   Text,
+  Title,
   useMantineTheme,
 } from '@mantine/core';
 import {
@@ -24,6 +25,10 @@ import {
   MagnifyingGlassIcon,
   PersonIcon,
 } from '@radix-ui/react-icons';
+
+import tipsheader from '../images/PC1.png';
+import tradeheader from '../images/TR1.png';
+
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { database, storage } from '../DB/firebase';
 import { useNavigate, Link, useParams } from 'react-router-dom';
@@ -43,9 +48,6 @@ export default function ForumNewsFeed(props) {
   //useParams to point to forumfoldername so it does not show empty state on back
 
   const FORUM_FOLDER_NAME = topic;
-  const FORUM_IMAGES_FOLDER_NAME = 'forumImages';
-  const userName = user.displayName;
-  const userMessagesFolder = `${userName + '-' + user.uid}`;
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
@@ -58,25 +60,19 @@ export default function ForumNewsFeed(props) {
   }, []);
 
   useEffect(() => {
-    const messageListRef = databaseRef(
-      database,
-      FORUM_FOLDER_NAME + '/' + userMessagesFolder
-    );
+    const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
     // onChildAdded will return data for every child at the reference and every subsequent new child
-    onChildAdded(messageListRef, (data) => {
+    onChildAdded(messagesRef, (data) => {
       setMessages((prev) => [...prev, { key: data.key, val: data.val() }]);
     });
   }, []);
 
   //for listening to comments
   useEffect(() => {
-    const messageListRef = databaseRef(
-      database,
-      FORUM_FOLDER_NAME + '/' + userMessagesFolder
-    );
+    const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
 
     // onChildAdded will return data for every child at the reference and every subsequent new child
-    onChildChanged(messageListRef, (data) => {
+    onChildChanged(messagesRef, (data) => {
       console.log('useEffectCA: ', messages);
       console.log('useEffectCASnapshot: ', data);
 
@@ -110,27 +106,33 @@ export default function ForumNewsFeed(props) {
   let titleOnly = messages.map((messages, index) => {
     return (
       <div className="forumMessages" key={index} id={messages.key}>
-        <button>
-          <Link to={`forumpost/${index}`} state={{ messages }}>
-            {console.log(messages)}
-            Go To Post
-          </Link>
-        </button>
-        {console.log('e.val', messages.val)}
-        <h5>{messages.val.title}</h5> <h5>{messages.val.message}</h5>
-        <h6>
-          {messages.val.date}
+        <Card shadow="sm" p="lg" radius="md" withBorder>
+          <Title order={5} weight={500}>
+            {messages.val.title}
+          </Title>
           <br />
-          posted by: {messages.val.user}
-        </h6>
-        {/* <button
-          id={messages.key}
-          onClick={(e, id) => {
-            props.handleDeleteMessage(e, index, id);
-          }}
-        >
-          delete Post
-        </button> */}
+
+          <Text size="sm" color="dimmed">
+            {messages.val.message}
+          </Text>
+          <br />
+          <Text size="xs" color="dimmed">
+            posted by: {messages.val.user} | {messages.val.date}
+          </Text>
+          <Link to={`forumpost/${index}`} state={{ messages }}>
+            <Button
+              // leftIcon={<IconPlant2 />}
+              variant="filled"
+              color="seashell"
+              size="xs"
+              mt="md"
+              radius="md"
+              component="a"
+            >
+              Head to Post
+            </Button>
+          </Link>
+        </Card>
       </div>
     );
   });
@@ -154,19 +156,34 @@ export default function ForumNewsFeed(props) {
   let searchList = searchFeed.map((messages, index) => {
     return (
       <div className="forumMessages" key={index} id={messages.key}>
-        <button>
-          <Link to={`forumpost/${index}`} state={{ messages }}>
-            {console.log(messages)}
-            Go To Post
-          </Link>
-        </button>
-        {console.log('e.val', messages.val)}
-        <h5>{messages.val.title}</h5> <h5>{messages.val.message}</h5>
-        <h6>
-          {messages.val.date}
+        <Card shadow="sm" p="lg" radius="md" withBorder>
+          <Title order={5} weight={500}>
+            {messages.val.title}
+          </Title>
           <br />
-          posted by: {messages.val.user}
-        </h6>
+
+          <Text size="sm" color="dimmed">
+            {messages.val.message}
+          </Text>
+          <br />
+          <Text size="xs" color="dimmed">
+            posted by: {messages.val.user} | {messages.val.date}
+          </Text>
+          <Link to={`forumpost/${index}`} state={{ messages }}>
+            <Button
+              // leftIcon={<IconPlant2 />}
+              variant="filled"
+              color="seashell"
+              size="xs"
+              mt="md"
+              radius="md"
+              component="a"
+            >
+              Head to Post
+            </Button>
+          </Link>
+        </Card>
+
         {/* <button
           id={messages.key}
           onClick={(e, id) => {
@@ -215,9 +232,15 @@ export default function ForumNewsFeed(props) {
 
   return (
     <div>
+      {window.location.pathname.includes('/forumTips') ? (
+        <Image radius="md" src={tipsheader} alt="forum page header" />
+      ) : (
+        <Image radius="md" src={tradeheader} alt="forum page header" />
+      )}
+      <br />
       <Button
-        color="pink"
-        // variant="light"
+        color="moss"
+        variant="filled"
         onClick={() => {
           navigate('/forums');
         }}
@@ -225,21 +248,27 @@ export default function ForumNewsFeed(props) {
         Back to Main Forum Site
       </Button>
       <br />
-
       <br />
-
       <Input
         icon={<MagnifyingGlassIcon />}
         type="text"
-        placeholder="Search"
+        placeholder="Search Forum"
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
           searchTheFeed(e.target.value);
         }}
       />
-
-      {titleOnly.length > 0 && search.length == 0 ? (
+      {titleOnly.length == 0 && search.length == 0 ? (
+        <div>
+          <br />
+          <Title order={5}>Welcome to the forum page </Title>
+          <Text size="md">
+            {' '}
+            Please be respectful and practice kindness with our words :)
+          </Text>
+        </div>
+      ) : titleOnly.length > 0 && search.length == 0 ? (
         <div>
           <ul>{titleOnly}</ul>
         </div>
@@ -248,23 +277,17 @@ export default function ForumNewsFeed(props) {
           <ul>{searchList}</ul>
         </div>
       )}
-
-      <br />
-      <br />
+      {/* {titleOnly.length > 0 && search.length == 0 ? (
+        <div>
+          <ul>{titleOnly}</ul>
+        </div>
+      ) : (
+        <div>
+          <ul>{searchList}</ul>
+        </div>
+      )} */}
+      <br /> <br />
       <ForumComposer />
-      <div>
-        <ul className="navigationBar">
-          <li className="navigationBarItem">
-            <Link to={'/community'}>Community</Link>
-          </li>
-          <li className="navigationBarItem">
-            <Link to={'/forums'}>Forums</Link>
-          </li>
-          <li className="navigationBarItem">
-            <Link to={'/recommendations'}>Recommendations</Link>
-          </li>
-        </ul>
-      </div>
     </div>
   );
 }
