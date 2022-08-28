@@ -17,14 +17,6 @@ export default function Recommendations() {
   });
   return (
     <div>
-      <div>
-        <ul className="navigationBar">
-          <li className="navigationBarItem">
-            <Link to={"/"}>Dashboard</Link>
-          </li>
-          <li>{user ? <p>{user.displayName}</p> : null}</li>
-        </ul>
-      </div>
       <h1>Recommendations!</h1>
       <ul>
         <li>
@@ -50,19 +42,6 @@ export default function Recommendations() {
           </div>
         </li>
       </ul>
-      <div>
-        <ul className="navigationBar">
-          <li className="navigationBarItem">
-            <Link to={"/community"}>Community</Link>
-          </li>
-          <li className="navigationBarItem">
-            <Link to={"/forums"}>Forums</Link>
-          </li>
-          <li className="navigationBarItem">
-            <Link to={"/recommendations"}>Recommendations</Link>
-          </li>
-        </ul>
-      </div>
     </div>
   );
 }

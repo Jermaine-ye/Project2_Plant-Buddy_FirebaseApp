@@ -9,7 +9,36 @@ import {
 } from "firebase/storage";
 import { database, storage } from "../DB/firebase";
 
-import { Button, Title, Autocomplete, ScrollArea } from "@mantine/core";
+import {
+  Button,
+  Title,
+  Autocomplete,
+  Breadcrumbs,
+  Anchor,
+  Container,
+  Stack,
+  Group,
+  Grid,
+  Divider,
+  TextInput,
+  Modal,
+  Image,
+  Card,
+  Text,
+  FileInput,
+  Stepper,
+  Space,
+  NumberInput,
+  Select,
+  Switch,
+  MultiSelect,
+  Textarea,
+} from "@mantine/core";
+
+import { Plus, Upload } from "tabler-icons-react";
+
+import glossary from "../styling/Drawkit Plants/Drawkit_05_Glossary.png";
+import { buddyTheme } from "../Styles/Theme";
 
 const USER_PLANT_FOLDER_NAME = "userPlants/";
 const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
@@ -20,13 +49,15 @@ export default function PlantForm() {
   const user = useContext(UserContext);
   const userInfo = `${user.displayName + "-" + user.uid}`;
 
-  // for conditional rendering of form
-  const [showPlantForm, setShowPlantForm] = useState(false);
+  // // for conditional rendering of form
+  // const [showPlantForm, setShowPlantForm] = useState(false);
   const [chooseDefaultPlant, setChooseDefaultPlant] = useState(false);
 
   // for getting list of plants from realtime database
-  const [plantList, setPlantList] = useState([]);
-
+  const [plantList, setPlantList] = useState({});
+  const allPlantFamily = Object.keys(plantList).map(
+    (plantFamily) => plantFamily
+  );
   // for data to be added to realtime database upon form submission
   const [selectedPlant, setSelectedPlant] = useState({
     plantInfo: "",
@@ -46,13 +77,66 @@ export default function PlantForm() {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState("");
 
+  /////////////// STYLING ///////////////
+
+  // BREADCRUMBS
+  const items = [
+    { title: "Plant Garden", href: "/" },
+    { title: "Add Plant", href: "#" },
+  ].map((item, index) => (
+    <Anchor href={item.href} key={index}>
+      {item.title}
+    </Anchor>
+  ));
+
+  // MODAL
+  const [modalOpen, setModalOpen] = useState(false);
+
+  // STEPPER
+  const [activeStep, setActiveStep] = useState(0);
+  const nextStep = () => {
+    if (plantPhotoFile === null && plantName === "") {
+      alert("Upload a photo of your buddy and name your buddy to proceed!");
+    } else if (plantPhotoFile === null && plantName !== "") {
+      alert("Upload a photo of your buddy to proceed!");
+    } else if (plantName === "" && plantPhotoFile !== null) {
+      alert("Name your new buddy to proceed!");
+    } else {
+      setActiveStep((current) => (current < 2 ? current + 1 : current));
+    }
+  };
+  const prevStep = () =>
+    setActiveStep((current) => (current > 0 ? current - 1 : current));
+
+  // MULTIESELECT
+  const [plantConditionData, setPlantConditionData] = useState([
+    { value: "glowing", label: "Glowing", group: "Healthy Traits" },
+    { value: "new sprout", label: "New Sprout", group: "Healthy Traits" },
+    { value: "wilting", label: "Wilting", group: "Unhealthy Traits" },
+    {
+      value: "infested by insects",
+      label: "Infested By Insects",
+      group: "Unhealthy Traits",
+    },
+    {
+      value: "needs more sunlight",
+      label: "Needs More Sunlight",
+      group: "Healthy Traits",
+    },
+    { value: "white spots", label: "White Spots", group: "Unhealthy Traits" },
+    { value: "need to repot", label: "Pending Repot", group: "Others" },
+    {
+      value: "require fertiliser",
+      label: "Require Fertiliser",
+      group: "Others",
+    },
+  ]);
+
   /////////////// USEEFFECTS HOOKS ///////////////
 
   // to check if user is logged in
   useEffect(() => {
-    console.log("user:", user);
     const isLoggedIn = JSON.parse(localStorage.getItem("user"));
-    console.log("isLoggedIn:", isLoggedIn);
     if (Object.keys(isLoggedIn) === 0) {
       navigate("/login");
     }
@@ -64,10 +148,10 @@ export default function PlantForm() {
   useEffect(() => {
     const plantsRef = databaseRef(database, PLANTS_FOLDER_NAME);
     onChildAdded(plantsRef, (data) => {
-      setPlantList((prevState) => [
+      setPlantList((prevState) => ({
         ...prevState,
-        { plantFamily: data.key, plantInfo: data.val() },
-      ]);
+        [data.key]: data.val(),
+      }));
     });
 
     return () => {
@@ -126,111 +210,87 @@ export default function PlantForm() {
       .catch((err) => console.log(err));
   };
 
-  // for user to custom their plant condition/health
-  const handleAddPlantCondition = (e) => {
-    if (e.target.checked) {
-      setPlantCondition((prev) => [...prev, e.target.id]);
-    } else {
-      setPlantCondition((prev) =>
-        prev.filter((condition) => condition !== e.target.id)
-      );
-    }
-  };
-
   // to store user's selected plant for add plant entry
-  const handleClickSelectedPlant = (event, plant, index) => {
-    setSelectedPlant(plant);
-    setWaterFrequency(plant.plantInfo.waterFreqDay);
-    setSunlightRequirement(plant.plantInfo.sunlightReq);
-    setShowPlantForm(true);
-    setChooseDefaultPlant(true);
-    setPlantFamily(plant.plantFamily);
-  };
+  const handleClickSelectedPlant = () => {
+    if (searchTerm === "") {
+      alert("Input is blank. Please type something...");
+    } else {
+      setModalOpen(true);
 
-  // to search list of available plant family
-  const handleSearchPlantFamily = (e) => {
-    let search = e.target.value.toUpperCase();
-    setSearchTerm(search);
+      if (allPlantFamily.includes(searchTerm)) {
+        setSelectedPlant(plantList[searchTerm]);
+        setWaterFrequency(plantList[searchTerm].waterFreqDay);
+        setSunlightRequirement(plantList[searchTerm].sunlightReq);
+        setPlantFamily(searchTerm);
+        setChooseDefaultPlant(true);
+      } else {
+        setPlantFamily(searchTerm.toUpperCase());
+        setWaterFrequency("");
+        setSunlightRequirement("");
+        setChooseDefaultPlant(false);
+      }
+    }
   };
 
   /////////////// RENDERING CONSTS ///////////////
 
-  // list of plant results based on search term
-  const searchPlantResults = plantList
-    .filter((plant) => plant.plantFamily.includes(searchTerm))
-    .map((plant, index) => (
-      <Button
-        color="moss"
-        key={index}
-        onClick={(e) => {
-          console.log(plant);
-          handleClickSelectedPlant(e, plant, index);
-        }}
-      >
-        {plant.plantFamily}
-      </Button>
-    ));
-
-  // list of plant choices for user to select for recommended plant care
-  // const plantsDB = plantList.map((plant, index) => (
-  //   <Button
-  //     color="seashell"
-  //     key={index}
-  //     onClick={(e) => {
-  //       console.log(plant);
-  //       handleClickSelectedPlant(e, plant, index);
-  //     }}
-  //   >
-  //     {plant.plantFamily}
-  //   </Button>
-  // ));
-
   // generate recommended care for selectedPlant in plantform
   const selectedPlantForm = (
-    <div>
-      <Title order={3}>
-        {user.displayName}'s {!selectedPlant ? null : selectedPlant.plantFamily}
-      </Title>
-      <h5>Recommended Care:</h5>
-      <p>{selectedPlant.plantInfo["Possible Issues"]}</p>
-      <img alt={selectedPlant.plantFamily} src={selectedPlant.plantInfo.url} />
-
-      <label>
-        Watering Schedule: Every
-        <input
-          type="number"
-          name="water"
-          value={waterFrequency}
-          onChange={(e) => setWaterFrequency(e.target.value)}
-          disabled={acceptRecommended}
-        />
-        Days
-      </label>
-      <br />
-      <label>
-        Sunlight Required:
-        <select
-          name="sunlight"
-          value={sunlightRequirement}
-          onChange={(e) => setSunlightRequirement(e.target.value)}
-          disabled={acceptRecommended}
-        >
-          <option value="intense">intense</option>
-          <option value="moderate">moderate</option>
-          <option value="low">low</option>
-        </select>
-      </label>
-      <br />
-      <label>
+    <>
+      <Text size="lg" color="tan" weight={700}>
+        Recommended Plant Care:
+      </Text>
+      <Space h="xs" />
+      <Grid>
+        <Grid.Col span={6}>
+          <NumberInput
+            variant="unstyled"
+            label="Watering Schedule"
+            name="water"
+            description="Frequency in Days"
+            value={Number(waterFrequency)}
+            onChange={(e) => {
+              setWaterFrequency(e);
+            }}
+            disabled={acceptRecommended}
+            required
+            min={0}
+            icon={
+              <img
+                alt="watering-can"
+                src="https://img.icons8.com/carbon-copy/30/000000/watering-can.png"
+              />
+            }
+          />
+        </Grid.Col>
+        <Grid.Col span={6}>
+          <Select
+            variant="unstyled"
+            label="Sunlight Requirement"
+            name="sunlight"
+            value={sunlightRequirement}
+            data={["intense", "moderate", "low"]}
+            onChange={(e) => setSunlightRequirement(e)}
+            disabled={acceptRecommended}
+            required
+          />
+        </Grid.Col>
+      </Grid>
+      <Space h="xs" />
+      <Switch
+        checked={acceptRecommended}
+        onChange={(e) => setAcceptRecommended(!acceptRecommended)}
+        label="Use Recommendation"
+      />
+      {/* <label>
         Keep Recommendation
         <input
           type="checkbox"
           name="recommendation"
-          checked={acceptRecommended}
           onChange={(e) => setAcceptRecommended(!acceptRecommended)}
         />
-      </label>
-    </div>
+      </label> */}
+    </>
   );
 
   // generate new plant species care routine if plant not in plantsDB
@@ -283,148 +343,207 @@ export default function PlantForm() {
 
   // generate shared portion of the form regardless of new plant species or selectedPlant
   const sharedForm = (
-    <div>
-      <h5>Other Attributes:</h5>
-      <form onSubmit={handleSubmitNewPlant}>
-        <label>
-          Plant Name:
-          <input
-            type="text"
-            name="plantName"
-            value={plantName}
-            onChange={(e) => setPlantName(e.target.value)}
-            required
-            placeholder="Plant Name"
-            maxLength={24}
-          />
-        </label>
-        <br />
+    <>
+      <Space h="xs" />
+      <Text size="lg" color="tan" weight={700}>
+        More Info on {plantName.toUpperCase()}
+      </Text>
+      <Space h="xs" />
 
-        {/*  */}
-        <label>
-          Plant Condition:
-          <input
-            type="checkbox"
-            name="plantCondition"
-            id="healthy"
-            value="healthy"
-            onChange={(e) => {
-              handleAddPlantCondition(e);
-            }}
-          />
-          <label htmlFor="plantCondition">Healthy</label>
-          <input
-            type="checkbox"
-            name="plantCondition"
-            id="white-spots"
-            value="white spots"
-            onChange={(e) => {
-              handleAddPlantCondition(e);
-            }}
-          />
-          <label htmlFor="plantCondition">White Spots</label>
-        </label>
-        <br />
+      {/*  */}
+      <MultiSelect
+        label="Plant Condition"
+        placeholder="Pick all that applies"
+        data={plantConditionData}
+        onChange={(e) => {
+          // handleAddPlantCondition(e);
+          setPlantCondition(e);
+        }}
+        searchable
+        creatable
+        getCreateLabel={(query) => `+ Create ${query}`}
+        onCreate={(query) => {
+          const item = { value: query, label: query, group: "Custom" };
+          setPlantConditionData((current) => [...current, item]);
+          return item;
+        }}
+      />
+      <Space h="xs" />
+      <Textarea
+        name="notes"
+        label="Notes"
+        description="Max 256 characters"
+        value={plantNotes}
+        onChange={(e) => setPlantNotes(e.target.value)}
+        maxLength={256}
+      />
+    </>
+  );
 
-        {/*  */}
-        <label>
-          Upload a photo:
-          <input
-            type="file"
-            value={plantPhotoValue}
-            onChange={(e) => {
-              setPlantPhotoFile(e.target.files[0]);
-              setPlantPhotoValue(e.target.value);
-              setPhotoPreview(URL.createObjectURL(e.target.files[0]));
-              console.log(e.target.files[0].name);
-            }}
+  const plantSnippet = (
+    <>
+      <Card withBorder radius="md">
+        <Card.Section>
+          <Image
+            src={
+              allPlantFamily.includes(searchTerm)
+                ? plantList[searchTerm].url
+                : ""
+            }
+            height={180}
           />
-        </label>
-        <br />
+        </Card.Section>
 
-        {/*  */}
-        <label>
-          Notes:
-          <textarea
-            name="notes"
-            value={plantNotes}
-            onChange={(e) => setPlantNotes(e.target.value)}
-            maxLength={256}
-          />
-        </label>
-        <br />
+        <Title order={5}>
+          {allPlantFamily.includes(searchTerm) ? searchTerm : ""}
+        </Title>
 
-        {/*  */}
-        <Button type="submit">Add Plant</Button>
-      </form>
-    </div>
+        <Text size="sm" color="dimmed">
+          {allPlantFamily.includes(searchTerm)
+            ? plantList[searchTerm].description
+            : ""}
+        </Text>
+      </Card>
+    </>
+  );
+
+  const sharedTopForm = (
+    <>
+      <FileInput
+        required
+        type="file"
+        label="Upload Plant Photo"
+        placeholder="Choose photo"
+        icon={<Upload size={14} />}
+        value={plantPhotoValue}
+        onChange={(e) => {
+          setPlantPhotoFile(e);
+          setPlantPhotoValue(e.name);
+          setPhotoPreview(URL.createObjectURL(e));
+        }}
+      />
+      <img alt="" src={photoPreview} width="100%" />
+      <Space h="md" />
+      <TextInput
+        name="plantName"
+        label="Buddy's Name"
+        value={plantName}
+        onChange={(e) => {
+          setPlantName(e.target.value);
+        }}
+        required
+        placeholder="Plant Name"
+        maxLength={24}
+      />
+    </>
+  );
+
+  const plantProfile = (
+    <>
+      <Title order={3}>{plantName}</Title>
+      <img alt="" src={photoPreview} width="100%" />
+      Watering Schedule: Every {waterFrequency} Days
+      <br></br>
+      Sunlight Requirement: {sunlightRequirement}
+      <br></br>
+      Plant Condition: {plantCondition}
+      <br></br>
+    </>
   );
 
   return (
-    <div>
-      {/* FIRST SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
-      <Button
-        color="seashell"
-        onClick={() => {
-          navigate("/");
-        }}
+    <>
+      <Breadcrumbs separator=">">{items}</Breadcrumbs>
+      <Container>
+        <br />
+        <Stack>
+          <img className="community-header-img" src={glossary} alt={glossary} />
+          <Title order={3}>New Plant Buddy</Title>
+          <Grid grow gutter="xs">
+            <Grid.Col span={9}>
+              <Autocomplete
+                placeholder="Search plant family"
+                data={Object.keys(plantList).map((plantFamily) => plantFamily)}
+                value={searchTerm}
+                limit={plantList.length}
+                onChange={setSearchTerm}
+                nothingFound={
+                  <p>
+                    Plant family unknown. <br />
+                    But continue typing, we will add it as a new plant family!
+                    😀
+                  </p>
+                }
+              />
+            </Grid.Col>
+            <Grid.Col span={3}>
+              <Button onClick={() => handleClickSelectedPlant()}>
+                <Plus size={20} strokeWidth={2} color={"white"} />
+              </Button>
+            </Grid.Col>
+          </Grid>
+          {allPlantFamily.includes(searchTerm) ? plantSnippet : null}
+        </Stack>
+      </Container>
+      <Modal
+        size="90%"
+        centered
+        opened={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={
+          <Title order={4}>
+            ADDING {user.displayName.toUpperCase()}'s NEW {plantFamily}
+          </Title>
+        }
+        overlayOpacity={0.55}
+        overlayBlur={3}
+        overlayColor={buddyTheme.colors["deep-green"]}
+        overflow="inside"
       >
-        Back to Dashboard
-      </Button>
+        <Stepper
+          active={activeStep}
+          onStepClick={setActiveStep}
+          // breakpoint="sm"
+          orientation="horizontal"
+        >
+          <Stepper.Step>
+            Firstly, set a profile photo and name your new buddy!
+            <Space h="md" />
+            <Divider />
+            <Space h="md" />
+            {sharedTopForm}
+          </Stepper.Step>
+          <Stepper.Step>
+            Lastly, record your plant care methods!
+            <Space h="md" />
+            <Divider />
+            <Space h="md" />
+            {!chooseDefaultPlant ? newPlantSpeciesForm : selectedPlantForm}
+            {sharedForm}
+          </Stepper.Step>
 
-      <h1>New Plant Buddy</h1>
-      <input
-        type="text"
-        placeholder="Search for plant"
-        onChange={(e) => {
-          handleSearchPlantFamily(e);
-        }}
-      />
-      <Autocomplete
-        label="Enter plant family"
-        placeholder="Search from our library"
-        data={plantList.map((plant) => plant.plantFamily)}
-        value={searchTerm}
-        limit={plantList.length}
-        onChange={setSearchTerm}
-      />
-      {/* <br />
-      {!searchTerm ? (
-        plantsDB
-      ) : searchPlantResults.length > 0 ? (
-        searchPlantResults
-      ) : (
-        <p>No plants found!</p>
-      )} */}
-      <br />
-      <Button
-        onClick={(e) => {
-          setPlantFamily("");
-          setWaterFrequency("");
-          setSunlightRequirement("");
-          setShowPlantForm(true);
-          setChooseDefaultPlant(false);
-        }}
-      >
-        Add New Plant Family
-      </Button>
-      <br />
+          <Stepper.Completed>
+            All done, click add Buddy to the Plant Garden now or back to edit!
+            <Space h="md" />
+            <Divider />
+            <Space h="md" />
+            {plantProfile}
+          </Stepper.Completed>
+        </Stepper>
 
-      {/* SECOND SECTION FOR USERS TO CHOOSE PLANT FROM DATABASE */}
-      <hr />
-
-      {!chooseDefaultPlant && !showPlantForm ? null : !chooseDefaultPlant &&
-        showPlantForm ? (
-        <div>
-          {newPlantSpeciesForm} {sharedForm}
-        </div>
-      ) : (
-        <div>
-          {selectedPlantForm} {sharedForm}
-        </div>
-      )}
-
-      <img alt="" src={photoPreview} width="25%" />
-    </div>
+        <Group position="center" mt="xl">
+          {activeStep > 0 ? (
+            <Button variant="default" onClick={prevStep}>
+              Back
+            </Button>
+          ) : null}
+          {activeStep < 2 ? (
+            <Button onClick={nextStep}>Next step</Button>
+          ) : (
+            <Button onClick={handleSubmitNewPlant}>Add Buddy</Button>
+          )}
+        </Group>
+      </Modal>
+    </>
   );
 }

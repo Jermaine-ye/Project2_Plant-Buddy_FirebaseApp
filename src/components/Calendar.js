@@ -117,6 +117,7 @@ export default function PlantCalendar(props) {
       let day = (
         <Text size="xs" weight="200">
           <div
+            key={i}
             className={`${i == today && dayOfWeekRender ? "today-day" : null} ${
               selectedDate && selectedDateRender
                 ? i == selectedDate.getDay()
@@ -192,9 +193,9 @@ export default function PlantCalendar(props) {
           plantsToWater.push(plant);
         }
       }
-      let wateringList = plantsToWater.map((plant) => {
+      let wateringList = plantsToWater.map((plant, index) => {
         return (
-          <div className="calendar-reminder-row">
+          <div key={index} className="calendar-reminder-row">
             <Badge
               size="md"
               variant="dot"

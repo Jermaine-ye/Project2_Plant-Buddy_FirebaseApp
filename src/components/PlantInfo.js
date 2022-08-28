@@ -280,13 +280,6 @@ export default function PlantInfo(props) {
       <br />
       <button onClick={handleResetChanges}>Reset Changes</button>
       <hr />
-      <button
-        onClick={() => {
-          navigate("/");
-        }}
-      >
-        Back to Dashboard
-      </button>
     </div>
   );
 }

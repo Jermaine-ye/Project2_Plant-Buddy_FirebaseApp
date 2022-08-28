@@ -22,7 +22,15 @@ import PlantCalendar from "./Calendar";
 //imports for styling
 import dashboard from "../styling/Drawkit Plants/Drawkit_04_Dashboard.png";
 import { ArticleCardVertical } from "../Styles/PlantCard";
-import { Stack, Divider, Title } from "@mantine/core";
+import {
+  Stack,
+  Divider,
+  Title,
+  Box,
+  Drawer,
+  Group,
+  Button,
+} from "@mantine/core";
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -109,20 +117,27 @@ export default function PlantGarden(props) {
       .catch((error) => console.log(error));
   };
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   // to render user's list of plants in dashboard view
   const plantCards = Object.entries(userPlants).map(
     ([plantEntryKey, plantData], index) => {
       return (
-        <ArticleCardVertical
-          image={plantData.plantImageUrl}
-          plantFamily={plantData.plantFamily}
-          plantName={plantData.plantName}
-          dateAdded={plantData.dateAdded}
-          dateLastWatered={plantData.dateLastWateredCheck}
+        <Box
+          key={index}
           onClick={() => {
             setSelectedPlantProfile({ [plantEntryKey]: plantData });
+            setDrawerOpen(true);
           }}
-        />
+        >
+          <ArticleCardVertical
+            image={plantData.plantImageUrl}
+            plantFamily={plantData.plantFamily}
+            plantName={plantData.plantName}
+            dateAdded={plantData.dateAdded}
+            dateLastWatered={plantData.dateLastWateredCheck}
+          />
+        </Box>
 
         /* <div className="plantCard" key={index} id={plantEntryKey}>
             <img
@@ -182,11 +197,18 @@ export default function PlantGarden(props) {
       <PlantCalendar plantData={userPlants} user={user} />
 
       {/* <img className="community-header-img" src={dashboard} alt={dashboard} /> */}
-      <Stack spacing="xs">{plantCards}</Stack>
+      <Stack spacing="xs">{plantCards.reverse()}</Stack>
 
-      {Object.keys(selectedPlantProfile).length > 0 ? (
+      <Drawer
+        opened={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title={selectedPlantProfile.plantName}
+        padding="xl"
+        size="75%"
+        position="bottom"
+      >
         <PlantInfo selectedPlantProfile={selectedPlantProfile} />
-      ) : null}
+      </Drawer>
     </div>
   );
 }
