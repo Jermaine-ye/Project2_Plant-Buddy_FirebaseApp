@@ -1,31 +1,11 @@
 // postonly working
-import {
-  onChildAdded,
-  onChildChanged,
-  update,
-  set,
-  push,
-  ref as databaseRef,
-} from 'firebase/database';
-import {
-  Input,
-  Badge,
-  Button,
-  Card,
-  Grid,
-  Group,
-  Image,
-  Paper,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { onChildChanged, ref as databaseRef } from 'firebase/database';
+import { Button, Card, Text, Title } from '@mantine/core';
 import { database, auth } from '../DB/firebase';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '../App';
 import ForumComments from './ForumComments';
-// import ForumComposer from './ForumComposer';
 
 export default function ForumPost(props) {
   const navigate = useNavigate();
@@ -47,7 +27,6 @@ export default function ForumPost(props) {
   }, []);
 
   useEffect(() => {
-    //check if user has logged in, if not, redirect them to login page
     console.log('user:', user);
     const isLoggedIn = JSON.parse(localStorage.getItem('user'));
     console.log('isLoggedIn:', isLoggedIn);
@@ -59,7 +38,6 @@ export default function ForumPost(props) {
   useEffect(() => {
     const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
 
-    // onChildAdded will return data for every child at the reference and every subsequent new child
     onChildChanged(messageListRef, (data) => {
       setMessages((prevState) => {
         let newState = { ...prevState };
@@ -73,12 +51,6 @@ export default function ForumPost(props) {
 
   return (
     <div>
-      {/* <input
-        type="submit"
-        value="Back to Feed"
-        onClick={() => navigate(`/forums/${topic}`)}
-      /> */}
-
       <Button
         color="tan"
         variant="filled"
