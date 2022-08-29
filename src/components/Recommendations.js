@@ -5,6 +5,7 @@ import { UserContext } from "../App";
 import Nurseries from "./Map";
 
 import PlantNurseries from "./PlantNurseries";
+import { Card } from "@mantine/core";
 
 export default function Recommendations() {
   const user = useContext(UserContext);
@@ -18,14 +19,13 @@ export default function Recommendations() {
   return (
     <div>
       <h1>Recommendations!</h1>
+      <div>
+        <h3>Popular Nurseries Near You!</h3>
+
+        <PlantNurseries />
+        <Nurseries />
+      </div>
       <ul>
-        <li>
-          <div>
-            <h3>Popular Nurseries Near You!</h3>
-            <PlantNurseries />
-            {/* <Nurseries /> */}
-          </div>
-        </li>
         <li>
           <div>
             <p>Recommendations</p>

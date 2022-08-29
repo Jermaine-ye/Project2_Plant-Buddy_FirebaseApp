@@ -21,8 +21,19 @@ import PlantCalendar from "./Calendar";
 
 //imports for styling
 import dashboard from "../styling/Drawkit Plants/Drawkit_04_Dashboard.png";
+import dashboardCropped from "../styling/Drawkit Plants/Drawkit_04a_DashboardCropped.png";
 import { ArticleCardVertical } from "../Styles/PlantCard";
-import { Stack, Box, Drawer, ScrollArea } from "@mantine/core";
+import {
+  Stack,
+  Divider,
+  Title,
+  Card,
+  Image,
+  Box,
+  Drawer,
+  ScrollArea,
+} from "@mantine/core";
+import { buddyTheme } from "../Styles/Theme";
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -138,9 +149,25 @@ export default function PlantGarden(props) {
 
   return (
     <>
+      <Card p="0" sx={{ background: buddyTheme.colors.tan[5] }}>
+        <div className="dashboard-banner">
+          <Image
+            radius="md"
+            width="40vw"
+            src={dashboardCropped}
+            alt={dashboardCropped}
+          />
+          {user ? (
+            <Title order={2} color="white">
+              Welcome Back, <br />
+              {user.displayName}
+            </Title>
+          ) : null}
+        </div>
+      </Card>
       <PlantCalendar plantData={userPlants} user={user} />
-
       {/* <img className="community-header-img" src={dashboard} alt={dashboard} /> */}
+
       <Stack spacing="xs">{plantCards.reverse()}</Stack>
 
       <Drawer

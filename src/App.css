@@ -6,7 +6,6 @@ body {
   width: 100vw;
 }
 
-
 .App-header {
   background-color: #f5f3f5;
   min-height: 100vh;
@@ -225,10 +224,21 @@ body {
   width: 75vw;
   height: auto;
 }
+.community-dashboard-banner {
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  padding-left: 10px;
+  padding-bottom: 10px;
+}
 /* Registration */
 .signup-form {
   width: 75vw;
 }
 .signup-button {
   margin-top: 5px;
+}
+.dashboard-banner {
+  display: flex;
+  align-items: center;
 }

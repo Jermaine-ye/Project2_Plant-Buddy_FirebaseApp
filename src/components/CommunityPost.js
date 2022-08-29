@@ -2,11 +2,7 @@ import { useState, useEffect, useContext } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { UserContext } from "../App";
 import { database } from "../DB/firebase";
-import {
-  ref as databaseRef,
-  onChildAdded,
-  onChildChanged,
-} from "firebase/database";
+import { ref as databaseRef, onChildChanged } from "firebase/database";
 import Likes from "./CommunityLikes";
 import Comments from "./CommunityComments";
 import {
@@ -17,6 +13,8 @@ import {
   Grid,
   Image,
   Text,
+  Breadcrumbs,
+  Anchor,
 } from "@mantine/core";
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 
@@ -62,15 +60,29 @@ export default function Post(props) {
     }
     setShowCommentInput(comList);
   };
+  const { id } = useParams();
+
+  const crumbs = [
+    { title: "Community Feed", href: "/community" },
+    { title: "Current Post", href: `/community/posts/${id}` },
+  ].map((crumb, index) => {
+    return (
+      <Anchor href={crumb.href} key={index}>
+        <Text size="xs"> {crumb.title}</Text>
+      </Anchor>
+    );
+  });
 
   return Object.keys(post).length > 0 ? (
     <div>
+      <Breadcrumbs>{crumbs}</Breadcrumbs>
+      <br />
       <Card
         shadow="sm"
         p="lg"
         radius="md"
         withBorder
-        sx={{ width: "85vw", color: "#1f3b2c" }}
+        sx={{ width: "88vw", color: "#1f3b2c" }}
       >
         <li key={post.key} className="community-list-item">
           <CardSection p="xs">
@@ -134,7 +146,7 @@ export default function Post(props) {
         </li>
       </Card>
       <br />
-      <Button
+      {/* <Button
         variant="default"
         size="xs"
         compact
@@ -143,7 +155,7 @@ export default function Post(props) {
         }}
       >
         Back to Community
-      </Button>
+      </Button> */}
     </div>
   ) : null;
 }
