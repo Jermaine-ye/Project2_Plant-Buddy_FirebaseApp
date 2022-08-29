@@ -1,21 +1,16 @@
 import { createStyles, Card, Image, Avatar, Text, Group } from "@mantine/core";
 
-const useStyles = createStyles((theme, _params, getRef) => {
-  const image = getRef("image");
-
+const useStyles = createStyles((theme) => {
   return {
     card: {
       backgroundColor:
         theme.colorScheme === "dark" ? theme.colors.dark[7] : theme.white,
-
-      [`&:hover .${image}`]: {
-        transform: "scale(1.03)",
-      },
     },
 
     title: {
       fontWeight: 700,
       fontFamily: theme.headings.fontFamily,
+      marginBottom: 0,
     },
 
     body: {
@@ -35,7 +30,15 @@ export function ArticleCardVertical({
 }) {
   const { classes } = useStyles();
   return (
-    <Card withBorder radius="md" p={0} className={classes.card}>
+    <Card
+      onClick={() => {
+        console.log("heyyyy");
+      }}
+      withBorder
+      radius="md"
+      p={0}
+      className={classes.card}
+    >
       <Group noWrap spacing={0}>
         <Image
           onClick={() => console.log("pressed")}
@@ -45,9 +48,11 @@ export function ArticleCardVertical({
         />
 
         <div className={classes.body}>
-          <Text className={classes.title} mt="xs" mb="md">
-            {plantName}
-          </Text>
+          <Group noWrap spacing="xs" position="apart" grow>
+            <Text className={classes.title} mt="xs" mb="md">
+              {plantName}
+            </Text>
+          </Group>
           <Text transform="uppercase" color="dimmed" weight={700} size="xs">
             {plantFamily}
           </Text>
@@ -58,7 +63,10 @@ export function ArticleCardVertical({
                 alt="watering-can"
                 src="https://img.icons8.com/carbon-copy/30/000000/watering-can.png"
               />
-              <Text size="xs">Last Watered: {dateLastWatered}</Text>
+              <Text size="xs">
+                Last Watered: <br />
+                {dateLastWatered ? dateLastWatered : "To Water"}
+              </Text>
             </Group>
           </Group>
           <Text size="xs" color="dimmed">

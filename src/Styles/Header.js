@@ -1,5 +1,7 @@
-import { useState, forwardRef } from 'react';
+import { useContext, useEffect, useState, forwardRef } from 'react';
 import { Link } from 'react-router-dom';
+import { UserContext } from '../App';
+
 import {
   createStyles,
   Header,
@@ -14,10 +16,11 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import { MantineProvider } from '@mantine/core';
 import { buddyTheme } from './Theme';
-import { Home } from 'tabler-icons-react';
+import { Home, User } from 'tabler-icons-react';
 
-import WeatherModal from '../components/WeatherModal';
 import WeatherDisplay from '../components/WeatherDisplay';
+import WeatherModal from '../components/WeatherModal';
+import { PersonIcon } from '@radix-ui/react-icons';
 
 const useStyles = createStyles((theme) => ({
   header: {
@@ -129,66 +132,78 @@ export function HeaderMiddle(props) {
 
   return (
     <MantineProvider theme={buddyTheme}>
-      <Header height={56} mb={120} className={classes.header}>
-        <Container className={classes.inner}>
-          <Menu
-            shadow="md"
-            width={200}
-            position="bottom-start"
-            offset={2}
-            withArrow
-          >
-            <Menu.Target>
-              <ActionIcon variant="transparent" size="lg">
-                <Home strokeWidth={1} color={'#fff'} />
-              </ActionIcon>
-            </Menu.Target>
+      {props.user && Object.keys(props.user).length > 0 ? (
+        <Header height={56} mb={120} className={classes.header}>
+          <Container className={classes.inner}>
+            <Menu
+              shadow="md"
+              width={200}
+              position="bottom-start"
+              offset={2}
+              withArrow
+            >
+              <Menu.Target>
+                <ActionIcon variant="transparent" size="lg">
+                  <Home strokeWidth={1} color={'#fff'} />
+                </ActionIcon>
+              </Menu.Target>
 
-            <Menu.Dropdown>
-              <Menu.Label></Menu.Label>
-              <Menu.Item component={Link} to="/">
-                Plant Garden
-              </Menu.Item>
-              <Menu.Item component={Link} to="/community">
-                Community
-              </Menu.Item>
-              <Menu.Item component={Link} to="/forums">
-                Forum
-              </Menu.Item>
-              <Menu.Item component={Link} to="/recommendations">
-                Recommendations
-              </Menu.Item>
-              <Menu.Divider />
-              <Menu.Item color="red" onClick={props.handleLogout}>
-                Log Out
-              </Menu.Item>
-            </Menu.Dropdown>
-          </Menu>
+              <Menu.Dropdown>
+                <Menu.Label></Menu.Label>
+                {/* <Menu.Item>Logged in as: {props.user.displayName}</Menu.Item>
+              <Menu.Divider /> */}
+                <Menu.Item component={Link} to="/">
+                  Plant Garden
+                </Menu.Item>
+                <Menu.Item component={Link} to="/community">
+                  Community
+                </Menu.Item>
+                <Menu.Item component={Link} to="/forums">
+                  Forum
+                </Menu.Item>
+                <Menu.Item component={Link} to="/recommendations">
+                  Recommendations
+                </Menu.Item>
 
-          <Group className={classes.links} spacing={5}>
-            {items}
-          </Group>
+                <div>
+                  <Menu.Divider />
+                  <Menu.Item color="red" onClick={props.handleLogout}>
+                    <PersonIcon /> Log Out of {props.user.displayName}
+                  </Menu.Item>
+                </div>
+              </Menu.Dropdown>
+            </Menu>
 
-          <Group spacing={0} className={classes.icons} position="right" noWrap>
-            <Popover width={180} position="bottom" withArrow shadow="md">
-              {/* <Popover.Target>
+            <Group className={classes.links} spacing={5}>
+              {items}
+            </Group>
+
+            <Group
+              spacing={0}
+              className={classes.icons}
+              position="right"
+              noWrap
+            >
+              <Popover width={180} position="bottom" withArrow shadow="md">
+                {/* <Popover.Target>
                 <Button>Weather Now</Button>
               </Popover.Target> */}
-              <Popover.Dropdown>
-                <Text size="sm">
-                  <WeatherModal />
-                </Text>
-              </Popover.Dropdown>
+                <Popover.Dropdown>
+                  <Text size="sm">
+                    <WeatherModal />
+                  </Text>
+                </Popover.Dropdown>
 
-              <Popover.Target>
-                <Button>
-                  <WeatherDisplay />
-                </Button>
-              </Popover.Target>
-            </Popover>
-          </Group>
-        </Container>
-      </Header>
+                <Popover.Target>
+                  <Button>
+                    <WeatherDisplay />
+                  </Button>
+                </Popover.Target>
+              </Popover>
+            </Group>
+          </Container>
+        </Header>
+      ) : null}
     </MantineProvider>
   );
 }

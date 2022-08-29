@@ -120,21 +120,25 @@ export default function Registration(props) {
               />
             ) : null}
             {!signedUp ? (
-              <Button
-                onClick={(e) => {
-                  signup(e, email, password);
-                }}
-              >
-                Sign Up
-              </Button>
+              <div className="signup-button">
+                <Button
+                  onClick={(e) => {
+                    signup(e, email, password);
+                  }}
+                >
+                  Sign Up
+                </Button>
+              </div>
             ) : (
-              <Button
-                onClick={(e) => {
-                  login(e, email, password);
-                }}
-              >
-                Login
-              </Button>
+              <div className="signup-button">
+                <Button
+                  onClick={(e) => {
+                    login(e, email, password);
+                  }}
+                >
+                  Login
+                </Button>
+              </div>
             )}
           </form>
         </div>

@@ -21,8 +21,19 @@ import PlantCalendar from './Calendar';
 
 //imports for styling
 import dashboard from '../styling/Drawkit Plants/Drawkit_04_Dashboard.png';
+import dashboardCropped from '../styling/Drawkit Plants/Drawkit_04a_DashboardCropped.png';
 import { ArticleCardVertical } from '../Styles/PlantCard';
-import { Stack, Divider, Title } from '@mantine/core';
+import {
+  Stack,
+  Divider,
+  Title,
+  Card,
+  Image,
+  Box,
+  Drawer,
+  ScrollArea,
+} from '@mantine/core';
+import { buddyTheme } from '../Styles/Theme';
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = 'userPlants';
@@ -82,9 +93,11 @@ export default function PlantGarden(props) {
   // reminder
   const [showReminder, setShowReminder] = useState(false);
   const [plantWatered, setPlantWatered] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   const handleDeletePlant = (e, id) => {
-    const plantEntry = e.target.id;
+    const plantEntry = id;
+    console.log('delete entry:', id);
 
     //delete from realtime database
     const plantEntryRef = databaseRef(
@@ -107,86 +120,72 @@ export default function PlantGarden(props) {
         console.log('image deleted!');
       })
       .catch((error) => console.log(error));
+
+    setDrawerOpen(false);
   };
 
   // to render user's list of plants in dashboard view
   const plantCards = Object.entries(userPlants).map(
     ([plantEntryKey, plantData], index) => {
       return (
-        <ArticleCardVertical
-          image={plantData.plantImageUrl}
-          plantFamily={plantData.plantFamily}
-          plantName={plantData.plantName}
-          dateAdded={plantData.dateAdded}
-          dateLastWatered={plantData.dateLastWateredCheck}
+        <Box
+          key={index}
           onClick={() => {
             setSelectedPlantProfile({ [plantEntryKey]: plantData });
+            setDrawerOpen(true);
           }}
-        />
-
-        /* <div className="plantCard" key={index} id={plantEntryKey}>
-            <img
-              alt={plantData.plantName}
-              src={plantData.plantImageUrl}
-              width="50%%"
-            />
-
-            <button
-              onClick={() => {
-                setSelectedPlantProfile({ [plantEntryKey]: plantData });
-              }}
-            >
-              {plantData.plantFamily}
-            </button>
-
-            <p>Watering Schedule: Every {plantData.waterFreqDay} Days</p>
-            <p>Sunlight Intensity: {plantData.sunlightReq} </p>
-            {!plantWatered ? (
-              <div>
-                <p>Reminder to water today!</p>
-                <p> Have you watered {plantData.plantName}?</p>
-                <input
-                  id={index}
-                  type="checkbox"
-                  checked={
-                    new Date().toLocaleDateString() ===
-                    plantData.dateLastWateredCheck
-                  }
-                  disabled={plantWatered}
-                  onChange={(e, index) => {
-                    const updatedData = {
-                      ...plantData,
-                      dateLastWatered: new Date(),
-                      dateLastWateredCheck: new Date().toLocaleDateString(),
-                    };
-                    update(userPlantRef, { [plantEntryKey]: updatedData });
-                  }}
-                />
-              </div>
-            ) : null}
-            <button
-              id={plantEntryKey}
-              onClick={(e, id) => {
-                handleDeletePlant(e, id);
-              }}
-            >
-              delete plant
-            </button>
-          </div> */
+        >
+          <ArticleCardVertical
+            image={plantData.plantImageUrl}
+            plantFamily={plantData.plantFamily}
+            plantName={plantData.plantName}
+            dateAdded={plantData.dateAdded}
+            dateLastWatered={plantData.dateLastWateredCheck}
+          />
+        </Box>
       );
     }
   );
 
   return (
-    <div>
+    <>
+      <Card p="0" sx={{ background: buddyTheme.colors.tan[5] }}>
+        <div className="dashboard-banner">
+          <Image
+            radius="md"
+            width="40vw"
+            src={dashboardCropped}
+            alt={dashboardCropped}
+          />
+          {user ? (
+            <Title order={2} color="white">
+              Welcome Back, <br />
+              {user.displayName}
+            </Title>
+          ) : null}
+        </div>
+      </Card>
       <PlantCalendar plantData={userPlants} user={user} />
-
       {/* <img className="community-header-img" src={dashboard} alt={dashboard} /> */}
-      <Stack spacing="xs">{plantCards}</Stack>
 
-      {Object.keys(selectedPlantProfile).length > 0 ? (
-        <PlantInfo selectedPlantProfile={selectedPlantProfile} />
-      ) : null}
-    </div>
+      <Stack spacing="xs">{plantCards.reverse()}</Stack>
+
+      <Drawer
+        opened={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        title={selectedPlantProfile.plantName}
+        padding="0"
+        size="90%"
+        position="bottom"
+        withCloseButton={false}
+        trapFocus={false}
+      >
+        <PlantInfo
+          selectedPlantProfile={selectedPlantProfile}
+          deletePlant={handleDeletePlant}
+          closeDrawer={() => setDrawerOpen(false)}
+        />
+      </Drawer>
+    </>
   );
 }
