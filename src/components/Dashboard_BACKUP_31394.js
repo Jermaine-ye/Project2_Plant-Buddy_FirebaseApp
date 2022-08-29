@@ -69,7 +69,13 @@ export default function Dashboard(props) {
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
+<<<<<<< HEAD
+      {/* {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null} */}
+
+=======
+      {console.log(user)}
       {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null}
+>>>>>>> main
       {/* <button
           onClick={() => {
             logout();
