@@ -1,0 +1,79 @@
+{
+  "Candy Floriculture": {
+    "position": {
+      "lat": "1.338067",
+      "lng": "103.8373028"
+    },
+    "imageUrl": "https://www.candy.com.sg/img/cms/Candy-Retail-Store.jpg",
+    "address": "567 Thomson Road, Singapore 298183",
+    "url": "https://www.candy.com.sg/",
+    "hours": "Mon-Sun: 8am-7.30pm",
+    "tel": "+65 6256 6788"
+  },
+  "Potta Planta": {
+    "position": {
+      "lat": "1.3117354",
+      "lng": "103.9081898"
+    },
+    "imageUrl": "https://tendergardener.b-cdn.net/wp-content/uploads/2020/05/20191029_152541-1024x671.jpg",
+    "address": "55 Lorong L Telok Kurau, #01-57, Singapore 425500",
+    "url": "https://www.pottaplantta.com/",
+    "hours": "Wed - Sun: 11am - 6.30pm",
+    "tel": "+65 86154322"
+  },
+  "Lai Seng Nursery and Florist": {
+    "position": {
+      "lat": "1.3208208",
+      "lng": "103.9250571"
+    },
+    "imageUrl": "https://www.streetdirectory.com/stock_images/travel/simg_show/13140046690028/242761/lai_seng_florist/",
+    "address": "6 Bedok S Rd, Singapore 469271",
+    "url": "https://www.facebook.com/laisengflorist",
+    "hours": "Tue-Sun: 8am-7pm",
+    "tel": "+65 6449 7386"
+  },
+  "TumbleWeed Plants": {
+    "position": {
+      "lat": "1.2849616",
+      "lng": "103.8192164"
+    },
+    "imageUrl": "https://m.facebook.com/tumbleweedplantssg/photos/a.544272652584015/1559770824367521/?type=3",
+    "address": "Online Only",
+    "url": "https://tumbleweedplants.com/",
+    "hours": "24 hours",
+    "tel": "Live Chat on Website"
+  },
+  "Ban Nee Chen Nursery": {
+    "position": {
+      "lat": "1.316453",
+      "lng": "103.872451"
+    },
+    "imageUrl": "https://www.safra.sg/promotions/ban-nee-chen-nursery",
+    "address": "1211 Upper Boon Keng Road, Singapore 387313",
+    "url": "https://shop.banneechen.com.sg/",
+    "hours": "Mon-Sun: 8am-7.30pm",
+    "tel": "+65 6256 6788"
+  },
+  "Ideal Flora & Landscape": {
+    "position": {
+      "lat": "1.3208208",
+      "lng": "103.9250571"
+    },
+    "imageUrl": "https://singaporeowl.com/company/ideal-flora-landscape",
+    "address": "32 Punggol East #01-03/04, Singapore 828824",
+    "url": "https://shop.banneechen.com.sg/",
+    "hours": "Mon-Sun: 8am-7.30pm",
+    "tel": "+65 6285 3105"
+  },
+  "Yang Ming Yuan Nursery": {
+    "position": {
+      "lat": "1.336847",
+      "lng": "103.693736"
+    },
+    "imageUrl": "https://www.safra.sg/promotions/ban-nee-chen-nursery",
+    "address": "Yang Ming Yuan Nursery, 11 Jurong West Street 93, Singapore 648968",
+    "url": "https://m.facebook.com/groups/3141185945926023/posts/4493157494062188/",
+    "hours": "Mon-Sun: 8am-9pm",
+    "tel": "+65 6345 5515"
+  }
+}

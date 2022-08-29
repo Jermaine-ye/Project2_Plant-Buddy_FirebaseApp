@@ -491,38 +491,47 @@ export default function PlantForm() {
 
   return (
     <>
-      <Breadcrumbs separator=">">{items}</Breadcrumbs>
-      <Container>
-        <br />
-        <Stack>
-          <img className="community-header-img" src={glossary} alt={glossary} />
-          <Title order={3}>New Plant Buddy</Title>
-          <Grid grow gutter="xs">
-            <Grid.Col span={9}>
-              <Autocomplete
-                placeholder="Search plant family"
-                data={Object.keys(plantList).map((plantFamily) => plantFamily)}
-                value={searchTerm}
-                limit={plantList.length}
-                onChange={setSearchTerm}
-                nothingFound={
-                  <p>
-                    Plant family unknown. <br />
-                    But continue typing, we will add it as a new plant family!
-                    😀
-                  </p>
-                }
-              />
-            </Grid.Col>
-            <Grid.Col span={3}>
-              <Button onClick={() => handleClickSelectedPlant()}>
-                <Plus size={20} strokeWidth={2} color={"white"} />
-              </Button>
-            </Grid.Col>
-          </Grid>
-          {allPlantFamily.includes(searchTerm) ? plantSnippet : null}
-        </Stack>
-      </Container>
+      <Stack>
+        <Breadcrumbs separator=">">{items}</Breadcrumbs>
+
+        <Container>
+          <br />
+          <Stack>
+            <img
+              className="community-header-img"
+              src={glossary}
+              alt={glossary}
+            />
+            <Title order={3}>New Plant Buddy</Title>
+            <Grid grow gutter="xs">
+              <Grid.Col span={9}>
+                <Autocomplete
+                  placeholder="Search plant family"
+                  data={Object.keys(plantList).map(
+                    (plantFamily) => plantFamily
+                  )}
+                  value={searchTerm}
+                  limit={plantList.length}
+                  onChange={setSearchTerm}
+                  nothingFound={
+                    <p>
+                      Plant family unknown. <br />
+                      But continue typing, we will add it as a new plant family!
+                      😀
+                    </p>
+                  }
+                />
+              </Grid.Col>
+              <Grid.Col span={3}>
+                <Button onClick={() => handleClickSelectedPlant()}>
+                  <Plus size={20} strokeWidth={2} color={"white"} />
+                </Button>
+              </Grid.Col>
+            </Grid>
+            {allPlantFamily.includes(searchTerm) ? plantSnippet : null}
+          </Stack>
+        </Container>
+      </Stack>
       <Modal
         size="90%"
         centered

@@ -11,9 +11,9 @@ import {
   Text,
   Button,
   Popover,
+  MantineProvider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { MantineProvider } from "@mantine/core";
 import { buddyTheme } from "./Theme";
 import { Home, User } from "tabler-icons-react";
 
@@ -147,9 +147,12 @@ export function HeaderMiddle(props) {
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Label></Menu.Label>
-                {/* <Menu.Item>Logged in as: {props.user.displayName}</Menu.Item>
-              <Menu.Divider /> */}
+                <Menu.Label>
+                  <Text color="black" size="sm" align="left">
+                    Logged in as: {props.user.displayName}
+                  </Text>
+                </Menu.Label>
+                <Menu.Divider />
                 <Menu.Item component={Link} to="/">
                   Plant Garden
                 </Menu.Item>
