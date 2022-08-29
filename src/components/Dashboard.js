@@ -1,34 +1,21 @@
 import { UserContext } from "../App";
 
 // imports for react
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // imports for firebase
-import { auth, database } from "../DB/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { ref as databaseRef, onChildAdded } from "firebase/database";
+import { auth } from "../DB/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 // imports for components
 // import PlantCalendar from "./Calendar"; // to be shifted to nest under plantgarden
-import WeatherModal from "./WeatherModal";
+
 import PlantGarden from "./PlantGarden";
-import PlantInfo from "./PlantInfo";
 
 // imports for styling
 
-import {
-  Container,
-  Title,
-  Card,
-  Paper,
-  Button,
-  Footer,
-  Divider,
-  Box,
-  createStyles,
-} from "@mantine/core";
-import { HeaderMiddle } from "../Styles/Header";
+import { Title, Button, Footer, createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -69,7 +56,7 @@ export default function Dashboard(props) {
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
-      {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null}
+      {/* {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null} */}
       {/* <button
           onClick={() => {
             logout();
@@ -79,8 +66,15 @@ export default function Dashboard(props) {
         </button> */}
       {/* <WeatherModal /> */}
       <PlantGarden />
-      <Footer height={60} p="xs" className={classes.footer}>
+      <Footer
+        height={60}
+        p="xs"
+        className={classes.footer}
+        sx={{ background: "transparent", border: "0" }}
+      >
         <Link to={`/addnewplant`}>
+          {/* <Button> */}
+          {/* <Title order={6}>Add Plant to Garden!</Title> */}
           <Button>
             <Title order={6}>Add Plant to Garden!</Title>
             <img
@@ -88,6 +82,8 @@ export default function Dashboard(props) {
               src="https://img.icons8.com/carbon-copy/30/ffffff/potted-plant.png"
             />
           </Button>
+
+          {/* </Button> */}
         </Link>
       </Footer>
       {/* <div>

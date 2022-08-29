@@ -102,7 +102,7 @@ export default function Community(props) {
   const postsReverse = [...posts].reverse();
   const postFeed = postsReverse.map((post, index) => {
     return (
-      <div>
+      <div key={index}>
         <Card
           shadow="sm"
           p="lg"
@@ -196,7 +196,7 @@ export default function Community(props) {
 
   const searchList = searchFeed.map((post, index) => {
     return (
-      <div>
+      <div key={index}>
         <Card
           shadow="sm"
           p="lg"
@@ -341,14 +341,18 @@ export default function Community(props) {
         </ul>
       </div> */}
 
-      <Footer height={60} p="xs">
+      <Footer
+        height={60}
+        p="xs"
+        sx={{ border: "0", background: "transparent" }}
+      >
         <Button
           onClick={() => {
             setAddPost(true);
           }}
           sx={{ margin: "auto" }}
         >
-          Add to Community Feed!
+          <Title order={6}>Add to Community Feed!</Title>
         </Button>
         <Modal
           opened={addPost}

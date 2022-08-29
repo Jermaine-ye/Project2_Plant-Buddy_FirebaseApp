@@ -40,6 +40,7 @@ import {
 import { Plus, Upload } from "tabler-icons-react";
 
 import glossary from "../styling/Drawkit Plants/Drawkit_05_Glossary.png";
+import glossaryheader from "../styling/Drawkit Plants/Drawkit_05a_Glossary.png";
 import { buddyTheme } from "../Styles/Theme";
 
 const USER_PLANT_FOLDER_NAME = "userPlants/";
@@ -93,6 +94,7 @@ export default function PlantForm() {
 
   // MODAL
   const [modalOpen, setModalOpen] = useState(false);
+  const [plantAddedModal, setPlantAddedModal] = useState(false);
 
   // STEPPER
   const [activeStep, setActiveStep] = useState(0);
@@ -204,7 +206,7 @@ export default function PlantForm() {
           setPlantNotes("");
           setPlantCondition("");
 
-          alert("Plant successfully added");
+         
 
           navigate("/");
         });
@@ -489,49 +491,75 @@ export default function PlantForm() {
     </>
   );
 
-  return (
-    <>
-      <Stack>
-        <Breadcrumbs separator=">">{items}</Breadcrumbs>
+  const crumbs = [
+    { title: "Plant Garden", href: "/" },
+    { title: "Add Plant", href: "/addnewplant" },
+  ].map((crumb, index) => {
+    return (
+      <Anchor href={crumb.href} key={index}>
+        <Text size="xs"> {crumb.title}</Text>
+      </Anchor>
+    );
+  });
 
-        <Container>
-          <br />
-          <Stack>
-            <img
-              className="community-header-img"
-              src={glossary}
-              alt={glossary}
-            />
-            <Title order={3}>New Plant Buddy</Title>
-            <Grid grow gutter="xs">
-              <Grid.Col span={9}>
-                <Autocomplete
-                  placeholder="Search plant family"
-                  data={Object.keys(plantList).map(
-                    (plantFamily) => plantFamily
-                  )}
-                  value={searchTerm}
-                  limit={plantList.length}
-                  onChange={setSearchTerm}
-                  nothingFound={
-                    <p>
-                      Plant family unknown. <br />
-                      But continue typing, we will add it as a new plant family!
-                      😀
-                    </p>
-                  }
+  return (
+    <div className="addplantform">
+      <div>
+        <Breadcrumbs separator=">">{crumbs}</Breadcrumbs>
+      </div>
+      <Container sx={{ paddingLeft: "0", paddingRight: "10px" }}>
+        <br />
+        <Stack>
+          <div>
+            <Card p="0" sx={{ background: buddyTheme.colors.seashell[5] }}>
+              <div className="community-dashboard-banner">
+                <Image
+                  radius="md"
+                  width="40vw"
+                  src={glossaryheader}
+                  alt={glossaryheader}
                 />
-              </Grid.Col>
-              <Grid.Col span={3}>
-                <Button onClick={() => handleClickSelectedPlant()}>
-                  <Plus size={20} strokeWidth={2} color={"white"} />
-                </Button>
-              </Grid.Col>
-            </Grid>
-            {allPlantFamily.includes(searchTerm) ? plantSnippet : null}
-          </Stack>
-        </Container>
-      </Stack>
+                <Title
+                  order={2}
+                  color="white"
+                  sx={{
+                    margin: "auto",
+                    paddingRight: "5px",
+                    paddingLeft: "5px",
+                  }}
+                >
+                  New Plant Buddy
+                </Title>
+              </div>
+            </Card>
+          </div>
+        
+          <Grid grow gutter="xs">
+            <Grid.Col span={9}>
+              <Autocomplete
+                placeholder="Search plant family"
+                data={Object.keys(plantList).map((plantFamily) => plantFamily)}
+                value={searchTerm}
+                limit={plantList.length}
+                onChange={setSearchTerm}
+                nothingFound={
+                  <p>
+                    Plant family unknown. <br />
+                    But continue typing, we will add it as a new plant family!
+                    😀
+                  </p>
+                }
+              />
+            </Grid.Col>
+            <Grid.Col span={3} sx={{ paddingRight: "0" }}>
+              <Button onClick={() => handleClickSelectedPlant()}>
+                <Plus size={20} strokeWidth={2} color={"white"} />
+              </Button>
+            </Grid.Col>
+          </Grid>
+          {allPlantFamily.includes(searchTerm) ? plantSnippet : null}
+        </Stack>
+      </Container>
       <Modal
         size="90%"
         centered
@@ -587,10 +615,27 @@ export default function PlantForm() {
           {activeStep < 2 ? (
             <Button onClick={nextStep}>Next step</Button>
           ) : (
-            <Button onClick={handleSubmitNewPlant}>Add Buddy</Button>
+            <Button
+              onClick={(e) => {
+                handleSubmitNewPlant(e);
+                setPlantAddedModal(true);
+              }}
+            >
+              Add Buddy
+            </Button>
           )}
         </Group>
       </Modal>
-    </>
+      <Modal
+        opened={plantAddedModal}
+        onClose={() => {
+          setPlantAddedModal(false);
+        }}
+      >
+        <div className="delete-modal">
+          <Title order={6}>Added New Plant!</Title>
+        </div>
+      </Modal>
+    </div>
   );
 }

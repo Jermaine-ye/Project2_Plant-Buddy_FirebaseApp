@@ -49,8 +49,8 @@ export default function Comments(props) {
   let postComments = [];
   if (post.val.comments !== undefined) {
     commentsList = post.val.comments.filter((comment) => comment.user !== "");
-    postComments = commentsList.map((comment) => (
-      <div>
+    postComments = commentsList.map((comment, index) => (
+      <div key={`comments-${index}`}>
         <Grid>
           <Grid.Col span={3}>
             <Badge color="gray" size="xs">

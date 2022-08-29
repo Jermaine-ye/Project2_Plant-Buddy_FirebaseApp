@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, forwardRef } from 'react';
 import axios from 'axios';
 
-import thunder from '../images/heavy-rain.png';
-import overcast from '../images/cloud.png';
-import cloudyAM from '../images/cloudy.png';
-import cloudyPM from '../images/half-moon.png';
-import passingShower from '../images/rain.png';
-import sunny from '../images/sun.png';
+import thunder from '../images/storm1.gif';
+import overcast from '../images/cloudy1.gif';
+import cloudyAM from '../images/cloudyam.gif';
+import cloudyPM from '../images/cloudypm.gif';
+import passingShower from '../images/downpour--v2.gif';
+import sunny from '../images/sunny1.gif';
 
 export default function WeatherModal() {
   const [weatherInfo, setWeatherInfo] = useState({
@@ -21,8 +21,6 @@ export default function WeatherModal() {
     periodTimeB: '',
     periodTimeC: '',
   });
-
-  // const [cityInputValue, setCityInputValue] = useState('Singapore');
 
   const checkWeather = (input) => {
     switch (input) {
@@ -42,7 +40,7 @@ export default function WeatherModal() {
         return <img src={passingShower} alt="" width="50" height="50" />;
 
       case 'Showers':
-        return <img src={passingShower} alt="" width="50" height="50" />;
+        return <img src={thunder} alt="" width="50" height="50" />;
 
       case 'Sunny':
         return <img src={sunny} alt="" width="50" height="50" />;
@@ -63,12 +61,7 @@ export default function WeatherModal() {
     console.log('submit success!');
     axios
       .get(`https://api.data.gov.sg/v1/environment/24-hour-weather-forecast`)
-      // .then((response) => response.general[0])
-      // .then((cityGeoData) =>
-      //   axios.get(
-      //     `https://api.openweathermap.org/data/2.5/weather?lat=${cityGeoData.lat}&lon=${cityGeoData.lon}&appid=35cb27b82fb9176679d18843496e02c4&units=metric`
-      //   )
-      // )
+
       .then((response) => {
         console.log(response);
         console.log('curr: ' + response.data.items[0].general.forecast);
@@ -123,51 +116,32 @@ export default function WeatherModal() {
       });
   }, []);
 
+  const WeatherModal = forwardRef((props, ref) => (
+    <div ref={ref} {...props}>
+      Weather Modal
+    </div>
+  ));
+
   return (
-    <div className="Weather-Modal">
-      <div className="Weather-Display">
-        {/* <h6>Country: {cityInputValue}</h6> */}
+    <div className="weather-modal">
+      <h4>Forcasts Every 6 Hours</h4>
 
-        {/* {weatherInfo.mainWeather.includes('Showers') ? (
-          <img src={thunder} alt="" width="50" height="50" />
-        ) : null} */}
-        <h6>Current Weather: {weatherInfo.mainWeather} </h6>
-        <h6> {checkWeather(weatherInfo.mainWeather)}</h6>
+      <h6>
+        {timeOfDay(weatherInfo.periodTimeA)}: {weatherInfo.PeriodWeatherA}
+      </h6>
+      {checkWeather(weatherInfo.PeriodWeatherA)}
 
-        <h6>
-          Temperature highs: {weatherInfo.highTemp}°C lows:{' '}
-          {weatherInfo.lowTemp}
-          °C
-        </h6>
-        <h4>Forcasts Every 6 Hours</h4>
+      <h6>
+        {timeOfDay(weatherInfo.periodTimeB)}: {weatherInfo.PeriodWeatherB}{' '}
+      </h6>
+      {checkWeather(weatherInfo.PeriodWeatherB)}
 
-        <h6>
-          {timeOfDay(weatherInfo.periodTimeA)}: {weatherInfo.PeriodWeatherA}
-          {checkWeather(weatherInfo.PeriodWeatherA)}
-        </h6>
-
-        <h6>
-          {timeOfDay(weatherInfo.periodTimeB)}: {weatherInfo.PeriodWeatherB}
-          {checkWeather(weatherInfo.PeriodWeatherB)}
-        </h6>
-
-        <h6>
-          {timeOfDay(weatherInfo.periodTimeC)}: {weatherInfo.PeriodWeatherC}
-          {checkWeather(weatherInfo.PeriodWeatherC)}
-        </h6>
-
-        {/* {weatherInfo.weatherIcon ? (
-          <img
-            src={`http://openweathermap.org/img/w/${weatherInfo.weatherIcon}.png`}
-            alt="icon"
-          /> */}
-
-        {/* {weatherInfo.noonWeather === 'Passing Showers'
-          ? setWeatherInfo({
-              weatherIcon: weatherInfo.passingShowers,
-            })
-          : null} */}
-      </div>
+      <h6>
+        {timeOfDay(weatherInfo.periodTimeC)}: {weatherInfo.PeriodWeatherC}
+      </h6>
+      {checkWeather(weatherInfo.PeriodWeatherC)}
+      <br />
+      <br />
     </div>
   );
 }

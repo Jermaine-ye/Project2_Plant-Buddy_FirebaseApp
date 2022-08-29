@@ -60,6 +60,7 @@ export default function PlantCalendar(props) {
 
       let dateUserLastWatered = props.plantData[plantKey].dateLastWatered;
       dateWatered[plantName] = parseISO(dateUserLastWatered);
+      console.log(dateWatered);
     }
     setWateringSchedule(schedule);
     setDateLastWatered(dateWatered);
@@ -115,9 +116,8 @@ export default function PlantCalendar(props) {
 
     for (let i = 0; i < 7; i++) {
       let day = (
-        <Text size="xs" weight="200">
+        <Text key={i} size="xs" weight="200">
           <div
-            key={i}
             className={`${i == today && dayOfWeekRender ? "today-day" : null} ${
               selectedDate && selectedDateRender
                 ? i == selectedDate.getDay()
@@ -149,7 +149,6 @@ export default function PlantCalendar(props) {
     const startDate = startOfWeek(currMonth);
     const endDate = endOfWeek(currMonth);
     const dateFormat = "d";
-    const rows = [];
 
     let days = [];
     let day = startDate;
@@ -158,12 +157,9 @@ export default function PlantCalendar(props) {
     while (day <= endDate) {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
-        if (isSameDay(currDate, day)) {
-          console.log("it is today");
-          //setDayOfWeekRender(true);
-        }
         days.push(
           <div
+            key={i}
             className={`calendar-date-item ${
               isSameDay(currDate, day) ? "today" : null
             } ${isSameDay(day, selectedDate) ? "selected-date" : null}`}
@@ -195,8 +191,9 @@ export default function PlantCalendar(props) {
       }
       let wateringList = plantsToWater.map((plant, index) => {
         return (
-          <div key={index} className="calendar-reminder-row">
+          <div className="calendar-reminder-row">
             <Badge
+              key={index}
               size="md"
               variant="dot"
               className="calendar-reminder-row-plant-badge"
@@ -259,7 +256,6 @@ export default function PlantCalendar(props) {
         radius="md"
         p="xs"
         sx={{
-          width: "90vw",
           color: "#1f3b2c",
           margin: "auto",
         }}

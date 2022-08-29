@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, forwardRef } from "react";
 import { Link } from "react-router-dom";
 import { UserContext } from "../App";
 import {
@@ -17,6 +17,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { buddyTheme } from "./Theme";
 import { Home, User } from "tabler-icons-react";
 
+import WeatherDisplay from "../components/WeatherDisplay";
 import WeatherModal from "../components/WeatherModal";
 import { PersonIcon } from "@radix-ui/react-icons";
 
@@ -103,30 +104,8 @@ const useStyles = createStyles((theme) => ({
 // }
 
 export function HeaderMiddle(props) {
-  const links = [
-    { link: "www.example.com", label: "example" },
-    { link: "www.youtube.com", label: "youtube" },
-  ];
-
   const [opened, { toggle }] = useDisclosure(false);
-  const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
-
-  const items = links.map((link) => (
-    <a
-      key={link.label}
-      href={link.link}
-      className={cx(classes.link, {
-        [classes.linkActive]: active === link.link,
-      })}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(link.link);
-      }}
-    >
-      {link.label}
-    </a>
-  ));
 
   return (
     <MantineProvider theme={buddyTheme}>
@@ -175,44 +154,28 @@ export function HeaderMiddle(props) {
               </Menu.Dropdown>
             </Menu>
 
-            <Group className={classes.links} spacing={5}>
-              {items}
-            </Group>
-
             <Group
               spacing={0}
               className={classes.icons}
               position="right"
               noWrap
             >
-              <Popover width={340} position="bottom-end" withArrow shadow="md">
-                <Popover.Target>
-                  <Button>Weather Now</Button>
-                </Popover.Target>
+              <Popover width={180} position="bottom" withArrow shadow="md">
+                {/* <Popover.Target>
+                <Button>Weather Now</Button>
+              </Popover.Target> */}
                 <Popover.Dropdown>
                   <Text size="sm">
                     <WeatherModal />
                   </Text>
                 </Popover.Dropdown>
-              </Popover>
-              {/* <Menu
-              shadow="md"
-              width={200}
-              position="bottom-end"
-              offset={2}
-              withArrow
-            >
-              <Menu.Target>
-                <Button> Weather Now: </Button>
-              </Menu.Target>
 
-              <Menu.Dropdown>
-                <Menu.Label>Weather Forecast</Menu.Label>
-                <Menu.Label>
-                  <WeatherModal />
-                </Menu.Label>
-              </Menu.Dropdown>
-            </Menu> */}
+                <Popover.Target>
+                  <Button className="weather-icon">
+                    <WeatherDisplay />
+                  </Button>
+                </Popover.Target>
+              </Popover>
             </Group>
           </Container>
         </Header>

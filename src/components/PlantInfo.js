@@ -35,6 +35,7 @@ import {
   FileInput,
   MultiSelect,
   Textarea,
+  Modal,
 } from "@mantine/core";
 import {
   EditCircle,
@@ -73,6 +74,8 @@ export default function PlantInfo(props) {
   );
   const [plantName, setPlantName] = useState(plantInfo.plantName);
   const [plantNotes, setPlantNotes] = useState(plantInfo.plantNotes);
+  const [editsModal, setEditsModal] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
 
   // for new photo upload
   const [uploadNewPhoto, setUploadNewPhoto] = useState(false);
@@ -307,12 +310,28 @@ export default function PlantInfo(props) {
       />
       <Space h="sm" />
       <Group grow>
-        <Button onClick={handleSubmitChanges}>Update Changes</Button>
+        <Button
+          onClick={(e) => {
+            handleSubmitChanges(e);
+            setEditsModal(true);
+          }}
+        >
+          Update Changes
+        </Button>
         <Button onClick={handleResetChanges}>Reset Changes</Button>
       </Group>
+      <Modal
+        opened={editsModal}
+        onClose={() => {
+          setEditsModal(false);
+          props.closeDrawer();
+        }}
+      >
+        <Title order={6}>Your changes have been saved!</Title>
+      </Modal>
     </>
   );
-
+  console.log(`editsModal:${editsModal}, editmode:${editMode}`);
   // read-only page
   const readOnlyProfile = (
     <>
@@ -397,19 +416,35 @@ export default function PlantInfo(props) {
           </ActionIcon>
           <ActionIcon
             id={plantKey}
-            onClick={(e) => {
-              props.deletePlant(e, plantKey);
+            onClick={() => {
+              setDeleteModal(true);
             }}
           >
             <Trash />
           </ActionIcon>
         </Group>
-
         <Text align="center" order={3}>
           {plantFamily.toLowerCase()}
         </Text>
         {editMode ? editProfile : readOnlyProfile}
       </Card>
+      <Modal
+        opened={deleteModal}
+        onClose={() => {
+          setDeleteModal(false);
+        }}
+      >
+        <div className="delete-modal">
+          <Title order={6}>Delete Plant? This action is irreversible!</Title>
+          <Button
+            onClick={(e) => {
+              props.deletePlant(e, plantKey);
+            }}
+          >
+            Confirm Delete
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 }
