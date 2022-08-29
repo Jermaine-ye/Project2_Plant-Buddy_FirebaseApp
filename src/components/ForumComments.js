@@ -1,12 +1,7 @@
 //forum comments working
-import {
-  onChildAdded,
-  onChildChanged,
-  update,
-  set,
-  push,
-  ref as databaseRef,
-} from 'firebase/database';
+import { update, ref as databaseRef } from 'firebase/database';
+import { Button, Text, Textarea } from '@mantine/core';
+
 import { database, auth } from '../DB/firebase';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
@@ -79,11 +74,17 @@ export default function ForumComments(props) {
       (comment) => comment.user !== ''
     );
     postComments = commentsList.map((comment) => (
-      <h6 key={comment.key}>
-        {comment.user} : {comment.text}
+      <Text size="sm" color="dimmed">
         <br />
-        {comment.timestamp}
-      </h6>
+        <div className="forum-comments" key={comment.key}>
+          {comment.user} : {comment.text}
+          <br />
+          <Text size="xs" color="dimmed">
+            {comment.timestamp}
+          </Text>
+        </div>
+        <br />
+      </Text>
     ));
   }
 
@@ -91,7 +92,29 @@ export default function ForumComments(props) {
     <div>
       {postComments}
 
-      <textarea
+      <Textarea
+        placeholder="What are your thoughts?"
+        variant="filled"
+        value={comment}
+        onChange={(e) => setComment(e.target.value)}
+        autosize
+        minRows={2}
+      />
+
+      <Button
+        variant="filled"
+        color="seashell"
+        size="xs"
+        mt="md"
+        radius="md"
+        onClick={(e) => {
+          addComment(comment);
+        }}
+      >
+        Submit
+      </Button>
+
+      {/* <textarea
         rows="8"
         cols="50"
         placeholder="Comments here..."
@@ -105,7 +128,7 @@ export default function ForumComments(props) {
         onClick={() => {
           addComment(comment);
         }}
-      />
+      /> */}
     </div>
   );
 }
