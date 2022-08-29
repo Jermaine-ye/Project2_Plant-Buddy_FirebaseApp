@@ -1,5 +1,18 @@
-import React, { useEffect, useState, forwardRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import {
+  Input,
+  Badge,
+  Button,
+  Card,
+  Grid,
+  Group,
+  Image,
+  Paper,
+  Text,
+  Title,
+  useMantineTheme,
+} from '@mantine/core';
 
 import thunder from '../images/storm1.gif';
 import overcast from '../images/cloudy1.gif';
@@ -8,18 +21,12 @@ import cloudyPM from '../images/cloudypm.gif';
 import passingShower from '../images/downpour--v2.gif';
 import sunny from '../images/sunny1.gif';
 
-export default function WeatherModal() {
+export default function WeatherDisplay() {
   const [weatherInfo, setWeatherInfo] = useState({
     mainWeather: '',
     weatherDesc: '',
     highTemp: '',
     lowTemp: '',
-    PeriodWeatherA: '',
-    PeriodWeatherB: '',
-    PeriodWeatherC: '',
-    periodTimeA: '',
-    periodTimeB: '',
-    periodTimeC: '',
   });
 
   const checkWeather = (input) => {
@@ -49,6 +56,7 @@ export default function WeatherModal() {
         return null;
     }
   };
+
   const timeOfDay = (input) => {
     let hour = new Date(input).getHours();
     if (hour >= 4 && hour <= 11) return 'Morning';
@@ -74,81 +82,35 @@ export default function WeatherModal() {
 
         console.log(response.data.items[0]);
 
-        console.log(
-          '6 hours: ' + response.data.items[0].periods[0].regions.central
-        );
-        console.log(
-          '12 hours: ' + response.data.items[0].periods[1].regions.central
-        );
-        console.log(
-          '18 hours: ' + response.data.items[0].periods[2].regions.central
-        );
-
         const currWeatherData = response.data.items[0].general.forecast;
         const currHighTemp = response.data.items[0].general.temperature.high;
         const currLowTemp = response.data.items[0].general.temperature.low;
-
-        const weatherDataPeriod0 =
-          response.data.items[0].periods[0].regions.central;
-        const weatherDataPeriod1 =
-          response.data.items[0].periods[1].regions.central;
-        const weatherDataPeriod2 =
-          response.data.items[0].periods[2].regions.central;
-
-        const period0Time = response.data.items[0].periods[0].time.start;
-        console.log('P0: ' + period0Time);
-        const period1Time = response.data.items[0].periods[1].time.start;
-        console.log('P1: ' + period1Time);
-        const period2Time = response.data.items[0].periods[2].time.start;
-        console.log('P2: ' + period2Time);
 
         setWeatherInfo({
           mainWeather: currWeatherData,
           highTemp: currHighTemp,
           lowTemp: currLowTemp,
-          PeriodWeatherA: weatherDataPeriod0,
-          PeriodWeatherB: weatherDataPeriod1,
-          PeriodWeatherC: weatherDataPeriod2,
-          periodTimeA: period0Time,
-          periodTimeB: period1Time,
-          periodTimeC: period2Time,
         });
       });
   }, []);
 
-  const WeatherModal = forwardRef((props, ref) => (
-    <div ref={ref} {...props}>
-      Weather Modal
-    </div>
-  ));
-
   return (
-    <div className="Weather-Modal">
-      {/* <h6>Current Weather: {weatherInfo.mainWeather} </h6>
-      <h6> {checkWeather(weatherInfo.mainWeather)}</h6>
+    <div className="Weather-Display">
+      {checkWeather(weatherInfo.mainWeather)}
 
-      <h6>
-        Temperature highs: {weatherInfo.highTemp}°C lows: {weatherInfo.lowTemp}
+      <br />
+      {/* <h6>
+        highs: {weatherInfo.highTemp}°C <br />
+        lows: {weatherInfo.lowTemp}
         °C
       </h6> */}
-      <h4>Forcasts Every 6 Hours</h4>
 
-      <h6>
-        {timeOfDay(weatherInfo.periodTimeA)}: {weatherInfo.PeriodWeatherA}
-      </h6>
-      {checkWeather(weatherInfo.PeriodWeatherA)}
-
-      <h6>
-        {timeOfDay(weatherInfo.periodTimeB)}: {weatherInfo.PeriodWeatherB}{' '}
-      </h6>
-      {checkWeather(weatherInfo.PeriodWeatherB)}
-
-      <h6>
-        {timeOfDay(weatherInfo.periodTimeC)}: {weatherInfo.PeriodWeatherC}
-      </h6>
-      {checkWeather(weatherInfo.PeriodWeatherC)}
-      <br />
-      <br />
+      <Title size={9} align="left">
+        {weatherInfo.mainWeather}
+        <br /> highs: {weatherInfo.highTemp}°C <br />
+        lows: {weatherInfo.lowTemp}
+        °C
+      </Title>
     </div>
   );
 }

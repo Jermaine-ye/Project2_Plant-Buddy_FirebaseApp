@@ -259,6 +259,7 @@ export default function ForumNewsFeed(props) {
           searchTheFeed(e.target.value);
         }}
       />
+      <br />
       {titleOnly.length == 0 && search.length == 0 ? (
         <div>
           <br />
@@ -269,13 +270,9 @@ export default function ForumNewsFeed(props) {
           </Text>
         </div>
       ) : titleOnly.length > 0 && search.length == 0 ? (
-        <div>
-          <ul>{titleOnly}</ul>
-        </div>
+        <div>{titleOnly}</div>
       ) : (
-        <div>
-          <ul>{searchList}</ul>
-        </div>
+        <div>{searchList}</div>
       )}
       {/* {titleOnly.length > 0 && search.length == 0 ? (
         <div>

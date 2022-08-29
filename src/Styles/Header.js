@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, forwardRef } from 'react';
+import { Link } from 'react-router-dom';
 import {
   createStyles,
   Header,
@@ -10,87 +10,88 @@ import {
   Text,
   Button,
   Popover,
-} from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { MantineProvider } from "@mantine/core";
-import { buddyTheme } from "./Theme";
-import { Home } from "tabler-icons-react";
+} from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { MantineProvider } from '@mantine/core';
+import { buddyTheme } from './Theme';
+import { Home } from 'tabler-icons-react';
 
-import WeatherModal from "../components/WeatherModal";
+import WeatherModal from '../components/WeatherModal';
+import WeatherDisplay from '../components/WeatherDisplay';
 
 const useStyles = createStyles((theme) => ({
   header: {
     backgroundColor: theme.fn.variant({
-      variant: "filled",
+      variant: 'filled',
       color: theme.colors.moss,
     }).background,
     borderBottom: 0,
   },
 
   inner: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     height: 56,
 
-    [theme.fn.smallerThan("sm")]: {
-      justifyContent: "flex-start",
+    [theme.fn.smallerThan('sm')]: {
+      justifyContent: 'flex-start',
     },
   },
 
   links: {
     width: 260,
 
-    [theme.fn.smallerThan("sm")]: {
-      display: "none",
+    [theme.fn.smallerThan('sm')]: {
+      display: 'none',
     },
   },
 
   icons: {
     width: 260,
 
-    [theme.fn.smallerThan("sm")]: {
-      width: "auto",
-      marginLeft: "auto",
+    [theme.fn.smallerThan('sm')]: {
+      width: 'auto',
+      marginLeft: 'auto',
     },
   },
 
   burger: {
     marginRight: theme.spacing.md,
 
-    [theme.fn.largerThan("sm")]: {
-      display: "none",
+    [theme.fn.largerThan('sm')]: {
+      display: 'none',
     },
   },
 
   link: {
-    display: "block",
+    display: 'block',
     lineHeight: 1,
-    padding: "8px 12px",
+    padding: '8px 12px',
     borderRadius: theme.radius.sm,
-    textDecoration: "none",
+    textDecoration: 'none',
     color:
-      theme.colorScheme === "dark"
+      theme.colorScheme === 'dark'
         ? theme.colors.dark[0]
         : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
-    "&:hover": {
+    '&:hover': {
       backgroundColor:
-        theme.colorScheme === "dark"
+        theme.colorScheme === 'dark'
           ? theme.colors.dark[6]
           : theme.colors.gray[0],
     },
   },
 
   linkActive: {
-    "&, &:hover": {
+    '&, &:hover': {
       backgroundColor: theme.fn.variant({
-        variant: "light",
+        variant: 'light',
         color: theme.primaryColor,
       }).background,
-      color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
+      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
         .color,
     },
   },
@@ -102,8 +103,8 @@ const useStyles = createStyles((theme) => ({
 
 export function HeaderMiddle(props) {
   const links = [
-    { link: "www.example.com", label: "example" },
-    { link: "www.youtube.com", label: "youtube" },
+    { link: 'www.example.com', label: 'example' },
+    { link: 'www.youtube.com', label: 'youtube' },
   ];
 
   const [opened, { toggle }] = useDisclosure(false);
@@ -139,7 +140,7 @@ export function HeaderMiddle(props) {
           >
             <Menu.Target>
               <ActionIcon variant="transparent" size="lg">
-                <Home strokeWidth={1} color={"#fff"} />
+                <Home strokeWidth={1} color={'#fff'} />
               </ActionIcon>
             </Menu.Target>
 
@@ -169,34 +170,22 @@ export function HeaderMiddle(props) {
           </Group>
 
           <Group spacing={0} className={classes.icons} position="right" noWrap>
-            <Popover width={340} position="bottom-end" withArrow shadow="md">
-              <Popover.Target>
+            <Popover width={180} position="bottom" withArrow shadow="md">
+              {/* <Popover.Target>
                 <Button>Weather Now</Button>
-              </Popover.Target>
+              </Popover.Target> */}
               <Popover.Dropdown>
                 <Text size="sm">
                   <WeatherModal />
                 </Text>
               </Popover.Dropdown>
-            </Popover>
-            {/* <Menu
-              shadow="md"
-              width={200}
-              position="bottom-end"
-              offset={2}
-              withArrow
-            >
-              <Menu.Target>
-                <Button> Weather Now: </Button>
-              </Menu.Target>
 
-              <Menu.Dropdown>
-                <Menu.Label>Weather Forecast</Menu.Label>
-                <Menu.Label>
-                  <WeatherModal />
-                </Menu.Label>
-              </Menu.Dropdown>
-            </Menu> */}
+              <Popover.Target>
+                <Button>
+                  <WeatherDisplay />
+                </Button>
+              </Popover.Target>
+            </Popover>
           </Group>
         </Container>
       </Header>
