@@ -1,34 +1,24 @@
-//forum comments working
 import { update, ref as databaseRef } from 'firebase/database';
 import { Button, Text, Textarea } from '@mantine/core';
 
 import { database, auth } from '../DB/firebase';
-import { useNavigate, Link, useParams } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
-import { UserContext } from '../App';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 
 export default function ForumComments(props) {
   const navigate = useNavigate();
-  // const user = useContext(UserContext);
+
   const [comment, setComment] = useState('');
   const { topic } = useParams();
 
-  // const [newData, setNewData] = useState({});
-  // const [messages, setMessages] = useState({
-  //   val: { title: '', user: '', imageLink: '', messages: '' },
-  // });
-
   console.log(props.messages);
   const messages = props.messages;
-  const index = props.index;
-  const user = props.user;
 
-  // const index = props.index;
+  const user = props.user;
 
   const FORUM_FOLDER_NAME = topic;
 
   useEffect(() => {
-    //check if user has logged in, if not, redirect them to login page
     console.log('user:', user);
     console.log(messages);
     const isLoggedIn = JSON.parse(localStorage.getItem('user'));
@@ -40,8 +30,6 @@ export default function ForumComments(props) {
 
   const addComment = (comment) => {
     if (comment !== '') {
-      // let msg = props.messages;
-
       const messageListRef = databaseRef(database, FORUM_FOLDER_NAME);
       const updates = {};
       let newData = {
@@ -113,22 +101,6 @@ export default function ForumComments(props) {
       >
         Submit
       </Button>
-
-      {/* <textarea
-        rows="8"
-        cols="50"
-        placeholder="Comments here..."
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-      ></textarea>
-      <br />
-      <input
-        type="submit"
-        value="comment"
-        onClick={() => {
-          addComment(comment);
-        }}
-      /> */}
     </div>
   );
 }

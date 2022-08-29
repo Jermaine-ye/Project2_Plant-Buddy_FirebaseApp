@@ -87,11 +87,6 @@ export default function WeatherDisplay() {
       {checkWeather(weatherInfo.mainWeather)}
 
       <br />
-      {/* <h6>
-        highs: {weatherInfo.highTemp}°C <br />
-        lows: {weatherInfo.lowTemp}
-        °C
-      </h6> */}
 
       <Title className="weather-info" size={9} align="left">
         {weatherInfo.mainWeather}

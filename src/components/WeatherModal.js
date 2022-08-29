@@ -124,13 +124,6 @@ export default function WeatherModal() {
 
   return (
     <div className="weather-modal">
-      {/* <h6>Current Weather: {weatherInfo.mainWeather} </h6>
-      <h6> {checkWeather(weatherInfo.mainWeather)}</h6>
-
-      <h6>
-        Temperature highs: {weatherInfo.highTemp}°C lows: {weatherInfo.lowTemp}
-        °C
-      </h6> */}
       <h4>Forcasts Every 6 Hours</h4>
 
       <h6>

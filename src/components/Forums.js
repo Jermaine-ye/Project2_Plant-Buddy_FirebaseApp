@@ -1,16 +1,6 @@
-import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import {
-  Badge,
-  Button,
-  Card,
-  Grid,
-  Group,
-  Image,
-  Paper,
-  Text,
-  useMantineTheme,
-} from "@mantine/core";
+import { Button, Card, Grid, Group, Image, Text } from "@mantine/core";
 import { UserContext } from "../App";
 import { IconPlant, IconPlant2 } from "@tabler/icons";
 
@@ -24,20 +14,13 @@ export default function Forums() {
   const [currForum, setCurrForum] = useState("");
 
   useEffect(() => {
-    //check if user has logged in, if not, redirect them to login page
     if (Object.keys(user) == 0) {
       navigate("/login");
     }
   });
 
   let forumTipsCard = (
-    <Card
-      shadow="sm"
-      p="lg"
-      radius="md"
-      withBorder
-      // sx={{ width: '85vw', color: '#1f3b2c' }}
-    >
+    <Card shadow="sm" p="lg" radius="md" withBorder>
       <Card.Section>
         <Image src={tipspic} alt="forumtipsicon" className="forum-Drawkits" />
       </Card.Section>
@@ -70,13 +53,7 @@ export default function Forums() {
   );
 
   let forumTradingCard = (
-    <Card
-      shadow="sm"
-      p="lg"
-      radius="md"
-      withBorder
-      // sx={{ width: '85vw', color: '#1f3b2c' }}
-    >
+    <Card shadow="sm" p="lg" radius="md" withBorder>
       <Card.Section>
         <Image
           src={tradingpic}
