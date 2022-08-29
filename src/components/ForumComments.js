@@ -1,27 +1,6 @@
 //forum comments working
-import {
-  onChildAdded,
-  onChildChanged,
-  update,
-  set,
-  push,
-  ref as databaseRef,
-} from 'firebase/database';
-import {
-  TextInput,
-  Badge,
-  Button,
-  Card,
-  Grid,
-  Group,
-  Image,
-  Paper,
-  Text,
-  FileInput,
-  Center,
-  useMantineTheme,
-  Textarea,
-} from '@mantine/core';
+import { update, ref as databaseRef } from 'firebase/database';
+import { Button, Text, Textarea } from '@mantine/core';
 
 import { database, auth } from '../DB/firebase';
 import { useNavigate, Link, useParams } from 'react-router-dom';

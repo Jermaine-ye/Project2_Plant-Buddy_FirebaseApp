@@ -195,7 +195,7 @@ export function HeaderMiddle(props) {
                 </Popover.Dropdown>
 
                 <Popover.Target>
-                  <Button>
+                  <Button class="weather-icon">
                     <WeatherDisplay />
                   </Button>
                 </Popover.Target>

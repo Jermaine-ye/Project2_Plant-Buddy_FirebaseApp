@@ -7,27 +7,12 @@ import {
   remove,
   ref as databaseRef,
 } from 'firebase/database';
-import {
-  Input,
-  Badge,
-  Button,
-  Card,
-  Grid,
-  Group,
-  Image,
-  Paper,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
-import {
-  ChatBubbleIcon,
-  MagnifyingGlassIcon,
-  PersonIcon,
-} from '@radix-ui/react-icons';
+import { Input, Button, Card, Image, Text, Title } from '@mantine/core';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
+import { buddyTheme } from '../Styles/Theme';
 
-import tipsheader from '../images/PC1.png';
-import tradeheader from '../images/TR1.png';
+import tipsheader from '../images/TipsForum.png';
+import tradeheader from '../images/TradingForum.png';
 
 import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { database, storage } from '../DB/firebase';
@@ -105,8 +90,14 @@ export default function ForumNewsFeed(props) {
 
   let titleOnly = messages.map((messages, index) => {
     return (
-      <div className="forumMessages" key={index} id={messages.key}>
-        <Card shadow="sm" p="lg" radius="md" withBorder>
+      <div className="forum-messages" key={index} id={messages.key}>
+        <Card
+          class="forum-mesage-card"
+          shadow="sm"
+          p="lg"
+          radius="md"
+          withBorder
+        >
           <Title order={5} weight={500}>
             {messages.val.title}
           </Title>
@@ -156,7 +147,13 @@ export default function ForumNewsFeed(props) {
   let searchList = searchFeed.map((messages, index) => {
     return (
       <div className="forumMessages" key={index} id={messages.key}>
-        <Card shadow="sm" p="lg" radius="md" withBorder>
+        <Card
+          class="forum-mesage-card"
+          shadow="sm"
+          p="lg"
+          radius="md"
+          withBorder
+        >
           <Title order={5} weight={500}>
             {messages.val.title}
           </Title>
@@ -232,11 +229,53 @@ export default function ForumNewsFeed(props) {
 
   return (
     <div>
+      {/* <div className="Forum-Banner"> */}
       {window.location.pathname.includes('/forumTips') ? (
-        <Image radius="md" src={tipsheader} alt="forum page header" />
+        <Card
+          class="tips-banner"
+          p="0"
+          sx={{ background: buddyTheme.colors.seashell[5] }}
+        >
+          <Image
+            radius="md"
+            width="40vw"
+            src={tipsheader}
+            alt="forum page header"
+          />
+
+          <Title
+            class="forum-header"
+            order={2}
+            color="white"
+            sx={{ margin: 'auto', paddingRight: '5px', paddingLeft: '5px' }}
+          >
+            Plant Care Tips
+          </Title>
+        </Card>
       ) : (
-        <Image radius="md" src={tradeheader} alt="forum page header" />
+        <Card
+          class="trading-banner"
+          p="0"
+          sx={{ background: buddyTheme.colors.tan[5] }}
+        >
+          <Image
+            radius="md"
+            width="40vw"
+            src={tradeheader}
+            alt="forum page header"
+          />
+
+          <Title
+            class="forum-header"
+            order={2}
+            color="white"
+            sx={{ margin: 'auto', paddingRight: '5px', paddingLeft: '5px' }}
+          >
+            Forum Trading
+          </Title>
+        </Card>
       )}
+      {/* </div> */}
       <br />
       <Button
         color="moss"
@@ -261,14 +300,14 @@ export default function ForumNewsFeed(props) {
       />
       <br />
       {titleOnly.length == 0 && search.length == 0 ? (
-        <div>
+        <>
           <br />
           <Title order={5}>Welcome to the forum page </Title>
           <Text size="md">
             {' '}
             Please be respectful and practice kindness with our words :)
           </Text>
-        </div>
+        </>
       ) : titleOnly.length > 0 && search.length == 0 ? (
         <div>{titleOnly}</div>
       ) : (

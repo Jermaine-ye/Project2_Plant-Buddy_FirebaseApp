@@ -101,7 +101,7 @@ export default function ForumPost(props) {
               <img
                 src={messages.val.imageLink}
                 alt={messages.val.title}
-                width="400vw"
+                height="350vh"
               />
             ) : null}
           </Card.Section>

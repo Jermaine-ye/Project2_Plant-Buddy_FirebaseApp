@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {
-  Input,
-  Badge,
-  Button,
-  Card,
-  Grid,
-  Group,
-  Image,
-  Paper,
-  Text,
-  Title,
-  useMantineTheme,
-} from '@mantine/core';
+import { Title } from '@mantine/core';
 
 import thunder from '../images/storm1.gif';
 import overcast from '../images/cloudy1.gif';
@@ -95,7 +83,7 @@ export default function WeatherDisplay() {
   }, []);
 
   return (
-    <div className="Weather-Display">
+    <div className="weather-display">
       {checkWeather(weatherInfo.mainWeather)}
 
       <br />
@@ -105,7 +93,7 @@ export default function WeatherDisplay() {
         °C
       </h6> */}
 
-      <Title size={9} align="left">
+      <Title class="weather-info" size={9} align="left">
         {weatherInfo.mainWeather}
         <br /> highs: {weatherInfo.highTemp}°C <br />
         lows: {weatherInfo.lowTemp}

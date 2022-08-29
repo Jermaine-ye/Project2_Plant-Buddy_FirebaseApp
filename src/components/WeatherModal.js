@@ -123,7 +123,7 @@ export default function WeatherModal() {
   ));
 
   return (
-    <div className="Weather-Modal">
+    <div className="weather-modal">
       {/* <h6>Current Weather: {weatherInfo.mainWeather} </h6>
       <h6> {checkWeather(weatherInfo.mainWeather)}</h6>
 
