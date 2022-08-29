@@ -64,6 +64,15 @@ body {
   margin: 1rem;
 }
 
+.plantcard-row {
+  display: inline-flex;
+  padding-left: 3vw;
+}
+.plantcard-water-button {
+  margin-top: 7vw;
+  cursor: pointer;
+}
+
 /* Calendar  */
 /* .calendar-row {
   width: 50vw;

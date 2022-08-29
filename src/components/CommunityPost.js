@@ -75,7 +75,7 @@ export default function Post(props) {
 
   return Object.keys(post).length > 0 ? (
     <div>
-      <Breadcrumbs>{crumbs}</Breadcrumbs>
+      <Breadcrumbs separator=">">{crumbs}</Breadcrumbs>
       <br />
       <Card
         shadow="sm"

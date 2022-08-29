@@ -60,6 +60,7 @@ export default function PlantCalendar(props) {
 
       let dateUserLastWatered = props.plantData[plantKey].dateLastWatered;
       dateWatered[plantName] = parseISO(dateUserLastWatered);
+      console.log(dateWatered);
     }
     setWateringSchedule(schedule);
     setDateLastWatered(dateWatered);
