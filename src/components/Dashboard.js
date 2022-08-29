@@ -69,8 +69,8 @@ export default function Dashboard(props) {
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
+      {console.log(user)}
       {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null}
-
       {/* <button
           onClick={() => {
             logout();
@@ -78,11 +78,8 @@ export default function Dashboard(props) {
         >
           Logout
         </button> */}
-
       {/* <WeatherModal /> */}
-
       <PlantGarden />
-
       <Footer height={60} p="xs" className={classes.footer}>
         <Link to={`/addnewplant`}>
           <Button>

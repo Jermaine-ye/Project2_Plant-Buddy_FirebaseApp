@@ -36,7 +36,13 @@ import {
   MultiSelect,
   Textarea,
 } from "@mantine/core";
-import { EditCircle, Trash, DropletFilled2, Upload } from "tabler-icons-react";
+import {
+  EditCircle,
+  Trash,
+  DropletFilled2,
+  Upload,
+  CircuitGroundDigital,
+} from "tabler-icons-react";
 
 // folders in realtime database
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -110,22 +116,35 @@ export default function PlantInfo(props) {
   }, [props]);
 
   const newPhotoUpload = (
-    <>
-      <FileInput
-        variant="filled"
-        required
-        type="file"
-        label="Upload Plant Photo"
-        placeholder="Choose photo"
-        icon={<Upload size={14} />}
-        value={plantPhotoValue}
-        onChange={(e) => {
-          setPlantPhotoFile(e);
-          setPlantPhotoValue(e.name);
-          setPhotoPreview(URL.createObjectURL(e));
-        }}
-      />
-    </>
+    <Grid grow align="center">
+      <Grid.Col span={8}>
+        <FileInput
+          variant="filled"
+          required
+          type="file"
+          label="Upload Plant Photo"
+          placeholder="Choose photo"
+          icon={<Upload size={14} />}
+          onChange={(e) => {
+            setPlantPhotoFile(e);
+            setPlantPhotoValue(e.name);
+            setPhotoPreview(URL.createObjectURL(e));
+          }}
+        />
+      </Grid.Col>
+      <Grid.Col span={2}>
+        <Button
+          onClick={() => {
+            setUploadNewPhoto(!uploadNewPhoto);
+            setPlantPhotoFile(null);
+            setPlantPhotoValue("");
+            setPhotoPreview("");
+          }}
+        >
+          Cancel
+        </Button>
+      </Grid.Col>
+    </Grid>
   );
 
   const userPlantRef = databaseRef(
@@ -180,8 +199,6 @@ export default function PlantInfo(props) {
 
       update(userPlantRef, { [plantKey]: updatedData });
     }
-
-    setEditMode(false);
   };
 
   // to revert all values to initial state
@@ -198,6 +215,23 @@ export default function PlantInfo(props) {
   // editable page
   const editProfile = (
     <>
+      <Space h="xs" />
+
+      {uploadNewPhoto ? (
+        newPhotoUpload
+      ) : (
+        <Button
+          onClick={() => {
+            setUploadNewPhoto(!uploadNewPhoto);
+            setPlantPhotoFile(null);
+            setPlantPhotoValue("");
+            setPhotoPreview("");
+          }}
+        >
+          Upload New Photo
+        </Button>
+      )}
+      <Space h="xs" />
       <TextInput
         variant="filled"
         name="plantName"
@@ -209,19 +243,6 @@ export default function PlantInfo(props) {
         placeholder="Plant Name"
         maxLength={24}
       />
-      <button
-        onClick={() => {
-          setUploadNewPhoto(!uploadNewPhoto);
-          setPlantPhotoFile(null);
-          setPlantPhotoValue("");
-          setPhotoPreview("");
-        }}
-      >
-        Edit
-      </button>
-      {uploadNewPhoto ? newPhotoUpload : null}
-      <br />
-      {/*  */}
       <Grid>
         <Grid.Col span={6}>
           <NumberInput
@@ -367,26 +388,25 @@ export default function PlantInfo(props) {
           />
           <Space h="xs" />
         </Card.Section>
-        <ScrollArea style={{ height: "500" }}>
-          <Group position="right" spacing="xs">
-            <ActionIcon onClick={() => setEditMode(!editMode)}>
-              <EditCircle />
-            </ActionIcon>
-            <ActionIcon
-              id={plantKey}
-              onClick={(e) => {
-                props.deletePlant(e, plantKey);
-              }}
-            >
-              <Trash />
-            </ActionIcon>
-          </Group>
 
-          <Text align="center" order={3}>
-            {plantFamily.toLowerCase()}
-          </Text>
-          {editMode ? editProfile : readOnlyProfile}
-        </ScrollArea>
+        <Group position="right" spacing="xs">
+          <ActionIcon onClick={() => setEditMode(!editMode)}>
+            <EditCircle />
+          </ActionIcon>
+          <ActionIcon
+            id={plantKey}
+            onClick={(e) => {
+              props.deletePlant(e, plantKey);
+            }}
+          >
+            <Trash />
+          </ActionIcon>
+        </Group>
+
+        <Text align="center" order={3}>
+          {plantFamily.toLowerCase()}
+        </Text>
+        {editMode ? editProfile : readOnlyProfile}
       </Card>
     </>
   );

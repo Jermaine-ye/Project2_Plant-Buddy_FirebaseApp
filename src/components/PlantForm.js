@@ -408,7 +408,6 @@ export default function PlantForm() {
         label="Upload Plant Photo"
         placeholder="Choose photo"
         icon={<Upload size={14} />}
-        value={plantPhotoValue}
         onChange={(e) => {
           setPlantPhotoFile(e);
           setPlantPhotoValue(e.name);

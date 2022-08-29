@@ -156,6 +156,7 @@ export default function PlantGarden(props) {
         <PlantInfo
           selectedPlantProfile={selectedPlantProfile}
           deletePlant={handleDeletePlant}
+          closeDrawer={() => setDrawerOpen(false)}
         />
       </Drawer>
     </>
