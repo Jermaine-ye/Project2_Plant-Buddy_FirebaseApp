@@ -40,6 +40,7 @@ import {
 import { Plus, Upload } from "tabler-icons-react";
 
 import glossary from "../styling/Drawkit Plants/Drawkit_05_Glossary.png";
+import glossaryheader from "../styling/Drawkit Plants/Drawkit_05a_Glossary.png";
 import { buddyTheme } from "../Styles/Theme";
 
 const USER_PLANT_FOLDER_NAME = "userPlants/";
@@ -489,14 +490,50 @@ export default function PlantForm() {
     </>
   );
 
+  const crumbs = [
+    { title: "Plant Garden", href: "/" },
+    { title: "Add Plant", href: "/addnewplant" },
+  ].map((crumb, index) => {
+    return (
+      <Anchor href={crumb.href} key={index}>
+        <Text size="xs"> {crumb.title}</Text>
+      </Anchor>
+    );
+  });
+
   return (
-    <>
-      <Breadcrumbs separator=">">{items}</Breadcrumbs>
-      <Container>
+    <div className="addplantform">
+      <div>
+        <Breadcrumbs separator=">">{crumbs}</Breadcrumbs>
+      </div>
+      <Container sx={{ paddingLeft: "0", paddingRight: "10px" }}>
         <br />
         <Stack>
-          <img className="community-header-img" src={glossary} alt={glossary} />
-          <Title order={3}>New Plant Buddy</Title>
+          <div>
+            <Card p="0" sx={{ background: buddyTheme.colors.seashell[5] }}>
+              <div className="community-dashboard-banner">
+                <Image
+                  radius="md"
+                  width="40vw"
+                  src={glossaryheader}
+                  alt={glossaryheader}
+                />
+                <Title
+                  order={2}
+                  color="white"
+                  sx={{
+                    margin: "auto",
+                    paddingRight: "5px",
+                    paddingLeft: "5px",
+                  }}
+                >
+                  New Plant Buddy
+                </Title>
+              </div>
+            </Card>
+          </div>
+          {/* <img className="community-header-img" src={glossary} alt={glossary} /> */}
+          {/* <Title order={3}>New Plant Buddy</Title> */}
           <Grid grow gutter="xs">
             <Grid.Col span={9}>
               <Autocomplete
@@ -514,7 +551,7 @@ export default function PlantForm() {
                 }
               />
             </Grid.Col>
-            <Grid.Col span={3}>
+            <Grid.Col span={3} sx={{ paddingRight: "0" }}>
               <Button onClick={() => handleClickSelectedPlant()}>
                 <Plus size={20} strokeWidth={2} color={"white"} />
               </Button>
@@ -582,6 +619,6 @@ export default function PlantForm() {
           )}
         </Group>
       </Modal>
-    </>
+    </div>
   );
 }

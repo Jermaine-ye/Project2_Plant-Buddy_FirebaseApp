@@ -16,7 +16,7 @@ import PlantGarden from "./PlantGarden";
 import PlantInfo from "./PlantInfo";
 
 // imports for styling
-
+import { buddyTheme } from "../Styles/Theme";
 import {
   Container,
   Title,
@@ -29,6 +29,8 @@ import {
   createStyles,
 } from "@mantine/core";
 import { HeaderMiddle } from "../Styles/Header";
+import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { CirclePlus } from "tabler-icons-react";
 
 const useStyles = createStyles((theme) => ({
   footer: {
@@ -79,8 +81,15 @@ export default function Dashboard(props) {
         </button> */}
       {/* <WeatherModal /> */}
       <PlantGarden />
-      <Footer height={60} p="xs" className={classes.footer}>
+      <Footer
+        height={60}
+        p="xs"
+        className={classes.footer}
+        sx={{ background: "transparent", border: "0" }}
+      >
         <Link to={`/addnewplant`}>
+          {/* <Button> */}
+          {/* <Title order={6}>Add Plant to Garden!</Title> */}
           <Button>
             <Title order={6}>Add Plant to Garden!</Title>
             <img
@@ -88,6 +97,8 @@ export default function Dashboard(props) {
               src="https://img.icons8.com/carbon-copy/30/ffffff/potted-plant.png"
             />
           </Button>
+
+          {/* </Button> */}
         </Link>
       </Footer>
       {/* <div>

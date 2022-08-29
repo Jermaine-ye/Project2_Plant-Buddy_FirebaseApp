@@ -260,7 +260,6 @@ export default function PlantCalendar(props) {
         radius="md"
         p="xs"
         sx={{
-          width: "90vw",
           color: "#1f3b2c",
           margin: "auto",
         }}
