@@ -35,6 +35,10 @@ export default function Registration(props) {
         props.handleLogin(user);
         setSignedUp(true);
       })
+      .then(() => {
+        login(e, email, password);
+        console.log(user);
+      })
 
       .catch((error) => {
         console.log(error.code, error.message);
@@ -58,7 +62,15 @@ export default function Registration(props) {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: "50%",
+      }}
+    >
       <img
         className="community-header-img"
         src={registrationHeaderImg}
@@ -73,7 +85,7 @@ export default function Registration(props) {
       <br />
       {!showSignUpLogin ? (
         <div>
-          <Group position="center" spacing="xs" grow>
+          <Group position="center" spacing="xs">
             <Button
               onClick={() => {
                 setShowSignUpLogin(true);

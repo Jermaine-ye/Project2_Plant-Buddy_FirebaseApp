@@ -1,5 +1,5 @@
-import { useNavigate, Link, useParams, useLocation } from 'react-router-dom';
-import { useContext, useEffect, useState } from 'react';
+import { useNavigate, Link, useParams, useLocation } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
 import {
   Badge,
   Button,
@@ -10,23 +10,23 @@ import {
   Paper,
   Text,
   useMantineTheme,
-} from '@mantine/core';
-import { UserContext } from '../App';
-import { IconPlant, IconPlant2 } from '@tabler/icons';
+} from "@mantine/core";
+import { UserContext } from "../App";
+import { IconPlant, IconPlant2 } from "@tabler/icons";
 
-import tipspic from '../images/TipsForum.png';
-import tradingpic from '../images/TradingForum.png';
+import tipspic from "../images/TipsForum.png";
+import tradingpic from "../images/TradingForum.png";
 
 export default function Forums() {
   const user = useContext(UserContext);
   const navigate = useNavigate();
 
-  const [currForum, setCurrForum] = useState('');
+  const [currForum, setCurrForum] = useState("");
 
   useEffect(() => {
     //check if user has logged in, if not, redirect them to login page
     if (Object.keys(user) == 0) {
-      navigate('/login');
+      navigate("/login");
     }
   });
 
@@ -39,7 +39,7 @@ export default function Forums() {
       // sx={{ width: '85vw', color: '#1f3b2c' }}
     >
       <Card.Section>
-        <Image src={tipspic} alt="forumtipsicon" />
+        <Image src={tipspic} alt="forumtipsicon" className="forum-Drawkits" />
       </Card.Section>
 
       <Group position="apart" mt="md" mb="xs">
@@ -59,8 +59,8 @@ export default function Forums() {
         mt="md"
         radius="md"
         onClick={() => {
-          setCurrForum('/forumTips');
-          navigate('/forums/forumTips');
+          setCurrForum("/forumTips");
+          navigate("/forums/forumTips");
           console.log(currForum);
         }}
       >
@@ -78,7 +78,11 @@ export default function Forums() {
       // sx={{ width: '85vw', color: '#1f3b2c' }}
     >
       <Card.Section>
-        <Image src={tradingpic} alt="forumtradesicon" />
+        <Image
+          src={tradingpic}
+          alt="forumtradesicon"
+          className="forum-Drawkits"
+        />
       </Card.Section>
 
       <Group position="apart" mt="md" mb="xs">
@@ -98,8 +102,8 @@ export default function Forums() {
         mt="md"
         radius="md"
         onClick={() => {
-          setCurrForum('/forumTrading');
-          navigate('/forums/forumTrading');
+          setCurrForum("/forumTrading");
+          navigate("/forums/forumTrading");
           console.log(currForum);
         }}
       >

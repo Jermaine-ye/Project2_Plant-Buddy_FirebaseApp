@@ -35,6 +35,7 @@ import {
   Textarea,
   Badge,
   Blockquote,
+  Alert,
 } from "@mantine/core";
 
 import { Plus, Upload } from "tabler-icons-react";
@@ -94,6 +95,7 @@ export default function PlantForm() {
 
   // MODAL
   const [modalOpen, setModalOpen] = useState(false);
+  const [plantAddedModal, setPlantAddedModal] = useState(false);
 
   // STEPPER
   const [activeStep, setActiveStep] = useState(0);
@@ -204,9 +206,6 @@ export default function PlantForm() {
           setPlantName("");
           setPlantNotes("");
           setPlantCondition("");
-
-          alert("Plant successfully added");
-
           navigate("/");
         });
       })
@@ -615,9 +614,26 @@ export default function PlantForm() {
           {activeStep < 2 ? (
             <Button onClick={nextStep}>Next step</Button>
           ) : (
-            <Button onClick={handleSubmitNewPlant}>Add Buddy</Button>
+            <Button
+              onClick={(e) => {
+                handleSubmitNewPlant(e);
+                setPlantAddedModal(true);
+              }}
+            >
+              Add Buddy
+            </Button>
           )}
         </Group>
+      </Modal>
+      <Modal
+        opened={plantAddedModal}
+        onClose={() => {
+          setPlantAddedModal(false);
+        }}
+      >
+        <div className="delete-modal">
+          <Title order={6}>Added New Plant!</Title>
+        </div>
       </Modal>
     </div>
   );
