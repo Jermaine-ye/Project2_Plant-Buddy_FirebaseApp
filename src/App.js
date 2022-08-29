@@ -75,7 +75,7 @@ function App() {
           styles={{
             main: {
               background: buddyTheme.colors["cream"][0],
-              display: "block",
+              display: "inline",
               alignItems: "center",
               justifyContent: "center",
             },

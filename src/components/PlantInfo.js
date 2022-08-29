@@ -74,6 +74,7 @@ export default function PlantInfo(props) {
   );
   const [plantName, setPlantName] = useState(plantInfo.plantName);
   const [plantNotes, setPlantNotes] = useState(plantInfo.plantNotes);
+  const [editsModal, setEditsModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
 
   // for new photo upload
@@ -307,12 +308,28 @@ export default function PlantInfo(props) {
       />
       <Space h="sm" />
       <Group grow>
-        <Button onClick={handleSubmitChanges}>Update Changes</Button>
+        <Button
+          onClick={(e) => {
+            handleSubmitChanges(e);
+            setEditsModal(true);
+          }}
+        >
+          Update Changes
+        </Button>
         <Button onClick={handleResetChanges}>Reset Changes</Button>
       </Group>
+      <Modal
+        opened={editsModal}
+        onClose={() => {
+          setEditsModal(false);
+          props.closeDrawer();
+        }}
+      >
+        <Title order={6}>Your changes have been saved!</Title>
+      </Modal>
     </>
   );
-
+  console.log(`editsModal:${editsModal}, editmode:${editMode}`);
   // read-only page
   const readOnlyProfile = (
     <>
