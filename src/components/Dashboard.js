@@ -26,11 +26,23 @@ import {
   Footer,
   Divider,
   Box,
+  createStyles,
 } from "@mantine/core";
 import { HeaderMiddle } from "../Styles/Header";
 
+const useStyles = createStyles((theme) => ({
+  footer: {
+    backgroundColor: theme.fn.variant({
+      variant: "filled",
+      color: theme.colors.seashell,
+    }).background,
+    borderBottom: 0,
+  },
+}));
+
 export default function Dashboard(props) {
   const navigate = useNavigate();
+  const { classes, cx } = useStyles();
 
   //user info
   const user = useContext(UserContext);
@@ -57,8 +69,8 @@ export default function Dashboard(props) {
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
+      {console.log(user)}
       {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null}
-
       {/* <button
           onClick={() => {
             logout();
@@ -66,14 +78,17 @@ export default function Dashboard(props) {
         >
           Logout
         </button> */}
-
       {/* <WeatherModal /> */}
-
       <PlantGarden />
-
-      <Footer height={60} p="md">
+      <Footer height={60} p="xs" className={classes.footer}>
         <Link to={`/addnewplant`}>
-          <Button>Add Plant to Garden!</Button>
+          <Button>
+            <Title order={6}>Add Plant to Garden!</Title>
+            <img
+              alt="new-plant"
+              src="https://img.icons8.com/carbon-copy/30/ffffff/potted-plant.png"
+            />
+          </Button>
         </Link>
       </Footer>
       {/* <div>
