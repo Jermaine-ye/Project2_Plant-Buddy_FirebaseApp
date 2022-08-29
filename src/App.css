@@ -221,6 +221,9 @@ body {
   margin: auto;
   cursor: pointer;
 }
+.footer-button {
+  display: flex;
+}
 .community-list-item {
   list-style: none;
   margin: auto;

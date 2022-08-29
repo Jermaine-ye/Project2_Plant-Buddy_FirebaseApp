@@ -341,14 +341,18 @@ export default function Community(props) {
         </ul>
       </div> */}
 
-      <Footer height={60} p="xs">
+      <Footer
+        height={60}
+        p="xs"
+        sx={{ border: "0", background: "transparent" }}
+      >
         <Button
           onClick={() => {
             setAddPost(true);
           }}
           sx={{ margin: "auto" }}
         >
-          Add to Community Feed!
+          <Title order={6}>Add to Community Feed!</Title>
         </Button>
         <Modal
           opened={addPost}
