@@ -32,8 +32,11 @@ import {
   Box,
   Drawer,
   ScrollArea,
+  Button,
 } from "@mantine/core";
 import { buddyTheme } from "../Styles/Theme";
+import { isBefore } from "date-fns";
+import { DropletFilled } from "tabler-icons-react";
 
 // folders in realtime database and storage
 const USER_PLANT_FOLDER_NAME = "userPlants";
@@ -123,26 +126,39 @@ export default function PlantGarden(props) {
 
     setDrawerOpen(false);
   };
+  const handleBoxClick = (plantEntryKey, plantData) => {
+    setSelectedPlantProfile({ [plantEntryKey]: plantData });
+    setDrawerOpen(true);
+  };
+  const waterPlant = (plantEntryKey, plantData) => {
+    const updatedData = {
+      ...plantData,
+      dateLastWatered: new Date(),
+      dateLastWateredCheck: new Date().toLocaleDateString(),
+    };
+    update(userPlantRef, { [plantEntryKey]: updatedData })
+      .then(() => {
+        console.log("dateLastWatered updated");
+      })
+      .catch((err) => console.log(err));
+  };
 
   // to render user's list of plants in dashboard view
   const plantCards = Object.entries(userPlants).map(
     ([plantEntryKey, plantData], index) => {
       return (
-        <Box
-          key={index}
-          onClick={() => {
-            setSelectedPlantProfile({ [plantEntryKey]: plantData });
-            setDrawerOpen(true);
-          }}
-        >
+        <>
           <ArticleCardVertical
             image={plantData.plantImageUrl}
             plantFamily={plantData.plantFamily}
             plantName={plantData.plantName}
             dateAdded={plantData.dateAdded}
-            dateLastWatered={plantData.dateLastWateredCheck}
+            dateLastWatered={plantData.dateLastWatered}
+            dateLastWateredCheck={plantData.dateLastWateredCheck}
+            handleBoxClick={() => handleBoxClick(plantEntryKey, plantData)}
+            waterPlant={() => waterPlant(plantEntryKey, plantData)}
           />
-        </Box>
+        </>
       );
     }
   );
