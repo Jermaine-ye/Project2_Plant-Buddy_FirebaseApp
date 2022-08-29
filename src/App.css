@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700&display=swap");
 
 .App {
   text-align: center;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 body {
@@ -185,9 +185,7 @@ body {
 .calendar-row-info {
   padding-bottom: 1vw;
 }
-
 /* Weather App */
-
 .mantine-Popover-dropdown {
   /* background: #9d8a76; */
   background: #ada49a;
@@ -255,7 +253,22 @@ body {
 
   flex-grow: 0;
 }
+.Weather-Display {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  background-color: white;
+  padding: 1rem;
+  color: black;
+  margin: 1rem;
+}
 
+.Weather-Display h6 {
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: center;
+}
 .weather-display {
   display: flex;
   justify-content: flex-end;
@@ -273,7 +286,6 @@ body {
   margin: -10px;
   padding: 6px;
 }
-
 /* Forum */
 
 .forum-mesage-card {
@@ -338,7 +350,6 @@ body {
   padding: 0;
   display: flex;
 }
-
 /* Map */
 
 .map-container {
@@ -361,9 +372,7 @@ body {
   margin: auto;
   cursor: pointer;
 }
-.footer-button {
-  display: flex;
-}
+
 .community-list-item {
   list-style: none;
   margin: auto;
@@ -393,4 +402,8 @@ body {
 .dashboard-banner {
   display: flex;
   align-items: center;
+}
+.delete-modal {
+  display: flex;
+  flex-direction: column;
 }
