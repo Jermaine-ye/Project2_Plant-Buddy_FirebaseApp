@@ -1,10 +1,6 @@
-// newsfeed working
 import {
   onChildAdded,
   onChildChanged,
-  onChildRemoved,
-  update,
-  remove,
   ref as databaseRef,
 } from 'firebase/database';
 import { Input, Button, Card, Image, Text, Title } from '@mantine/core';
@@ -14,7 +10,6 @@ import { buddyTheme } from '../Styles/Theme';
 import tipsheader from '../images/TipsForum.png';
 import tradeheader from '../images/TradingForum.png';
 
-import { ref as storageRef, deleteObject } from 'firebase/storage';
 import { database, storage } from '../DB/firebase';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
@@ -30,12 +25,9 @@ export default function ForumNewsFeed(props) {
   const [searchFeed, setSearchFeed] = useState([]);
   const [messages, setMessages] = useState([]);
 
-  //useParams to point to forumfoldername so it does not show empty state on back
-
   const FORUM_FOLDER_NAME = topic;
 
   useEffect(() => {
-    //check if user has logged in, if not, redirect them to login page
     console.log('user:', user);
     const isLoggedIn = JSON.parse(localStorage.getItem('user'));
     console.log('isLoggedIn:', isLoggedIn);
@@ -46,17 +38,15 @@ export default function ForumNewsFeed(props) {
 
   useEffect(() => {
     const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
-    // onChildAdded will return data for every child at the reference and every subsequent new child
+
     onChildAdded(messagesRef, (data) => {
       setMessages((prev) => [...prev, { key: data.key, val: data.val() }]);
     });
   }, []);
 
-  //for listening to comments
   useEffect(() => {
     const messagesRef = databaseRef(database, FORUM_FOLDER_NAME);
 
-    // onChildAdded will return data for every child at the reference and every subsequent new child
     onChildChanged(messagesRef, (data) => {
       console.log('useEffectCA: ', messages);
       console.log('useEffectCASnapshot: ', data);
@@ -72,21 +62,6 @@ export default function ForumNewsFeed(props) {
       });
     });
   }, []);
-
-  // useEffect(() => {
-  //   const messageListRef = databaseRef(
-  //     database,
-  //     FORUM_FOLDER_NAME + '/' + userMessagesFolder
-  //   );
-  //   onChildRemoved(messageListRef, (data) =>
-  //     setMessages((prevState) => {
-  //       let newState = { ...prevState };
-  //       delete newState[data.key];
-
-  //       return newState;
-  //     })
-  //   );
-  // }, []);
 
   let titleOnly = messages.map((messages, index) => {
     return (
@@ -112,7 +87,6 @@ export default function ForumNewsFeed(props) {
           </Text>
           <Link to={`forumpost/${index}`} state={{ messages }}>
             <Button
-              // leftIcon={<IconPlant2 />}
               variant="filled"
               color="seashell"
               size="xs"
@@ -168,7 +142,6 @@ export default function ForumNewsFeed(props) {
           </Text>
           <Link to={`forumpost/${index}`} state={{ messages }}>
             <Button
-              // leftIcon={<IconPlant2 />}
               variant="filled"
               color="seashell"
               size="xs"
@@ -180,56 +153,14 @@ export default function ForumNewsFeed(props) {
             </Button>
           </Link>
         </Card>
-
-        {/* <button
-          id={messages.key}
-          onClick={(e, id) => {
-            props.handleDeleteMessage(e, index, id);
-          }}
-        >
-          delete Post
-        </button> */}
       </div>
     );
   });
-
-  // const handleDeleteMessage = (e, index, id) => {
-  //   // //delete from realtime database
-  //   // const plantEntryRef = databaseRef(
-  //   //   database,
-  //   //   USER_PLANT_FOLDER_NAME + '/' + userPlantFolder + '/' + plantEntry
-  //   // );
-  //   const messageEntry = e.target.id;
-  //   const messageListRef = databaseRef(
-  //     database,
-  //     FORUM_FOLDER_NAME + '/' + userMessagesFolder + '/' + messageEntry
-  //   );
-
-  //   remove(messageListRef);
-  //   // delete image from storage
-
-  //   const fileRef = storageRef(
-  //     storage,
-  //     FORUM_IMAGES_FOLDER_NAME +
-  //       '/' +
-  //       userMessagesFolder +
-  //       '/' +
-  //       props.imageName
-  //   );
-
-  //   deleteObject(fileRef)
-  //     .then(() => {
-  //       console.log(props.fileInputFile);
-  //       console.log('image deleted!');
-  //     })
-  //     .catch((error) => console.log(error));
-  // };
 
   titleOnly.reverse();
 
   return (
     <div>
-      {/* <div className="Forum-Banner"> */}
       {window.location.pathname.includes('/forumTips') ? (
         <Card
           class="tips-banner"
@@ -275,7 +206,6 @@ export default function ForumNewsFeed(props) {
           </Title>
         </Card>
       )}
-      {/* </div> */}
       <br />
       <Button
         color="moss"
@@ -313,15 +243,6 @@ export default function ForumNewsFeed(props) {
       ) : (
         <div>{searchList}</div>
       )}
-      {/* {titleOnly.length > 0 && search.length == 0 ? (
-        <div>
-          <ul>{titleOnly}</ul>
-        </div>
-      ) : (
-        <div>
-          <ul>{searchList}</ul>
-        </div>
-      )} */}
       <br /> <br />
       <ForumComposer />
     </div>
