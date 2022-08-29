@@ -1,36 +1,21 @@
 import { UserContext } from "../App";
 
 // imports for react
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // imports for firebase
-import { auth, database } from "../DB/firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
-import { ref as databaseRef, onChildAdded } from "firebase/database";
+import { auth } from "../DB/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 // imports for components
 // import PlantCalendar from "./Calendar"; // to be shifted to nest under plantgarden
-import WeatherModal from "./WeatherModal";
+
 import PlantGarden from "./PlantGarden";
-import PlantInfo from "./PlantInfo";
 
 // imports for styling
-import { buddyTheme } from "../Styles/Theme";
-import {
-  Container,
-  Title,
-  Card,
-  Paper,
-  Button,
-  Footer,
-  Divider,
-  Box,
-  createStyles,
-} from "@mantine/core";
-import { HeaderMiddle } from "../Styles/Header";
-import { PlusCircledIcon } from "@radix-ui/react-icons";
-import { CirclePlus } from "tabler-icons-react";
+
+import { Title, Button, Footer, createStyles } from "@mantine/core";
 
 const useStyles = createStyles((theme) => ({
   footer: {

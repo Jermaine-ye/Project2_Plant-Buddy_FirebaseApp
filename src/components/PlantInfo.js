@@ -202,6 +202,8 @@ export default function PlantInfo(props) {
 
       update(userPlantRef, { [plantKey]: updatedData });
     }
+
+    props.closeDrawer();
   };
 
   // to revert all values to initial state

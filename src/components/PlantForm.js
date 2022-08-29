@@ -35,7 +35,6 @@ import {
   Textarea,
   Badge,
   Blockquote,
-  Alert,
 } from "@mantine/core";
 
 import { Plus, Upload } from "tabler-icons-react";
@@ -206,6 +205,9 @@ export default function PlantForm() {
           setPlantName("");
           setPlantNotes("");
           setPlantCondition("");
+
+         
+
           navigate("/");
         });
       })
@@ -531,8 +533,7 @@ export default function PlantForm() {
               </div>
             </Card>
           </div>
-          {/* <img className="community-header-img" src={glossary} alt={glossary} /> */}
-          {/* <Title order={3}>New Plant Buddy</Title> */}
+        
           <Grid grow gutter="xs">
             <Grid.Col span={9}>
               <Autocomplete

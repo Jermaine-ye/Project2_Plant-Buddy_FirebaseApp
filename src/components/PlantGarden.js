@@ -1,10 +1,10 @@
-import { UserContext } from '../App';
+import { UserContext } from "../App";
 
 // imports for react
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 
 // imports for firebase
-import { database, storage } from '../DB/firebase';
+import { database, storage } from "../DB/firebase";
 import {
   ref as databaseRef,
   onChildAdded,
@@ -12,17 +12,17 @@ import {
   onChildRemoved,
   remove,
   update,
-} from 'firebase/database';
-import { ref as storageRef, deleteObject } from 'firebase/storage';
+} from "firebase/database";
+import { ref as storageRef, deleteObject } from "firebase/storage";
 
 // imports for components
-import PlantInfo from './PlantInfo';
-import PlantCalendar from './Calendar';
+import PlantInfo from "./PlantInfo";
+import PlantCalendar from "./Calendar";
 
 //imports for styling
-import dashboard from '../styling/Drawkit Plants/Drawkit_04_Dashboard.png';
-import dashboardCropped from '../styling/Drawkit Plants/Drawkit_04a_DashboardCropped.png';
-import { ArticleCardVertical } from '../Styles/PlantCard';
+import dashboard from "../styling/Drawkit Plants/Drawkit_04_Dashboard.png";
+import dashboardCropped from "../styling/Drawkit Plants/Drawkit_04a_DashboardCropped.png";
+import { ArticleCardVertical } from "../Styles/PlantCard";
 import {
   Stack,
   Divider,
@@ -32,28 +32,26 @@ import {
   Box,
   Drawer,
   ScrollArea,
-
   Button,
 } from "@mantine/core";
 import { buddyTheme } from "../Styles/Theme";
 import { isBefore } from "date-fns";
 import { DropletFilled } from "tabler-icons-react";
 
-
 // folders in realtime database and storage
-const USER_PLANT_FOLDER_NAME = 'userPlants';
-const USER_PLANT_IMAGES_FOLDER_NAME = 'userPlantsImages';
+const USER_PLANT_FOLDER_NAME = "userPlants";
+const USER_PLANT_IMAGES_FOLDER_NAME = "userPlantsImages";
 
 export default function PlantGarden(props) {
   const user = useContext(UserContext);
 
   //user info
   const userName = user.displayName;
-  const userPlantFolder = `${userName + '-' + user.uid}`;
+  const userPlantFolder = `${userName + "-" + user.uid}`;
   const [userPlants, setUserPlants] = useState({});
   const userPlantRef = databaseRef(
     database,
-    USER_PLANT_FOLDER_NAME + '/' + userPlantFolder
+    USER_PLANT_FOLDER_NAME + "/" + userPlantFolder
   );
 
   // load user's plants from realtime database
@@ -102,12 +100,12 @@ export default function PlantGarden(props) {
 
   const handleDeletePlant = (e, id) => {
     const plantEntry = id;
-    console.log('delete entry:', id);
+    console.log("delete entry:", id);
 
     //delete from realtime database
     const plantEntryRef = databaseRef(
       database,
-      USER_PLANT_FOLDER_NAME + '/' + userPlantFolder + '/' + plantEntry
+      USER_PLANT_FOLDER_NAME + "/" + userPlantFolder + "/" + plantEntry
     );
 
     remove(plantEntryRef);
@@ -122,7 +120,7 @@ export default function PlantGarden(props) {
 
     deleteObject(userPlantImagesRef)
       .then(() => {
-        console.log('image deleted!');
+        console.log("image deleted!");
       })
       .catch((error) => console.log(error));
 
@@ -149,7 +147,7 @@ export default function PlantGarden(props) {
   const plantCards = Object.entries(userPlants).map(
     ([plantEntryKey, plantData], index) => {
       return (
-        <>
+        <div key={index}>
           <ArticleCardVertical
             image={plantData.plantImageUrl}
             plantFamily={plantData.plantFamily}
@@ -160,7 +158,7 @@ export default function PlantGarden(props) {
             handleBoxClick={() => handleBoxClick(plantEntryKey, plantData)}
             waterPlant={() => waterPlant(plantEntryKey, plantData)}
           />
-        </>
+        </div>
       );
     }
   );

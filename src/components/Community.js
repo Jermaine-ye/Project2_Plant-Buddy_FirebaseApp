@@ -102,7 +102,7 @@ export default function Community(props) {
   const postsReverse = [...posts].reverse();
   const postFeed = postsReverse.map((post, index) => {
     return (
-      <div>
+      <div key={index}>
         <Card
           shadow="sm"
           p="lg"
@@ -196,7 +196,7 @@ export default function Community(props) {
 
   const searchList = searchFeed.map((post, index) => {
     return (
-      <div>
+      <div key={index}>
         <Card
           shadow="sm"
           p="lg"

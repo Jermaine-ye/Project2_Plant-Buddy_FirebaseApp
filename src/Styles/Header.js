@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState, forwardRef } from 'react';
-import { Link } from 'react-router-dom';
-import { UserContext } from '../App';
-
+import { useContext, useEffect, useState, forwardRef } from "react";
+import { Link } from "react-router-dom";
+import { UserContext } from "../App";
 import {
   createStyles,
   Header,
@@ -12,89 +11,89 @@ import {
   Text,
   Button,
   Popover,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { MantineProvider } from '@mantine/core';
-import { buddyTheme } from './Theme';
-import { Home, User } from 'tabler-icons-react';
+  MantineProvider,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { buddyTheme } from "./Theme";
+import { Home, User } from "tabler-icons-react";
 
-import WeatherDisplay from '../components/WeatherDisplay';
-import WeatherModal from '../components/WeatherModal';
-import { PersonIcon } from '@radix-ui/react-icons';
+import WeatherDisplay from "../components/WeatherDisplay";
+import WeatherModal from "../components/WeatherModal";
+import { PersonIcon } from "@radix-ui/react-icons";
 
 const useStyles = createStyles((theme) => ({
   header: {
     backgroundColor: theme.fn.variant({
-      variant: 'filled',
+      variant: "filled",
       color: theme.colors.moss,
     }).background,
     borderBottom: 0,
   },
 
   inner: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
     height: 56,
 
-    [theme.fn.smallerThan('sm')]: {
-      justifyContent: 'flex-start',
+    [theme.fn.smallerThan("sm")]: {
+      justifyContent: "flex-start",
     },
   },
 
   links: {
     width: 260,
 
-    [theme.fn.smallerThan('sm')]: {
-      display: 'none',
+    [theme.fn.smallerThan("sm")]: {
+      display: "none",
     },
   },
 
   icons: {
     width: 260,
 
-    [theme.fn.smallerThan('sm')]: {
-      width: 'auto',
-      marginLeft: 'auto',
+    [theme.fn.smallerThan("sm")]: {
+      width: "auto",
+      marginLeft: "auto",
     },
   },
 
   burger: {
     marginRight: theme.spacing.md,
 
-    [theme.fn.largerThan('sm')]: {
-      display: 'none',
+    [theme.fn.largerThan("sm")]: {
+      display: "none",
     },
   },
 
   link: {
-    display: 'block',
+    display: "block",
     lineHeight: 1,
-    padding: '8px 12px',
+    padding: "8px 12px",
     borderRadius: theme.radius.sm,
-    textDecoration: 'none',
+    textDecoration: "none",
     color:
-      theme.colorScheme === 'dark'
+      theme.colorScheme === "dark"
         ? theme.colors.dark[0]
         : theme.colors.gray[7],
     fontSize: theme.fontSizes.sm,
     fontWeight: 500,
 
-    '&:hover': {
+    "&:hover": {
       backgroundColor:
-        theme.colorScheme === 'dark'
+        theme.colorScheme === "dark"
           ? theme.colors.dark[6]
           : theme.colors.gray[0],
     },
   },
 
   linkActive: {
-    '&, &:hover': {
+    "&, &:hover": {
       backgroundColor: theme.fn.variant({
-        variant: 'light',
+        variant: "light",
         color: theme.primaryColor,
       }).background,
-      color: theme.fn.variant({ variant: 'light', color: theme.primaryColor })
+      color: theme.fn.variant({ variant: "light", color: theme.primaryColor })
         .color,
     },
   },
@@ -105,30 +104,8 @@ const useStyles = createStyles((theme) => ({
 // }
 
 export function HeaderMiddle(props) {
-  const links = [
-    { link: 'www.example.com', label: 'example' },
-    { link: 'www.youtube.com', label: 'youtube' },
-  ];
-
   const [opened, { toggle }] = useDisclosure(false);
-  const [active, setActive] = useState(links[0].link);
   const { classes, cx } = useStyles();
-
-  const items = links.map((link) => (
-    <a
-      key={link.label}
-      href={link.link}
-      className={cx(classes.link, {
-        [classes.linkActive]: active === link.link,
-      })}
-      onClick={(event) => {
-        event.preventDefault();
-        setActive(link.link);
-      }}
-    >
-      {link.label}
-    </a>
-  ));
 
   return (
     <MantineProvider theme={buddyTheme}>
@@ -144,14 +121,17 @@ export function HeaderMiddle(props) {
             >
               <Menu.Target>
                 <ActionIcon variant="transparent" size="lg">
-                  <Home strokeWidth={1} color={'#fff'} />
+                  <Home strokeWidth={1} color={"#fff"} />
                 </ActionIcon>
               </Menu.Target>
 
               <Menu.Dropdown>
-                <Menu.Label></Menu.Label>
-                {/* <Menu.Item>Logged in as: {props.user.displayName}</Menu.Item>
-              <Menu.Divider /> */}
+                <Menu.Label>
+                  <Text color="black" size="sm" align="left">
+                    Logged in as: {props.user.displayName}
+                  </Text>
+                </Menu.Label>
+                <Menu.Divider />
                 <Menu.Item component={Link} to="/">
                   Plant Garden
                 </Menu.Item>
@@ -174,10 +154,6 @@ export function HeaderMiddle(props) {
               </Menu.Dropdown>
             </Menu>
 
-            <Group className={classes.links} spacing={5}>
-              {items}
-            </Group>
-
             <Group
               spacing={0}
               className={classes.icons}
@@ -195,7 +171,7 @@ export function HeaderMiddle(props) {
                 </Popover.Dropdown>
 
                 <Popover.Target>
-                  <Button class="weather-icon">
+                  <Button className="weather-icon">
                     <WeatherDisplay />
                   </Button>
                 </Popover.Target>
