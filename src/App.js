@@ -65,6 +65,7 @@ function App() {
       localStorage.removeItem("user");
       navigate("/login");
     });
+    setUser("");
   };
 
   return (
@@ -74,9 +75,12 @@ function App() {
           styles={{
             main: {
               background: buddyTheme.colors["cream"][0],
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             },
           }}
-          header={<HeaderMiddle handleLogout={logout} />}
+          header={<HeaderMiddle handleLogout={logout} user={user} />}
         >
           <UserContext.Provider value={user}>
             <Routes>

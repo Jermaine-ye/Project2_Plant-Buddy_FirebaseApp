@@ -57,7 +57,7 @@ export default function Dashboard(props) {
   ////// ----START OF RENDERING DISPLAY---- /////
   return (
     <div>
-      {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null}
+      {/* {user ? <Title order={3}>Good morning, {user.displayName}</Title> : null} */}
 
       {/* <button
           onClick={() => {

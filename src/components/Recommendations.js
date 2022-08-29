@@ -5,6 +5,7 @@ import { UserContext } from "../App";
 import Nurseries from "./Map";
 
 import PlantNurseries from "./PlantNurseries";
+import { Card } from "@mantine/core";
 
 export default function Recommendations() {
   const user = useContext(UserContext);
@@ -17,23 +18,14 @@ export default function Recommendations() {
   });
   return (
     <div>
-      <div>
-        <ul className="navigationBar">
-          <li className="navigationBarItem">
-            <Link to={"/"}>Dashboard</Link>
-          </li>
-          <li>{user ? <p>{user.displayName}</p> : null}</li>
-        </ul>
-      </div>
       <h1>Recommendations!</h1>
+      <div>
+        <h3>Popular Nurseries Near You!</h3>
+
+        <PlantNurseries />
+        <Nurseries />
+      </div>
       <ul>
-        <li>
-          <div>
-            <h3>Popular Nurseries Near You!</h3>
-            <PlantNurseries />
-            {/* <Nurseries /> */}
-          </div>
-        </li>
         <li>
           <div>
             <p>Recommendations</p>
@@ -50,19 +42,6 @@ export default function Recommendations() {
           </div>
         </li>
       </ul>
-      <div>
-        <ul className="navigationBar">
-          <li className="navigationBarItem">
-            <Link to={"/community"}>Community</Link>
-          </li>
-          <li className="navigationBarItem">
-            <Link to={"/forums"}>Forums</Link>
-          </li>
-          <li className="navigationBarItem">
-            <Link to={"/recommendations"}>Recommendations</Link>
-          </li>
-        </ul>
-      </div>
     </div>
   );
 }
