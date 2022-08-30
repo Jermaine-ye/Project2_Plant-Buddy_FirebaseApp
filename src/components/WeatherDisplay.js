@@ -34,6 +34,12 @@ export default function WeatherDisplay() {
       case "Passing Showers":
         return <img src={passingShower} alt="" width="50" height="50" />;
 
+      case "Light Rain":
+        return <img src={passingShower} alt="" width="50" height="50" />;
+
+      case "Light Showers":
+        return <img src={passingShower} alt="" width="50" height="50" />;
+
       case "Showers":
         return <img src={thunder} alt="" width="50" height="50" />;
 
@@ -88,7 +94,7 @@ export default function WeatherDisplay() {
 
       <br />
 
-      <Title className="weather-info" size={9} align="left">
+      <Title className="weather-info" size={8} align="left">
         {weatherInfo.mainWeather}
         <br /> highs: {weatherInfo.highTemp}°C <br />
         lows: {weatherInfo.lowTemp}
