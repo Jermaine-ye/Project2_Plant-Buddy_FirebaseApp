@@ -15,3 +15,7 @@ Tech Stack:
 - Local NEA weather and Google maps API
 - Mantine UI Library
 - Cheerio webscraper
+
+
+Please visit:
+bit.ly/jyjm-portfolio for more details :)
