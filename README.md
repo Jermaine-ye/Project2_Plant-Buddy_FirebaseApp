@@ -1,19 +1,17 @@
-# 2P-Firebase-App
+As plant enthusiasts, we would like to create a plant tracking application that not only allows us to better care for our green buddies + a private community of like minded individuals to share our gardens and have discussions.
 
-Group Project with T and J
+![Proj 2 cover photo](https://user-images.githubusercontent.com/102209911/224345382-53e92da7-1832-40d0-aeef-dc7c4076b75a.jpg)
 
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+https://www.youtube.com/watch?v=ZCcgYGT5gXc&list=PLxwmeZaKMKvNYg35dVbYuydFbZ-jN5q8x&index=2&t=315s
 
-## Available Scripts
+Please have subtitles on for project walkthrough :)
 
-In the project directory, you can run:
+Boot Camp project with 2 other team mates.
 
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Tech Stack:
+- React.js
+- Firebase Realtime Database | Storage
+- Local NEA weather and Google maps API
+- Mantine UI Library
+- Cheerio webscraper
